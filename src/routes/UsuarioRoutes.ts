@@ -8,7 +8,7 @@ import {
   login,
   updateUser,
 } from "../controllers/UsuarioController";
-const verifyToken = require("../middleware/verifyToken");
+const verifyToken = require("../middleware/VerifyToken");
 
 const router = Router();
 const prefix = "/users";
