@@ -5,6 +5,10 @@ import bodyParser from "body-parser";
 import userRoutes from "./routes/UsuarioRoutes";
 import rolRoutes from "./routes/RolRoutes";
 import imagesRoutes from "./routes/ImagesRoutes";
+import actividadRoutes from "./routes/ActividadRoutes";
+import cursoRoutes from "./routes/CursoRoutes";
+import especialistaRoutes from "./routes/EspecialistaRoutes";
+import notaRoutes from "./routes/NotaRoutes";
 
 import { connectDB } from "./db.config";
 import { _apiPort, _clientURL, _isProd } from "./constants";
@@ -28,6 +32,10 @@ const main = async () => {
   app.use(userRoutes);
   app.use(rolRoutes);
   app.use(imagesRoutes);
+  app.use(actividadRoutes);
+  app.use(cursoRoutes);
+  app.use(especialistaRoutes);
+  app.use(notaRoutes);
 
   app.listen(_apiPort);
   console.log("Listening on port: ", _apiPort);
