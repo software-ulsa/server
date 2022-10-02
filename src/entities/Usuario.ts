@@ -13,7 +13,7 @@ export class Usuario extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "text" })
   foto_perfil!: string;
 
   @Column({ type: "varchar", length: 60 })

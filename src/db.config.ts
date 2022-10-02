@@ -13,6 +13,11 @@ import {
 } from "./constants";
 import { Rol } from "./entities/Rol";
 import { Usuario } from "./entities/Usuario";
+import { Especialista } from "./entities/Especialista";
+import { Actividad } from "./entities/Actividad";
+import { Curso } from "./entities/Curso";
+import { Nota } from "./entities/Nota";
+import { Publicidad } from "./entities/Publicidad";
 
 const jwt = require("jsonwebtoken");
 
@@ -23,7 +28,7 @@ export const dataSource = new DataSource({
   port: Number(_dbPort),
   host: _dbHost,
   database: _dbName,
-  entities: [Rol, Usuario],
+  entities: [Rol, Usuario, Especialista, Actividad, Curso, Nota, Publicidad],
   synchronize: _dbSync,
   ssl: !_isProd,
 });
