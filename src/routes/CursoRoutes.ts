@@ -9,7 +9,7 @@ import { getRolById } from "../controllers/RolController";
 
 const router = Router();
 const prefix = "/cursos";
-const VerifyToken = require("../Middleware/VerifyToken");
+const VerifyToken = require("../middleware/VerifyToken");
 
 router.post(prefix, VerifyToken, createCurso);
 

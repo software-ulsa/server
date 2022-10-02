@@ -9,7 +9,7 @@ import {
 
 const router = Router();
 const prefix = "/actividades";
-const VerifyToken = require("../Middleware/VerifyToken");
+const VerifyToken = require("../middleware/VerifyToken");
 
 router.post(prefix, VerifyToken, createActividad);
 

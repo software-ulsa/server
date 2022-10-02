@@ -11,7 +11,7 @@ import {
 
 const router = Router();
 const prefix = "/especialistas";
-const VerifyToken = require("../Middleware/VerifyToken");
+const VerifyToken = require("../middleware/VerifyToken");
 
 router.post(prefix, VerifyToken, createEspecialista);
 
