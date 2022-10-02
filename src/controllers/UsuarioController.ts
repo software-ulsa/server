@@ -35,10 +35,12 @@ export const createUser = async (req: Request, res: Response) => {
         correo: correo,
       };
       const token = jwt.sign(payload, process.env.TOKEN_SECRET);
-      return res.send({ userInsert, token });
+      return res.status(200).send({ userInsert, token });
     }
   } catch (error) {
-    return res.json({ error: "Hubo un error al registrar al usuario." });
+    return res
+      .status(404)
+      .json({ error: "Hubo un error al registrar al usuario." });
   }
 };
 
@@ -52,12 +54,12 @@ export const login = async (req: Request, res: Response) => {
     .getOne();
 
   if (!userFound) {
-    return res.json({ message: "Usuario no existe" });
+    return res.status(404).json({ error: "Usuario no existe." });
   }
 
   const valid = await argon2.verify(userFound!.password, password);
   if (!valid) {
-    return res.json({ message: "Contraseña incorrecta" });
+    return res.status(401).json({ message: "Contraseña incorrecta." });
   }
 
   let payload = { id: userFound.id, correo: userFound.correo };
@@ -75,7 +77,9 @@ export const getUserById = async (req: Request, res: Response) => {
     .addSelect(["*"])
     .getOne();
 
-  return res.status(200).json(userFound);
+  if (userFound) return res.status(200).json(userFound);
+
+  return res.status(404).json({ error: "Usuario no existe." });
 };
 
 export const getUserByRol = async (req: Request, res: Response) => {
@@ -83,7 +87,11 @@ export const getUserByRol = async (req: Request, res: Response) => {
   const usersFound = await Usuario.find({
     where: { id_rol: Number(rol) },
   });
-  return res.status(200).json(usersFound);
+
+  if (usersFound && usersFound.length > 0)
+    return res.status(200).json(usersFound);
+
+  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };
 
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -93,7 +101,10 @@ export const getAllUsers = async (req: Request, res: Response) => {
     .addSelect(["*"])
     .getMany();
 
-  return res.status(200).json(usersFound);
+  if (usersFound && usersFound.length > 0)
+    return res.status(200).json(usersFound);
+
+  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };
 
 export const updateUser = async (req: Request, res: Response) => {
@@ -104,11 +115,7 @@ export const updateUser = async (req: Request, res: Response) => {
     id: Number(id),
   });
 
-  if (!userFound)
-    return res.json({
-      success: false,
-      message: "Usuario no existe",
-    });
+  if (!userFound) return res.status(404).json({ error: "Usuario no existe." });
 
   const hashedPassword = await argon2.hash(password);
 
@@ -130,13 +137,12 @@ export const updateUser = async (req: Request, res: Response) => {
     }
   );
 
-  return res.json({
-    success: userUpdated.affected === 1,
-    message:
-      userUpdated.affected === 1
-        ? "Usuario actualizado correctamente"
-        : "Hubo un error al actualizar",
-  });
+  if (userUpdated.affected == 0)
+    return res.status(404).json({ error: "Hubo un error al actualizar." });
+
+  return res
+    .status(200)
+    .json({ message: "Usuario actualizado correctamente." });
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
@@ -150,11 +156,12 @@ export const deleteUser = async (req: Request, res: Response) => {
       id: Number(id),
     });
 
-    return res.send(
-      userDeleted.affected === 1
-        ? "Usuario eliminado"
-        : "Hubo un error al eliminar al usuario"
-    );
+    if (userDeleted.affected == 0)
+      return res.status(404).json({ error: "Hubo un error al eliminar." });
+
+    return res
+      .status(200)
+      .json({ message: "Usuario eliminado correctamente." });
   }
 
   return res.send({ error: "No existe el usuario." });

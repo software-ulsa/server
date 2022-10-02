@@ -15,7 +15,7 @@ export class Nota extends BaseEntity {
   foto_thumbnail!: string;
 
   @Column({ type: "text" })
-  foto_principa!: string;
+  foto_principal!: string;
 
   @Column({ type: "text" })
   contenido!: string;

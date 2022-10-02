@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
   createRol,
-  deleteAllRoles,
   deleteRol,
   getAllRoles,
   getRolById,
@@ -21,7 +20,5 @@ router.get(prefix, VerifyToken, getAllRoles);
 router.put(prefix + "/:id", VerifyToken, updateRol);
 
 router.delete(prefix + "/:id", VerifyToken, deleteRol);
-
-router.delete(prefix, VerifyToken, deleteAllRoles);
 
 export default router;

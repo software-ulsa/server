@@ -4,6 +4,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Actividad } from "./Actividad";
@@ -19,7 +20,9 @@ export class Curso extends BaseEntity {
   @Column({ type: "text" })
   descripcion!: string;
 
-  @ManyToMany(() => Actividad)
-  @JoinTable({ name: "actividad_x_curso" })
+  @OneToMany((type) => Actividad, (actividad) => actividad.curso, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   actividades!: Actividad[];
 }

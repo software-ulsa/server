@@ -1,4 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Curso } from "./Curso";
 
 @Entity()
 export class Actividad extends BaseEntity {
@@ -16,4 +24,14 @@ export class Actividad extends BaseEntity {
 
   @Column({ type: "integer" })
   peso!: number;
+
+  @Column({ name: "id_curso" })
+  id_curso!: number;
+
+  @ManyToOne(() => Curso, (curso) => curso.actividades, {
+    cascade: ["update"],
+    nullable: false,
+  })
+  @JoinColumn({ name: "id_curso" })
+  curso!: Curso;
 }

@@ -9,19 +9,26 @@ export const createRol = async (req: Request, res: Response) => {
     descripcion: descripcion,
   });
 
-  if (rolInsert) return res.send("Rol registrado.");
-  else return res.json({ error: "Hubo un error al eliminar el Rol." });
+  if (rolInsert) return res.status(200).json({ message: "Rol agregado." });
+  return res.status(404).json({ error: "Hubo un error al crear el rol." });
 };
 
 export const getRolById = async (req: Request, res: Response) => {
   const { id } = req.params;
   const rolFound = await Rol.findOneBy({ id: Number(id) });
-  return res.json(rolFound);
+
+  if (rolFound) return res.status(200).json(rolFound);
+
+  return res.status(404).json({ error: "No existe el rol." });
 };
 
 export const getAllRoles = async (req: Request, res: Response) => {
   const rolesFound = await Rol.find();
-  return res.json(rolesFound);
+
+  if (rolesFound && rolesFound.length > 0)
+    return res.status(200).json(rolesFound);
+
+  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };
 
 export const updateRol = async (req: Request, res: Response) => {
@@ -33,12 +40,11 @@ export const updateRol = async (req: Request, res: Response) => {
   });
 
   if (!rolFound)
-    return res.json({
-      success: false,
-      message: "Rol no existe",
+    return res.status(404).json({
+      message: "Rol no existe.",
     });
 
-  const result = await Rol.update(
+  const rolUpdated = await Rol.update(
     { id: Number(id) },
     {
       nombre: nombre,
@@ -46,35 +52,23 @@ export const updateRol = async (req: Request, res: Response) => {
     }
   );
 
-  return res.json({
-    success: result.affected === 1,
-    message:
-      result.affected === 1
-        ? "Rol actualizado correctamente"
-        : "Hubo un error al actualizar",
-  });
+  if (rolUpdated.affected == 0)
+    return res.status(404).json({ error: "Hubo un error al actualizar." });
+
+  return res.status(200).json({ message: "Rol actualizado correctamente." });
 };
 
 export const deleteRol = async (req: Request, res: Response) => {
   const { id } = req.params;
-  try {
-    const result = await Rol.delete({
-      id: Number(id),
-    });
-    return res.send(
-      result.affected === 1
-        ? "Rol eliminado"
-        : "Hubo un error al eliminar el Rol"
-    );
-  } catch (error) {
-    return res.json({ error: "Hubo un error al eliminar el Rol." });
-  }
-};
+  const rolDeleted = await Rol.delete({
+    id: Number(id),
+  });
 
-export const deleteAllRoles = async (req: Request, res: Response) => {
-  const allRoles = await Rol.find();
-  const result = await Rol.remove(allRoles);
-  return res.send(
-    result.length > 0 ? "Rol eliminados" : "Hubo un error al eliminar los Rol"
-  );
+  if (rolDeleted) {
+    if (rolDeleted.affected == 0)
+      return res.status(404).json({ error: "Hubo un error al actualizar." });
+
+    return res.status(200).json({ message: "Rol actualizado correctamente." });
+  }
+  return res.status(404).json({ error: "Rol no existe." });
 };
