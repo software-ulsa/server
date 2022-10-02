@@ -28,7 +28,9 @@ const main = async () => {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-
+  
+  app.use(morgan("dev"));
+  
   app.use(userRoutes);
   app.use(rolRoutes);
   app.use(imagesRoutes);
