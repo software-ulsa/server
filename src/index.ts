@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import morgan from "morgan";
 
 import userRoutes from "./routes/UsuarioRoutes";
 import rolRoutes from "./routes/RolRoutes";
