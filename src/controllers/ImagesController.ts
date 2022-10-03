@@ -41,6 +41,7 @@ const deleteImagen = async (key: any) => {
 };
 
 export const uploadImage = async (req: any, res: Response) => {
+  //console.log(req.body.file);
   const stream = fs.createReadStream(req.file.path);
 
   const ext = path.extname(req.file.originalname).toLowerCase();
@@ -71,7 +72,8 @@ export const uploadImage = async (req: any, res: Response) => {
   };
   const data = await s3.upload(params).promise();
 
-  res.send({ data: data.Key });
+  res.send({ data: data.Key })
+  //res.send({ data: "ya se hizo"});
 };
 
 export const getImage = async (req: Request, res: Response) => {
