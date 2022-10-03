@@ -3,6 +3,7 @@ import {
   createCurso,
   deleteCurso,
   getAllCurso,
+  getCursoById,
   updateCurso,
 } from "../controllers/CursoController";
 import { getRolById } from "../controllers/RolController";
@@ -13,7 +14,7 @@ const VerifyToken = require("../middleware/VerifyToken");
 
 router.post(prefix, VerifyToken, createCurso);
 
-router.get(prefix + "/:id", VerifyToken, getRolById);
+router.get(prefix + "/:id", VerifyToken, getCursoById);
 
 router.get(prefix, VerifyToken, getAllCurso);
 
