@@ -11,6 +11,7 @@ export const createActividad = async (req: Request, res: Response) => {
       descripcion: req.body.descripcion,
       url_media: req.body.url_media,
       peso: req.body.peso,
+      id_curso: req.body.id_curso
     });
 
     if (actividadInsert)
@@ -61,6 +62,7 @@ export const updateActividad = async (req: Request, res: Response) => {
       descripcion: req.body.descripcion,
       url_media: req.body.url_media,
       peso: req.body.peso,
+      id_curso: req.body.id_curso
     }
   );
 
