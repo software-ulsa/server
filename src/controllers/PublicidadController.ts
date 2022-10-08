@@ -84,11 +84,11 @@ export const updatePublicidad = async (req: Request, res: Response) => {
     );
 
     if (publicidadUpdated.affected == 0)
-      return res.status(404).json({ error: "Hubo un error al eliminar." });
+      return res.status(404).json({ error: "Hubo un error al actualizar." });
 
     return res
       .status(200)
-      .json({ message: "Publicidad eliminada correctamente." });
+      .json({ message: "Publicidad actualizada correctamente." });
   }
 
   return res.status(404).json({ error: "Publicidad no existe" });
