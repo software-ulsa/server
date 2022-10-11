@@ -10,7 +10,7 @@ import actividadRoutes from "./routes/ActividadRoutes";
 import cursoRoutes from "./routes/CursoRoutes";
 import especialistaRoutes from "./routes/EspecialistaRoutes";
 import notaRoutes from "./routes/NotaRoutes";
-import publicidadRoutes from './routes/PublicidadRoutes';
+import publicidadRoutes from "./routes/PublicidadRoutes";
 
 import { connectDB } from "./db.config";
 import { _apiPort, _clientURL, _isProd } from "./constants";
@@ -22,7 +22,7 @@ const main = async () => {
   app.use(
     cors({
       credentials: true,
-      origin: [_clientURL!],
+      origin: "*",
     })
   );
   app.use(express.json());
@@ -30,9 +30,9 @@ const main = async () => {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  
+
   app.use(morgan("dev"));
-  
+
   app.use(userRoutes);
   app.use(rolRoutes);
   app.use(imagesRoutes);
