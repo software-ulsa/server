@@ -8,10 +8,7 @@ import {
 const router = Router();
 const prefix = "/imagenes";
 
-const multer = require("multer");
-const upload = multer({ dest: "src/Uploads/" });
-
-router.post(prefix, upload.single("foto"), uploadImage);
+router.post(prefix, uploadImage);
 
 router.get(prefix + "/:key", getImage);
 

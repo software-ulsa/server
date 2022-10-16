@@ -31,7 +31,7 @@ const deleteImagen = async (key: any) => {
       .promise()
       .then(() => {})
       .catch((err: any) => {
-        console.log("errooor" + err);
+        console.log("error" + err);
       });
   } catch (err) {
     console.log("Error", err);
