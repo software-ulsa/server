@@ -4,8 +4,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { Codigo } from "./Codigo";
 import { Rol } from "./Rol";
 
 @Entity()
@@ -48,6 +50,17 @@ export class Usuario extends BaseEntity {
 
   @Column({ name: "id_rol" })
   id_rol!: number;
+
+  @Column({
+    default: true,
+  })
+  activo!: boolean;
+
+  @OneToMany((type) => Codigo, (codigo) => codigo.usuario, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  codigo!: Codigo[];
 
   @ManyToOne((type) => Rol, (rol) => rol.usuario, {
     cascade: ["update"],

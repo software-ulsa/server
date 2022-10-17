@@ -1,15 +1,21 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Usuario } from "../entities/Usuario";
 
 import * as argon2 from "argon2";
 import { dataSource } from "../db.config";
 import { _token } from "../constants";
+import { Codigo } from "../entities/Codigo";
+import { enviarCorreo } from "./EmailController";
 
 const jwt = require("jsonwebtoken");
 const repo = dataSource.getRepository(Usuario);
 require("dotenv").config();
 
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = async (
+  req: Request,
+  res: Response,
+  next: any
+) => {
   const { segundo_nombre, correo, password } = req.body;
 
   const hashedPassword = await argon2.hash(password);
@@ -26,6 +32,8 @@ export const createUser = async (req: Request, res: Response) => {
       edad: req.body.edad,
       matricula: req.body.matricula,
       sexo: req.body.sexo,
+      // activo: req.body.activo,
+      activo: true,
       id_rol: req.body.id_rol,
     });
 
@@ -34,10 +42,21 @@ export const createUser = async (req: Request, res: Response) => {
         id: userInsert.id,
         correo: correo,
       };
+
+      const val = Math.floor(1000 + Math.random() * 9000);
+
+      const nuevoCodigo = await Codigo.save({
+        id_user: userInsert.id,
+        codigo: val,
+      });
+
+      await enviarCorreo(req, res, next); //Aqui despues le tenemos que enviar el codigo para que se envie en el correo xd
+
       const token = jwt.sign(payload, process.env.TOKEN_SECRET);
       return res.status(200).send({ userInsert, token });
     }
   } catch (error) {
+    console.log(error)
     return res
       .status(404)
       .json({ error: "Hubo un error al registrar al usuario." });
@@ -45,27 +64,40 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  const { correo, password } = req.body;
-  const userFound = await repo
-    .createQueryBuilder("user")
-    .where("user.correo = :correo", { correo: correo })
-    .leftJoinAndSelect("user.rol", "rol")
-    .addSelect(["*"])
-    .getOne();
+  try {
+    const { correo, password } = req.body;
+    const userFound = await repo
+      .createQueryBuilder("user")
+      .where("user.correo = :correo", { correo: correo })
+      .leftJoinAndSelect("user.rol", "rol")
+      .addSelect(["*"])
+      .getOne();
 
-  if (!userFound) {
-    return res.status(404).json({ error: "Usuario no existe." });
+    if (!userFound) {
+      return res.status(404).json({ error: "Usuario no existe." });
+    }
+
+    if (!userFound.activo) {
+      return res.status(400).json({
+        error: "Debes de verificar tu correo, ya te hemos enviado un correo.",
+      });
+    }
+
+    const valid = await argon2.verify(userFound!.password, password);
+    if (!valid) {
+      return res.status(401).json({ message: "Contraseña incorrecta." });
+    }
+
+    let payload = { id: userFound.id, correo: userFound.correo };
+    const token = jwt.sign(payload, _token);
+
+    return res
+      .status(200)
+      .header("auth-token", token)
+      .json({ userFound, token });
+  } catch (error) {
+    console.log(error);
   }
-
-  const valid = await argon2.verify(userFound!.password, password);
-  if (!valid) {
-    return res.status(401).json({ message: "Contraseña incorrecta." });
-  }
-
-  let payload = { id: userFound.id, correo: userFound.correo };
-  const token = jwt.sign(payload, _token);
-
-  return res.status(200).header("auth-token", token).json({ userFound, token });
 };
 
 export const getUserById = async (req: Request, res: Response) => {

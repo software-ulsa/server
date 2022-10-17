@@ -18,6 +18,7 @@ import { Actividad } from "./entities/Actividad";
 import { Curso } from "./entities/Curso";
 import { Nota } from "./entities/Nota";
 import { Publicidad } from "./entities/Publicidad";
+import { Codigo } from "./entities/Codigo";
 
 const jwt = require("jsonwebtoken");
 
@@ -28,7 +29,7 @@ export const dataSource = new DataSource({
   port: Number(_dbPort),
   host: _dbHost,
   database: _dbName,
-  entities: [Rol, Usuario, Especialista, Actividad, Curso, Nota, Publicidad],
+  entities: [Rol, Usuario, Especialista, Actividad, Curso, Nota, Publicidad, Codigo],
   synchronize: _dbSync,
   ssl: !_isProd,
 });
@@ -45,6 +46,11 @@ const insertarAdmin = async () => {
     descripcion: "Superusuario con todos los permisos",
   });
 
+  const userRol = await Rol.save({
+    nombre: "Usuario",
+    descripcion: "Permiso solo para consumir la informacion",
+  });
+  
   const hashedPassword = await argon2.hash("t3mpor4l");
   try {
     const userInsert = await Usuario.save({
