@@ -14,6 +14,7 @@ const s3 = new S3({
   secretAccessKey: _s3Secret,
   region: _s3Region,
 });
+
 const getImagen = async (key: any) => {
   const url = s3.getSignedUrl("getObject", {
     Bucket: _s3Bucket,
@@ -40,6 +41,8 @@ const deleteImagen = async (key: any) => {
 };
 
 export const uploadImage = async (req: any, res: Response) => {
+  console.log(req.file);
+  console.log(req.body);
   const stream = fs.createReadStream(req.file.path);
   const ext = path.extname(req.file.originalname).toLowerCase();
 
