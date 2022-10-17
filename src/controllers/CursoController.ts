@@ -9,6 +9,7 @@ export const createCurso = async (req: Request, res: Response) => {
     const cursoInsert = await Curso.save({
       titulo: req.body.titulo,
       descripcion: req.body.descripcion,
+      icono: req.body.icono,
     });
 
     if (cursoInsert) return res.status(200).json({ message: "Curso creado." });
@@ -63,6 +64,7 @@ export const updateCurso = async (req: Request, res: Response) => {
     {
       titulo: req.body.titulo,
       descripcion: req.body.descripcion,
+      icono: req.body.icono,
     }
   );
 
