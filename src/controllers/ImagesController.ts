@@ -32,7 +32,7 @@ const deleteImagen = async (key: any) => {
       .promise()
       .then(() => {})
       .catch((err: any) => {
-        console.log("errooor" + err);
+        console.log("error" + err);
       });
   } catch (err) {
     console.log("Error", err);
@@ -41,9 +41,9 @@ const deleteImagen = async (key: any) => {
 };
 
 export const uploadImage = async (req: any, res: Response) => {
-  //console.log(req.body.file);
+  console.log(req.file);
+  console.log(req.body);
   const stream = fs.createReadStream(req.file.path);
-
   const ext = path.extname(req.file.originalname).toLowerCase();
 
   let fileType = "";
@@ -72,8 +72,7 @@ export const uploadImage = async (req: any, res: Response) => {
   };
   const data = await s3.upload(params).promise();
 
-  res.send({ data: data.Key })
-  //res.send({ data: "ya se hizo"});
+  res.send({ data: data.Key });
 };
 
 export const getImage = async (req: Request, res: Response) => {
