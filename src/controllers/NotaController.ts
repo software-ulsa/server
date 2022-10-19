@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { In } from "typeorm";
 
 import { dataSource } from "../db.config";
 import { Nota } from "../entities/Nota";
@@ -120,4 +121,17 @@ export const deleteNota = async (req: Request, res: Response) => {
     return res.status(404).json({ error: "Hubo un error al eliminar." });
 
   return res.status(200).json({ message: "Nota eliminada correctamente." });
+};
+
+export const deleteManyNota = async (req: Request, res: Response) => {
+  const { ids } = req.body;
+  const notasDeleted = await Nota.delete({ id: In(ids) });
+
+  if (notasDeleted) {
+    if (notasDeleted.affected == 0)
+      return res.status(404).json({ error: "Hubo un error al eliminar." });
+
+    return res.status(200).json({ message: "Notas eliminadas correctamente." });
+  }
+  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };

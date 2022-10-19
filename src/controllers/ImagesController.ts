@@ -41,8 +41,6 @@ const deleteImagen = async (key: any) => {
 };
 
 export const uploadImage = async (req: any, res: Response) => {
-  console.log(req.file);
-  console.log(req.body);
   const stream = fs.createReadStream(req.file.path);
   const ext = path.extname(req.file.originalname).toLowerCase();
 

@@ -2,11 +2,11 @@ import { Router } from "express";
 import {
   createCurso,
   deleteCurso,
+  deleteManyCurso,
   getAllCurso,
   getCursoById,
   updateCurso,
 } from "../controllers/CursoController";
-import { getRolById } from "../controllers/RolController";
 
 const router = Router();
 const prefix = "/cursos";
@@ -21,5 +21,7 @@ router.get(prefix, VerifyToken, getAllCurso);
 router.put(prefix + "/:id", VerifyToken, updateCurso);
 
 router.delete(prefix + "/:id", VerifyToken, deleteCurso);
+
+router.post(prefix + "/batch", VerifyToken, deleteManyCurso);
 
 export default router;

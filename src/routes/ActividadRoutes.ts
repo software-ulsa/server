@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createActividad,
   deleteActividad,
+  deleteManyActividad,
   getActividadById,
   getAllActividad,
   updateActividad,
@@ -20,5 +21,7 @@ router.get(prefix, VerifyToken, getAllActividad);
 router.put(prefix + "/:id", VerifyToken, updateActividad);
 
 router.delete(prefix + "/:id", VerifyToken, deleteActividad);
+
+router.post(prefix + "/batch", VerifyToken, deleteManyActividad);
 
 export default router;

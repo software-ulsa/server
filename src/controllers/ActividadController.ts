@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { In } from "typeorm";
 
 import { dataSource } from "../db.config";
 import { Actividad } from "../entities/Actividad";
@@ -11,7 +12,7 @@ export const createActividad = async (req: Request, res: Response) => {
       descripcion: req.body.descripcion,
       url_media: req.body.url_media,
       peso: req.body.peso,
-      id_curso: req.body.id_curso
+      id_curso: req.body.id_curso,
     });
 
     if (actividadInsert)
@@ -62,7 +63,7 @@ export const updateActividad = async (req: Request, res: Response) => {
       descripcion: req.body.descripcion,
       url_media: req.body.url_media,
       peso: req.body.peso,
-      id_curso: req.body.id_curso
+      id_curso: req.body.id_curso,
     }
   );
 
@@ -96,4 +97,19 @@ export const deleteActividad = async (req: Request, res: Response) => {
   return res
     .status(200)
     .json({ message: "Actividad eliminada correctamente." });
+};
+
+export const deleteManyActividad = async (req: Request, res: Response) => {
+  const { ids } = req.body;
+  const actividadesDeleted = await Actividad.delete({ id: In(ids) });
+
+  if (actividadesDeleted) {
+    if (actividadesDeleted.affected == 0)
+      return res.status(404).json({ error: "Hubo un error al eliminar." });
+
+    return res
+      .status(200)
+      .json({ message: "Actividades eliminadas correctamente." });
+  }
+  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };
