@@ -6,6 +6,7 @@ import { dataSource } from "../db.config";
 import { _token } from "../constants";
 import { Codigo } from "../entities/Codigo";
 import { enviarCorreo } from "./EmailController";
+import { In } from "typeorm";
 
 const jwt = require("jsonwebtoken");
 const repo = dataSource.getRepository(Usuario);
@@ -193,4 +194,19 @@ export const deleteUser = async (req: Request, res: Response) => {
   }
 
   return res.send({ error: "No existe el usuario." });
+};
+
+export const deleteManyUser = async (req: Request, res: Response) => {
+  const { ids } = req.body;
+  const usersDeleted = await Usuario.delete({ id: In(ids) });
+
+  if (usersDeleted) {
+    if (usersDeleted.affected == 0)
+      return res.status(404).json({ error: "Hubo un error al eliminar." });
+
+    return res
+      .status(200)
+      .json({ message: "Usuarios eliminados correctamente." });
+  }
+  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };

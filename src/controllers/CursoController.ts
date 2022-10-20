@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Curso } from "../entities/Curso";
 
 import { dataSource } from "../db.config";
+import { In } from "typeorm";
 const repo = dataSource.getRepository(Curso);
 
 export const createCurso = async (req: Request, res: Response) => {
@@ -94,4 +95,19 @@ export const deleteCurso = async (req: Request, res: Response) => {
     return res.status(404).json({ error: "Hubo un error al eliminar." });
 
   return res.status(200).json({ message: "Curso eliminado correctamente." });
+};
+
+export const deleteManyCurso = async (req: Request, res: Response) => {
+  const { ids } = req.body;
+  const cursosDeleted = await Curso.delete({ id: In(ids) });
+
+  if (cursosDeleted) {
+    if (cursosDeleted.affected == 0)
+      return res.status(404).json({ error: "Hubo un error al eliminar." });
+
+    return res
+      .status(200)
+      .json({ message: "Cursos eliminados correctamente." });
+  }
+  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };

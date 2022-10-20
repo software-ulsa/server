@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { In } from "typeorm";
 import { Rol } from "../entities/Rol";
 
 export const createRol = async (req: Request, res: Response) => {
@@ -66,9 +67,22 @@ export const deleteRol = async (req: Request, res: Response) => {
 
   if (rolDeleted) {
     if (rolDeleted.affected == 0)
-      return res.status(404).json({ error: "Hubo un error al actualizar." });
+      return res.status(404).json({ error: "Hubo un error al eliminar." });
 
     return res.status(200).json({ message: "Rol eliminado correctamente." });
   }
   return res.status(404).json({ error: "Rol no existe." });
+};
+
+export const deleteManyRol = async (req: Request, res: Response) => {
+  const { ids } = req.body;
+  const rolesDeleted = await Rol.delete({ id: In(ids) });
+
+  if (rolesDeleted) {
+    if (rolesDeleted.affected == 0)
+      return res.status(404).json({ error: "Hubo un error al eliminar." });
+
+    return res.status(200).json({ message: "Roles eliminados correctamente." });
+  }
+  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createNota,
+  deleteManyNota,
   deleteNota,
   getAllNotas,
   getNotaById,
@@ -23,5 +24,7 @@ router.get(prefix, VerifyToken, getAllNotas);
 router.put(prefix + "/:id", VerifyToken, updateNota);
 
 router.delete(prefix + "/:id", VerifyToken, deleteNota);
+
+router.post(prefix + "/batch", VerifyToken, deleteManyNota);
 
 export default router;

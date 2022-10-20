@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { In } from "typeorm";
 import { Publicidad } from "../entities/Publicidad";
 
 export const createPublicidad = async (req: Request, res: Response) => {
@@ -114,4 +115,19 @@ export const deletePublicidad = async (req: Request, res: Response) => {
   }
 
   return res.status(404).json({ error: "Publicidad no existe" });
+};
+
+export const deleteManyPublicidad = async (req: Request, res: Response) => {
+  const { ids } = req.body;
+  const publicidadesDeleted = await Publicidad.delete({ id: In(ids) });
+
+  if (publicidadesDeleted) {
+    if (publicidadesDeleted.affected == 0)
+      return res.status(404).json({ error: "Hubo un error al eliminar." });
+
+    return res
+      .status(200)
+      .json({ message: "Publicidades eliminadas correctamente." });
+  }
+  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };

@@ -9,7 +9,7 @@ const router = Router();
 const prefix = "/imagenes";
 
 const multer = require("multer");
-const upload = multer({ dest: "src/Uploads/" });
+const upload = multer({ dest: "src/uploads/" });
 
 router.post(prefix, upload.single("foto"), uploadImage);
 

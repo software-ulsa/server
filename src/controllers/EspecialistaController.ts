@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { In } from "typeorm";
 import { Especialista } from "../entities/Especialista";
 
 export const createEspecialista = async (req: Request, res: Response) => {
@@ -139,4 +140,19 @@ export const deleteEspecialista = async (req: Request, res: Response) => {
   return res
     .status(200)
     .json({ message: "Especialista eliminado correctamente." });
+};
+
+export const deleteManyEspecialista = async (req: Request, res: Response) => {
+  const { ids } = req.body;
+  const especialistasDeleted = await Especialista.delete({ id: In(ids) });
+
+  if (especialistasDeleted) {
+    if (especialistasDeleted.affected == 0)
+      return res.status(404).json({ error: "Hubo un error al eliminar." });
+
+    return res
+      .status(200)
+      .json({ message: "Especialista eliminados correctamente." });
+  }
+  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };

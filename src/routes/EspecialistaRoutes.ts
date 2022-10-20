@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createEspecialista,
   deleteEspecialista,
+  deleteManyEspecialista,
   getAllEspecialista,
   getEspecialistaByArea,
   getEspecialistaByEspecialidad,
@@ -30,5 +31,7 @@ router.get(prefix, VerifyToken, getAllEspecialista);
 router.put(prefix + "/:id", VerifyToken, updateEspecialista);
 
 router.delete(prefix + "/:id", VerifyToken, deleteEspecialista);
+
+router.post(prefix + "/batch", VerifyToken, deleteManyEspecialista);
 
 export default router;
