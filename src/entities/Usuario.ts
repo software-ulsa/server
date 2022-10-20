@@ -52,7 +52,7 @@ export class Usuario extends BaseEntity {
   id_rol!: number;
 
   @Column({
-    default: true,
+    default: false,
   })
   activo!: boolean;
 

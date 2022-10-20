@@ -11,11 +11,7 @@ const jwt = require("jsonwebtoken");
 const repo = dataSource.getRepository(Usuario);
 require("dotenv").config();
 
-export const createUser = async (
-  req: Request,
-  res: Response,
-  next: any
-) => {
+export const createUser = async (req: Request, res: Response, next: any) => {
   const { segundo_nombre, correo, password } = req.body;
 
   const hashedPassword = await argon2.hash(password);
@@ -33,7 +29,7 @@ export const createUser = async (
       matricula: req.body.matricula,
       sexo: req.body.sexo,
       // activo: req.body.activo,
-      activo: true,
+      // activo: fa,
       id_rol: req.body.id_rol,
     });
 
@@ -50,13 +46,13 @@ export const createUser = async (
         codigo: val,
       });
 
-      await enviarCorreo(req, res, next); //Aqui despues le tenemos que enviar el codigo para que se envie en el correo xd
+      await enviarCorreo(req, res, next, val, userInsert.correo); //Aqui despues le tenemos que enviar el codigo para que se envie en el correo xd
 
       const token = jwt.sign(payload, process.env.TOKEN_SECRET);
       return res.status(200).send({ userInsert, token });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res
       .status(404)
       .json({ error: "Hubo un error al registrar al usuario." });

@@ -29,9 +29,19 @@ export const dataSource = new DataSource({
   port: Number(_dbPort),
   host: _dbHost,
   database: _dbName,
-  entities: [Rol, Usuario, Especialista, Actividad, Curso, Nota, Publicidad, Codigo],
+  entities: [
+    Rol,
+    Usuario,
+    Especialista,
+    Actividad,
+    Curso,
+    Nota,
+    Publicidad,
+    Codigo,
+  ],
   synchronize: _dbSync,
   ssl: !_isProd,
+  migrations: [`${__dirname}/src/migrations/**/*{.ts,.js}`],
 });
 
 const insertarAdmin = async () => {
@@ -50,7 +60,7 @@ const insertarAdmin = async () => {
     nombre: "Usuario",
     descripcion: "Permiso solo para consumir la informacion",
   });
-  
+
   const hashedPassword = await argon2.hash("t3mpor4l");
   try {
     const userInsert = await Usuario.save({
