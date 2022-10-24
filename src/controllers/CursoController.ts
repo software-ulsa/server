@@ -13,9 +13,9 @@ export const createCurso = async (req: Request, res: Response) => {
       icono: req.body.icono,
     });
 
-    if (cursoInsert) return res.status(200).json({ message: "Curso creado." });
+    if (cursoInsert) return res.status(200).json({ curso: cursoInsert });
   } catch (error) {
-    return res.status(404).json({ error: "Hubo un error al crear el curso." });
+    return res.status(400).json({ error: "Hubo un error al crear el curso." });
   }
 };
 
@@ -30,7 +30,7 @@ export const getCursoById = async (req: Request, res: Response) => {
 
   if (cursoFound) return res.status(200).json(cursoFound);
 
-  return res.status(404).json({ error: "Curso no existe." });
+  return res.status(400).json({ error: "Curso no existe." });
 };
 
 export const getAllCurso = async (req: Request, res: Response) => {
@@ -40,10 +40,7 @@ export const getAllCurso = async (req: Request, res: Response) => {
     .addSelect(["*"])
     .getMany();
 
-  if (cursosFound && cursosFound.length > 0)
-    return res.status(200).json(cursosFound);
-
-  return res.status(404).json({ error: "No se encontraron coincidencias." });
+  return res.status(200).json(cursosFound);
 };
 
 export const updateCurso = async (req: Request, res: Response) => {
@@ -54,25 +51,27 @@ export const updateCurso = async (req: Request, res: Response) => {
   });
 
   if (!cursoFound)
-    return res.status(404).json({
+    return res.status(400).json({
       error: "Curso no existe.",
     });
 
-  const cursoUpdated = await Curso.update(
-    {
-      id: cursoFound.id,
-    },
-    {
+  const cursoUpdated = await repo
+    .createQueryBuilder()
+    .update({
       titulo: req.body.titulo,
       descripcion: req.body.descripcion,
       icono: req.body.icono,
-    }
-  );
+    })
+    .where({
+      id: cursoFound.id,
+    })
+    .returning("*")
+    .execute();
 
   if (cursoUpdated.affected == 0)
-    return res.status(404).json({ error: "Hubo un error al actualizar." });
+    return res.status(400).json({ error: "Hubo un error al actualizar." });
 
-  return res.status(200).json({ message: "Curso actualizado correctamente." });
+  return res.status(201).json({ curso: cursoUpdated.raw[0] });
 };
 
 export const deleteCurso = async (req: Request, res: Response) => {
@@ -83,31 +82,39 @@ export const deleteCurso = async (req: Request, res: Response) => {
   });
 
   if (!cursoFound)
-    return res.status(404).json({
+    return res.status(400).json({
       error: "Curso no existe.",
     });
 
-  const cursoDeleted = await Curso.delete({
-    id: cursoFound.id,
-  });
+  try {
+    const cursoDeleted = await Curso.delete({
+      id: cursoFound.id,
+    });
 
-  if (cursoDeleted.affected == 0)
-    return res.status(404).json({ error: "Hubo un error al eliminar." });
+    if (cursoDeleted.affected == 0)
+      return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-  return res.status(200).json({ message: "Curso eliminado correctamente." });
+    return res.status(200).json({ message: "Curso eliminado correctamente." });
+  } catch (error) {
+    return res.status(400).json({ error: "Hubo un error al eliminar." });
+  }
 };
 
 export const deleteManyCurso = async (req: Request, res: Response) => {
   const { ids } = req.body;
-  const cursosDeleted = await Curso.delete({ id: In(ids) });
+  try {
+    const cursosDeleted = await Curso.delete({ id: In(ids) });
 
-  if (cursosDeleted) {
-    if (cursosDeleted.affected == 0)
-      return res.status(404).json({ error: "Hubo un error al eliminar." });
+    if (cursosDeleted) {
+      if (cursosDeleted.affected == 0)
+        return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-    return res
-      .status(200)
-      .json({ message: "Cursos eliminados correctamente." });
+      return res
+        .status(200)
+        .json({ message: "Cursos eliminados correctamente." });
+    }
+    return res.status(400).json({ error: "No se encontraron coincidencias." });
+  } catch (error) {
+    return res.status(400).json({ error: "Hubo un error al eliminar." });
   }
-  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };

@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { Usuario } from "../entities/Usuario";
 
 import * as argon2 from "argon2";
@@ -29,8 +29,6 @@ export const createUser = async (req: Request, res: Response, next: any) => {
       edad: req.body.edad,
       matricula: req.body.matricula,
       sexo: req.body.sexo,
-      // activo: req.body.activo,
-      // activo: fa,
       id_rol: req.body.id_rol,
     });
 
@@ -47,7 +45,8 @@ export const createUser = async (req: Request, res: Response, next: any) => {
         codigo: val,
       });
 
-      await enviarCorreo(req, res, next, val, userInsert.correo); //Aqui despues le tenemos que enviar el codigo para que se envie en el correo xd
+      // Aqui despues le tenemos que enviar el codigo para que se envie en el correo
+      await enviarCorreo(req, res, next, val, userInsert.correo);
 
       const token = jwt.sign(payload, process.env.TOKEN_SECRET);
       return res.status(200).send({ userInsert, token });
@@ -55,7 +54,7 @@ export const createUser = async (req: Request, res: Response, next: any) => {
   } catch (error) {
     console.log(error);
     return res
-      .status(404)
+      .status(400)
       .json({ error: "Hubo un error al registrar al usuario." });
   }
 };
@@ -71,7 +70,7 @@ export const login = async (req: Request, res: Response) => {
       .getOne();
 
     if (!userFound) {
-      return res.status(404).json({ error: "Usuario no existe." });
+      return res.status(400).json({ error: "Usuario no existe." });
     }
 
     if (!userFound.activo) {
@@ -108,7 +107,7 @@ export const getUserById = async (req: Request, res: Response) => {
 
   if (userFound) return res.status(200).json(userFound);
 
-  return res.status(404).json({ error: "Usuario no existe." });
+  return res.status(400).json({ error: "Usuario no existe." });
 };
 
 export const getUserByRol = async (req: Request, res: Response) => {
@@ -117,10 +116,7 @@ export const getUserByRol = async (req: Request, res: Response) => {
     where: { id_rol: Number(rol) },
   });
 
-  if (usersFound && usersFound.length > 0)
-    return res.status(200).json(usersFound);
-
-  return res.status(404).json({ error: "No se encontraron coincidencias." });
+  return res.status(200).json(usersFound);
 };
 
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -129,11 +125,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
     .leftJoinAndSelect("user.rol", "rol")
     .addSelect(["*"])
     .getMany();
-
-  if (usersFound && usersFound.length > 0)
-    return res.status(200).json(usersFound);
-
-  return res.status(404).json({ error: "No se encontraron coincidencias." });
+  return res.status(200).json(usersFound);
 };
 
 export const updateUser = async (req: Request, res: Response) => {
@@ -144,13 +136,13 @@ export const updateUser = async (req: Request, res: Response) => {
     id: Number(id),
   });
 
-  if (!userFound) return res.status(404).json({ error: "Usuario no existe." });
+  if (!userFound) return res.status(400).json({ error: "Usuario no existe." });
 
   const hashedPassword = await argon2.hash(password);
 
-  const userUpdated = await Usuario.update(
-    { id: userFound.id },
-    {
+  const userUpdated = await repo
+    .createQueryBuilder()
+    .update({
       foto_perfil: req.body.foto_perfil,
       nombre: req.body.nombre,
       segundo_nombre: segundo_nombre ? segundo_nombre : "",
@@ -163,15 +155,17 @@ export const updateUser = async (req: Request, res: Response) => {
       matricula: req.body.matricula,
       sexo: req.body.sexo,
       id_rol: req.body.id_rol,
-    }
-  );
+    })
+    .where({
+      id: userFound.id,
+    })
+    .returning("*")
+    .execute();
 
   if (userUpdated.affected == 0)
-    return res.status(404).json({ error: "Hubo un error al actualizar." });
+    return res.status(400).json({ error: "Hubo un error al actualizar." });
 
-  return res
-    .status(200)
-    .json({ message: "Usuario actualizado correctamente." });
+  return res.status(201).json({ user: userUpdated.raw[0] });
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
@@ -181,16 +175,20 @@ export const deleteUser = async (req: Request, res: Response) => {
   });
 
   if (userFound) {
-    const userDeleted = await Usuario.delete({
-      id: Number(id),
-    });
+    try {
+      const userDeleted = await Usuario.delete({
+        id: Number(id),
+      });
 
-    if (userDeleted.affected == 0)
-      return res.status(404).json({ error: "Hubo un error al eliminar." });
+      if (userDeleted.affected == 0)
+        return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-    return res
-      .status(200)
-      .json({ message: "Usuario eliminado correctamente." });
+      return res
+        .status(200)
+        .json({ message: "Usuario eliminado correctamente." });
+    } catch (error) {
+      return res.status(400).json({ error: "Hubo un error al eliminar." });
+    }
   }
 
   return res.send({ error: "No existe el usuario." });
@@ -198,15 +196,19 @@ export const deleteUser = async (req: Request, res: Response) => {
 
 export const deleteManyUser = async (req: Request, res: Response) => {
   const { ids } = req.body;
-  const usersDeleted = await Usuario.delete({ id: In(ids) });
+  try {
+    const usersDeleted = await Usuario.delete({ id: In(ids) });
 
-  if (usersDeleted) {
-    if (usersDeleted.affected == 0)
-      return res.status(404).json({ error: "Hubo un error al eliminar." });
+    if (usersDeleted) {
+      if (usersDeleted.affected == 0)
+        return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-    return res
-      .status(200)
-      .json({ message: "Usuarios eliminados correctamente." });
+      return res
+        .status(200)
+        .json({ message: "Usuarios eliminados correctamente." });
+    }
+    return res.status(400).json({ error: "No se encontraron coincidencias." });
+  } catch (error) {
+    return res.status(400).json({ error: "Hubo un error al eliminar." });
   }
-  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };

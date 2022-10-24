@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { In } from "typeorm";
 import { Rol } from "../entities/Rol";
 
+import { dataSource } from "../db.config";
+const repo = dataSource.getRepository(Rol);
+
 export const createRol = async (req: Request, res: Response) => {
   const { nombre, descripcion } = req.body;
 
@@ -10,8 +13,8 @@ export const createRol = async (req: Request, res: Response) => {
     descripcion: descripcion,
   });
 
-  if (rolInsert) return res.status(200).json({ message: "Rol agregado." });
-  return res.status(404).json({ error: "Hubo un error al crear el rol." });
+  if (rolInsert) return res.status(201).json({ rol: rolInsert });
+  return res.status(400).json({ error: "Hubo un error al crear el rol." });
 };
 
 export const getRolById = async (req: Request, res: Response) => {
@@ -20,16 +23,12 @@ export const getRolById = async (req: Request, res: Response) => {
 
   if (rolFound) return res.status(200).json(rolFound);
 
-  return res.status(404).json({ error: "No existe el rol." });
+  return res.status(400).json({ error: "No existe el rol." });
 };
 
 export const getAllRoles = async (req: Request, res: Response) => {
   const rolesFound = await Rol.find();
-
-  if (rolesFound && rolesFound.length > 0)
-    return res.status(200).json(rolesFound);
-
-  return res.status(404).json({ error: "No se encontraron coincidencias." });
+  return res.status(200).json(rolesFound);
 };
 
 export const updateRol = async (req: Request, res: Response) => {
@@ -41,48 +40,71 @@ export const updateRol = async (req: Request, res: Response) => {
   });
 
   if (!rolFound)
-    return res.status(404).json({
-      message: "Rol no existe.",
+    return res.status(400).json({
+      error: "Rol no existe.",
     });
 
-  const rolUpdated = await Rol.update(
-    { id: Number(id) },
-    {
-      nombre: nombre,
-      descripcion: descripcion,
-    }
-  );
+  const rolUpdated = await repo
+    .createQueryBuilder()
+    .update({
+      nombre,
+      descripcion,
+    })
+    .where({
+      id: rolFound.id,
+    })
+    .returning("*")
+    .execute();
 
   if (rolUpdated.affected == 0)
-    return res.status(404).json({ error: "Hubo un error al actualizar." });
+    return res.status(400).json({ error: "Hubo un error al actualizar." });
 
-  return res.status(200).json({ message: "Rol actualizado correctamente." });
+  return res.status(201).json({ rol: rolUpdated.raw[0] });
 };
 
 export const deleteRol = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const rolDeleted = await Rol.delete({
+  const rolFound = await Rol.findOneBy({
     id: Number(id),
   });
 
-  if (rolDeleted) {
-    if (rolDeleted.affected == 0)
-      return res.status(404).json({ error: "Hubo un error al eliminar." });
+  if (!rolFound)
+    return res.status(400).json({
+      error: "Rol no existe.",
+    });
 
-    return res.status(200).json({ message: "Rol eliminado correctamente." });
+  try {
+    const rolDeleted = await Rol.delete({
+      id: Number(id),
+    });
+
+    if (rolDeleted) {
+      if (rolDeleted.affected == 0)
+        return res.status(400).json({ error: "Hubo un error al eliminar." });
+
+      return res.status(200).json({ id: id });
+    }
+    return res.status(400).json({ error: "Rol no existe." });
+  } catch (error) {
+    return res.status(400).json({ error: "Hubo un error al eliminar." });
   }
-  return res.status(404).json({ error: "Rol no existe." });
 };
 
 export const deleteManyRol = async (req: Request, res: Response) => {
   const { ids } = req.body;
-  const rolesDeleted = await Rol.delete({ id: In(ids) });
 
-  if (rolesDeleted) {
-    if (rolesDeleted.affected == 0)
-      return res.status(404).json({ error: "Hubo un error al eliminar." });
+  try {
+    const rolesDeleted = await Rol.delete({ id: In(ids) });
 
-    return res.status(200).json({ message: "Roles eliminados correctamente." });
+    if (rolesDeleted) {
+      if (rolesDeleted.affected == 0)
+        return res.status(400).json({ error: "Hubo un error al eliminar." });
+
+      return res.status(200).json({ ids: ids });
+    }
+
+    return res.status(400).json({ error: "No se encontraron coincidencias." });
+  } catch (error) {
+    return res.status(400).json({ error: "Hubo un error al eliminar." });
   }
-  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };

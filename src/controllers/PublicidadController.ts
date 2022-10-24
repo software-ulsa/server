@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { In } from "typeorm";
+import { dataSource } from "../db.config";
 import { Publicidad } from "../entities/Publicidad";
+
+const repo = dataSource.getRepository(Publicidad);
 
 export const createPublicidad = async (req: Request, res: Response) => {
   const {
@@ -24,10 +27,10 @@ export const createPublicidad = async (req: Request, res: Response) => {
     });
 
     if (publicidadInsert)
-      return res.status(200).json({ message: "Publicidad agregada" });
+      return res.status(200).json({ publicidad: publicidadInsert });
   } catch (error) {
     return res
-      .status(404)
+      .status(400)
       .json({ error: "Hubo un error al agregar la publicidad." });
   }
 };
@@ -40,7 +43,7 @@ export const getPublicidadById = async (req: Request, res: Response) => {
 
   if (publicidadFound) return res.status(200).json(publicidadFound);
 
-  return res.status(404).json({ error: "Publicidad no existe" });
+  return res.status(400).json({ error: "Publicidad no existe" });
 };
 
 export const getAllPublicidad = async (req: Request, res: Response) => {
@@ -49,7 +52,7 @@ export const getAllPublicidad = async (req: Request, res: Response) => {
   if (publicidadesFound && publicidadesFound.length > 0)
     return res.status(200).json(publicidadesFound);
 
-  return res.status(404).json({ error: "No se encontraron coincidencias." });
+  return res.status(400).json({ error: "No se encontraron coincidencias." });
 };
 
 export const updatePublicidad = async (req: Request, res: Response) => {
@@ -69,11 +72,9 @@ export const updatePublicidad = async (req: Request, res: Response) => {
   });
 
   if (publicidadFound) {
-    const publicidadUpdated = await Publicidad.update(
-      {
-        id: publicidadFound.id,
-      },
-      {
+    const publicidadUpdated = await repo
+      .createQueryBuilder()
+      .update({
         nombre: nombre,
         dot_empresa: dot_empresa,
         descripcion: descripcion,
@@ -81,18 +82,20 @@ export const updatePublicidad = async (req: Request, res: Response) => {
         url: url,
         fecha_inicio: new Date(fecha_inicio),
         fecha_vencimiento: new Date(fecha_vencimiento),
-      }
-    );
+      })
+      .where({
+        id: publicidadFound.id,
+      })
+      .returning("*")
+      .execute();
 
     if (publicidadUpdated.affected == 0)
-      return res.status(404).json({ error: "Hubo un error al actualizar." });
+      return res.status(400).json({ error: "Hubo un error al actualizar." });
 
-    return res
-      .status(200)
-      .json({ message: "Publicidad actualizada correctamente." });
+    return res.status(201).json({ publicidad: publicidadUpdated.raw[0] });
   }
 
-  return res.status(404).json({ error: "Publicidad no existe" });
+  return res.status(400).json({ error: "Publicidad no existe" });
 };
 
 export const deletePublicidad = async (req: Request, res: Response) => {
@@ -102,32 +105,40 @@ export const deletePublicidad = async (req: Request, res: Response) => {
   });
 
   if (publicidadFound) {
-    const publicidadDeleted = await Publicidad.delete({
-      id: publicidadFound.id,
-    });
+    try {
+      const publicidadDeleted = await Publicidad.delete({
+        id: publicidadFound.id,
+      });
 
-    if (publicidadDeleted.affected == 0)
-      return res.status(404).json({ error: "Hubo un error al eliminar." });
+      if (publicidadDeleted.affected == 0)
+        return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-    return res
-      .status(200)
-      .json({ message: "Publicidad eliminada correctamente." });
+      return res
+        .status(200)
+        .json({ message: "Publicidad eliminada correctamente." });
+    } catch (error) {
+      return res.status(400).json({ error: "Hubo un error al eliminar." });
+    }
   }
 
-  return res.status(404).json({ error: "Publicidad no existe" });
+  return res.status(400).json({ error: "Publicidad no existe" });
 };
 
 export const deleteManyPublicidad = async (req: Request, res: Response) => {
   const { ids } = req.body;
-  const publicidadesDeleted = await Publicidad.delete({ id: In(ids) });
+  try {
+    const publicidadesDeleted = await Publicidad.delete({ id: In(ids) });
 
-  if (publicidadesDeleted) {
-    if (publicidadesDeleted.affected == 0)
-      return res.status(404).json({ error: "Hubo un error al eliminar." });
+    if (publicidadesDeleted) {
+      if (publicidadesDeleted.affected == 0)
+        return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-    return res
-      .status(200)
-      .json({ message: "Publicidades eliminadas correctamente." });
+      return res
+        .status(200)
+        .json({ message: "Publicidades eliminadas correctamente." });
+    }
+    return res.status(400).json({ error: "No se encontraron coincidencias." });
+  } catch (error) {
+    return res.status(400).json({ error: "Hubo un error al eliminar." });
   }
-  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };

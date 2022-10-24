@@ -26,10 +26,10 @@ export const createNota = async (req: Request, res: Response) => {
       palabras_clave: palabras_clave,
     });
 
-    if (notaInsert) return res.status(200).json({ message: "Nota agregada." });
+    if (notaInsert) return res.status(200).json({ nota: notaInsert });
   } catch (error) {
     return res
-      .status(404)
+      .status(400)
       .json({ error: "Hubo un error al registrar la nota." });
   }
 };
@@ -40,7 +40,7 @@ export const getNotaById = async (req: Request, res: Response) => {
 
   if (notaFound) return res.status(200).json(notaFound);
 
-  return res.status(404).json({ error: "Nota no existe." });
+  return res.status(400).json({ error: "Nota no existe." });
 };
 
 export const getNotaByKeyword = async (req: Request, res: Response) => {
@@ -52,19 +52,13 @@ export const getNotaByKeyword = async (req: Request, res: Response) => {
     })
     .getMany();
 
-  if (notasFound && notasFound.length > 0)
-    return res.status(200).json(notasFound);
-
-  return res.status(404).json({ error: "No se encontraron coincidencias." });
+  return res.status(200).json(notasFound);
 };
 
 export const getAllNotas = async (req: Request, res: Response) => {
   const notasFound = await Nota.find();
 
-  if (notasFound && notasFound.length > 0)
-    return res.status(200).json(notasFound);
-
-  return res.status(404).json({ error: "No se encontraron coincidencias." });
+  return res.status(200).json(notasFound);
 };
 
 export const updateNota = async (req: Request, res: Response) => {
@@ -83,26 +77,30 @@ export const updateNota = async (req: Request, res: Response) => {
   });
 
   if (!notaFound)
-    return res.status(404).json({
+    return res.status(400).json({
       error: "Nota no existe.",
     });
 
-  const notaUpdated = await Nota.update(
-    { id: notaFound.id },
-    {
+  const notaUpdated = await repo
+    .createQueryBuilder()
+    .update({
       titulo: titulo,
       tema: tema,
       foto_thumbnail: foto_thumbnail,
       foto_principal: foto_principal,
       contenido: contenido,
       palabras_clave: palabras_clave,
-    }
-  );
+    })
+    .where({
+      id: notaFound.id,
+    })
+    .returning("*")
+    .execute();
 
   if (notaUpdated.affected == 0)
-    return res.status(404).json({ error: "Hubo un error al actualizar." });
+    return res.status(400).json({ error: "Hubo un error al actualizar." });
 
-  return res.status(200).json({ message: "Nota actualizada correctamente." });
+  return res.status(201).json({ nota: notaUpdated.raw[0] });
 };
 
 export const deleteNota = async (req: Request, res: Response) => {
@@ -112,26 +110,36 @@ export const deleteNota = async (req: Request, res: Response) => {
   });
 
   if (!notaFound)
-    return res.status(404).json({
+    return res.status(400).json({
       error: "Nota no existe",
     });
 
-  const notaDeleted = await Nota.delete({ id: notaFound.id });
-  if (notaDeleted.affected == 0)
-    return res.status(404).json({ error: "Hubo un error al eliminar." });
+  try {
+    const notaDeleted = await Nota.delete({ id: notaFound.id });
+    if (notaDeleted.affected == 0)
+      return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-  return res.status(200).json({ message: "Nota eliminada correctamente." });
+    return res.status(200).json({ message: "Nota eliminada correctamente." });
+  } catch (error) {
+    return res.status(400).json({ error: "Hubo un error al eliminar." });
+  }
 };
 
 export const deleteManyNota = async (req: Request, res: Response) => {
   const { ids } = req.body;
-  const notasDeleted = await Nota.delete({ id: In(ids) });
+  try {
+    const notasDeleted = await Nota.delete({ id: In(ids) });
 
-  if (notasDeleted) {
-    if (notasDeleted.affected == 0)
-      return res.status(404).json({ error: "Hubo un error al eliminar." });
+    if (notasDeleted) {
+      if (notasDeleted.affected == 0)
+        return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-    return res.status(200).json({ message: "Notas eliminadas correctamente." });
+      return res
+        .status(200)
+        .json({ message: "Notas eliminadas correctamente." });
+    }
+    return res.status(400).json({ error: "No se encontraron coincidencias." });
+  } catch (error) {
+    return res.status(400).json({ error: "Hubo un error al eliminar." });
   }
-  return res.status(404).json({ error: "No se encontraron coincidencias." });
 };
