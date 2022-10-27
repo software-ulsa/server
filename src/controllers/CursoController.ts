@@ -94,7 +94,9 @@ export const deleteCurso = async (req: Request, res: Response) => {
     if (cursoDeleted.affected == 0)
       return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-    return res.status(200).json({ message: "Curso eliminado correctamente." });
+    return res
+      .status(200)
+      .json({ id: Number(id), message: "Curso eliminado correctamente." });
   } catch (error) {
     return res.status(400).json({ error: "Hubo un error al eliminar." });
   }
@@ -111,7 +113,7 @@ export const deleteManyCurso = async (req: Request, res: Response) => {
 
       return res
         .status(200)
-        .json({ message: "Cursos eliminados correctamente." });
+        .json({ ids: ids, message: "Cursos eliminados correctamente." });
     }
     return res.status(400).json({ error: "No se encontraron coincidencias." });
   } catch (error) {

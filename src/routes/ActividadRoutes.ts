@@ -5,6 +5,7 @@ import {
   deleteManyActividad,
   getActividadById,
   getAllActividad,
+  getAllActividadByCursoId,
   updateActividad,
 } from "../controllers/ActividadController";
 
@@ -17,6 +18,8 @@ router.post(prefix, VerifyToken, createActividad);
 router.get(prefix + "/:id", VerifyToken, getActividadById);
 
 router.get(prefix, VerifyToken, getAllActividad);
+
+router.get(prefix + "/curso/:id_curso", VerifyToken, getAllActividadByCursoId);
 
 router.put(prefix + "/:id", VerifyToken, updateActividad);
 

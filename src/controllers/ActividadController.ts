@@ -38,6 +38,15 @@ export const getAllActividad = async (req: Request, res: Response) => {
   return res.status(200).json(actividadesFound);
 };
 
+export const getAllActividadByCursoId = async (req: Request, res: Response) => {
+  const { id_curso } = req.params;
+  const actividadesFound = Actividad.find({
+    where: { id_curso: Number(id_curso) },
+  });
+
+  return res.status(200).json(actividadesFound);
+};
+
 export const updateActividad = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -92,7 +101,7 @@ export const deleteActividad = async (req: Request, res: Response) => {
 
     return res
       .status(200)
-      .json({ message: "Actividad eliminada correctamente." });
+      .json({ id: Number(id), message: "Actividad eliminada correctamente." });
   } catch (error) {
     return res.status(400).json({ error: "Hubo un error al eliminar." });
   }
@@ -109,7 +118,7 @@ export const deleteManyActividad = async (req: Request, res: Response) => {
 
       return res
         .status(200)
-        .json({ message: "Actividades eliminadas correctamente." });
+        .json({ ids: ids, message: "Actividades eliminadas correctamente." });
     }
     return res.status(400).json({ error: "No se encontraron coincidencias." });
   } catch (error) {

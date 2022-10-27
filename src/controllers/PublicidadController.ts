@@ -113,9 +113,10 @@ export const deletePublicidad = async (req: Request, res: Response) => {
       if (publicidadDeleted.affected == 0)
         return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-      return res
-        .status(200)
-        .json({ message: "Publicidad eliminada correctamente." });
+      return res.status(200).json({
+        id: Number(id),
+        message: "Publicidad eliminada correctamente.",
+      });
     } catch (error) {
       return res.status(400).json({ error: "Hubo un error al eliminar." });
     }
@@ -135,7 +136,7 @@ export const deleteManyPublicidad = async (req: Request, res: Response) => {
 
       return res
         .status(200)
-        .json({ message: "Publicidades eliminadas correctamente." });
+        .json({ ids: ids, message: "Publicidades eliminadas correctamente." });
     }
     return res.status(400).json({ error: "No se encontraron coincidencias." });
   } catch (error) {

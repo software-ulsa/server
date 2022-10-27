@@ -119,7 +119,9 @@ export const deleteNota = async (req: Request, res: Response) => {
     if (notaDeleted.affected == 0)
       return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-    return res.status(200).json({ message: "Nota eliminada correctamente." });
+    return res
+      .status(200)
+      .json({ id: Number(id), message: "Nota eliminada correctamente." });
   } catch (error) {
     return res.status(400).json({ error: "Hubo un error al eliminar." });
   }
@@ -136,7 +138,7 @@ export const deleteManyNota = async (req: Request, res: Response) => {
 
       return res
         .status(200)
-        .json({ message: "Notas eliminadas correctamente." });
+        .json({ ids: ids, message: "Notas eliminadas correctamente." });
     }
     return res.status(400).json({ error: "No se encontraron coincidencias." });
   } catch (error) {

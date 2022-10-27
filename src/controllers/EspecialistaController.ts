@@ -132,9 +132,10 @@ export const deleteEspecialista = async (req: Request, res: Response) => {
     if (especialistaDeleted.affected == 0)
       return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-    return res
-      .status(200)
-      .json({ message: "Especialista eliminado correctamente." });
+    return res.status(200).json({
+      id: Number(id),
+      message: "Especialista eliminado correctamente.",
+    });
   } catch (error) {
     return res.status(400).json({ error: "Hubo un error al eliminar." });
   }
@@ -152,7 +153,7 @@ export const deleteManyEspecialista = async (req: Request, res: Response) => {
 
       return res
         .status(200)
-        .json({ message: "Especialista eliminados correctamente." });
+        .json({ ids: ids, message: "Especialista eliminados correctamente." });
     }
     return res.status(400).json({ error: "No se encontraron coincidencias." });
   } catch (error) {

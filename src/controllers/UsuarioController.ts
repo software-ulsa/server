@@ -30,6 +30,7 @@ export const createUser = async (req: Request, res: Response, next: any) => {
       matricula: req.body.matricula,
       sexo: req.body.sexo,
       id_rol: req.body.id_rol,
+      activo: req.body.activo,
     });
 
     if (userInsert) {
@@ -38,18 +39,26 @@ export const createUser = async (req: Request, res: Response, next: any) => {
         correo: correo,
       };
 
-      const val = Math.floor(1000 + Math.random() * 9000);
+      if (!userInsert.activo) {
+        const val = Math.floor(1000 + Math.random() * 9000);
 
-      const nuevoCodigo = await Codigo.save({
-        id_user: userInsert.id,
-        codigo: val,
-      });
+        const nuevoCodigo = await Codigo.save({
+          id_user: userInsert.id,
+          codigo: val,
+        });
 
-      // Aqui despues le tenemos que enviar el codigo para que se envie en el correo
-      await enviarCorreo(req, res, next, val, userInsert.correo);
+        // Aqui despues le tenemos que enviar el codigo para que se envie en el correo
+        await enviarCorreo(req, res, next, val, userInsert.correo);
+      }
 
-      const token = jwt.sign(payload, process.env.TOKEN_SECRET);
-      return res.status(200).send({ userInsert, token });
+      const token = jwt.sign(payload, _token);
+      const userSaved = await repo
+        .createQueryBuilder("user")
+        .where("user.id = :id", { id: userInsert.id })
+        .leftJoinAndSelect("user.rol", "rol")
+        .addSelect(["*"])
+        .getOne();
+      return res.status(200).send({ userSaved, token });
     }
   } catch (error) {
     console.log(error);
@@ -67,7 +76,9 @@ export const login = async (req: Request, res: Response) => {
       .where("user.correo = :correo", { correo: correo })
       .leftJoinAndSelect("user.rol", "rol")
       .addSelect(["*"])
+      .addSelect("user.password")
       .getOne();
+    console.log(userFound);
 
     if (!userFound) {
       return res.status(400).json({ error: "Usuario no existe." });
@@ -138,9 +149,11 @@ export const updateUser = async (req: Request, res: Response) => {
 
   if (!userFound) return res.status(400).json({ error: "Usuario no existe." });
 
-  const hashedPassword = await argon2.hash(password);
+  const hashedPassword = password
+    ? await argon2.hash(password)
+    : userFound.password;
 
-  const userUpdated = await repo
+  const update = await repo
     .createQueryBuilder()
     .update({
       foto_perfil: req.body.foto_perfil,
@@ -149,12 +162,13 @@ export const updateUser = async (req: Request, res: Response) => {
       ape_paterno: req.body.ape_paterno,
       ape_materno: req.body.ape_materno,
       correo: correo,
-      password: password !== "" ? hashedPassword : userFound.password,
+      password: hashedPassword,
       telefono: req.body.telefono,
       edad: req.body.edad,
       matricula: req.body.matricula,
       sexo: req.body.sexo,
       id_rol: req.body.id_rol,
+      activo: req.body.activo,
     })
     .where({
       id: userFound.id,
@@ -162,10 +176,18 @@ export const updateUser = async (req: Request, res: Response) => {
     .returning("*")
     .execute();
 
-  if (userUpdated.affected == 0)
+  if (update.affected == 0) {
     return res.status(400).json({ error: "Hubo un error al actualizar." });
+  } else {
+    const userUpdated = await repo
+      .createQueryBuilder("user")
+      .where("user.id = :id", { id: Number(id) })
+      .leftJoinAndSelect("user.rol", "rol")
+      .addSelect(["*"])
+      .getOne();
 
-  return res.status(201).json({ user: userUpdated.raw[0] });
+    return res.status(201).json({ user: userUpdated });
+  }
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
@@ -185,7 +207,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 
       return res
         .status(200)
-        .json({ message: "Usuario eliminado correctamente." });
+        .json({ id: id, message: "Usuario eliminado correctamente." });
     } catch (error) {
       return res.status(400).json({ error: "Hubo un error al eliminar." });
     }
@@ -205,7 +227,7 @@ export const deleteManyUser = async (req: Request, res: Response) => {
 
       return res
         .status(200)
-        .json({ message: "Usuarios eliminados correctamente." });
+        .json({ ids: ids, message: "Usuarios eliminados correctamente." });
     }
     return res.status(400).json({ error: "No se encontraron coincidencias." });
   } catch (error) {
