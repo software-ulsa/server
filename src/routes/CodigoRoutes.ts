@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { obtenerCodigo, validarCodigo } from "../controllers/CodigoController";
+import {
+  obtenerCodigo,
+  validarCodigo,
+} from "../controllers/lookup/CodigoController";
 
 const prefix = "/codigo";
 const router = Router();

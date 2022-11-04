@@ -1,4 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Categoria } from "./lookup/Categoria";
 
 @Entity()
 export class Publicidad extends BaseEntity {
@@ -8,21 +16,34 @@ export class Publicidad extends BaseEntity {
   @Column({ type: "varchar", length: 30 })
   nombre!: string;
 
-  @Column({ type: "varchar", length: 30 })
-  dot_empresa!: string;
-
   @Column({ type: "text" })
   descripcion!: string;
 
-  @Column({ type: "varchar", length: 30 })
-  email!: string;
+  @Column({ type: "text" })
+  empresa!: string;
+
+  @Column({ type: "varchar", length: 60 })
+  correo_empresa!: string;
 
   @Column({ type: "text" })
-  url!: string;
+  url_empresa!: string;
 
   @Column({ type: "date" })
   fecha_inicio!: Date;
 
   @Column({ type: "date" })
-  fecha_vencimiento!: Date;
+  fecha_fin!: Date;
+
+  @Column({ type: "text" })
+  imagen!: string;
+
+  @Column({ name: "categoria_id" })
+  categoria_id!: number;
+
+  @ManyToOne(() => Categoria, (categoria) => categoria.publicidad, {
+    cascade: ["update"],
+    nullable: false,
+  })
+  @JoinColumn({ name: "categoria_id" })
+  categoria!: Categoria;
 }

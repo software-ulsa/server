@@ -1,32 +1,78 @@
-import { Request, Response } from "express";
-import { In } from "typeorm";
+import * as argon2 from "argon2";
 import { dataSource } from "../db.config";
+import { Request, Response } from "express";
+
 import { Especialista } from "../entities/Especialista";
+import { Domicilio } from "../entities/lookup/Domicilio";
+import { Persona } from "../entities/Persona";
+import { Usuario } from "../entities/Usuario";
 
 const repo = dataSource.getRepository(Especialista);
 
 export const createEspecialista = async (req: Request, res: Response) => {
-  const { correo, segundo_nombre } = req.body;
+  const {
+    nombre,
+    ape_paterno,
+    ape_materno,
+    fecha_nac,
+    sexo,
+    correo,
+    telefono,
+    calle,
+    colonia,
+    estado,
+    codigo_postal,
+    username,
+    password,
+    imagen,
+    rol_id,
+    cedula_prof,
+    especialidad_id,
+  } = req.body;
 
   try {
-    const especialistaInsert = await Especialista.save({
-      nombre: req.body.nombre,
-      segundo_nombre: segundo_nombre ? segundo_nombre : "",
-      ape_paterno: req.body.ape_paterno,
-      ape_materno: req.body.ape_materno,
-      edad: req.body.edad,
-      sexo: req.body.sexo,
-      foto_especialista: req.body.foto_especialista,
-      especialidad: req.body.especialidad,
-      cedula: req.body.cedula,
-      area_especialidad: req.body.area_especialidad,
-      telefono: req.body.telefono,
-      telefono_casa: req.body.telefono_casa,
+    const personaInsert = await Persona.save({
+      nombre: nombre,
+      ape_paterno: ape_paterno,
+      ape_materno: ape_materno,
+      fecha_nac: new Date(fecha_nac),
+      sexo: sexo,
+      telefono: telefono,
       correo: correo,
     });
 
-    if (especialistaInsert)
-      return res.status(200).json({ especialista: especialistaInsert });
+    const hashedPassword = await argon2.hash(password);
+
+    const usuarioInsert = await Usuario.save({
+      username: username,
+      password: hashedPassword,
+      imagen: imagen,
+      activo: true,
+      rol_id: rol_id,
+      persona_id: personaInsert.id,
+    });
+
+    const domicilioInsert = await Domicilio.save({
+      calle: calle,
+      colonia: colonia,
+      estado: estado,
+      codigo_postal: codigo_postal,
+    });
+
+    const especialistaInsert = await Especialista.save({
+      cedula_prof: cedula_prof,
+      domicilio_id: domicilioInsert.id,
+      especialidad_id: especialidad_id,
+      usuario_id: usuarioInsert.id,
+    });
+
+    if (especialistaInsert) {
+      const especialistaSaved = await Especialista.findOne({
+        where: { id: Number(especialistaInsert.id) },
+      });
+
+      return res.status(200).json({ especialista: especialistaSaved });
+    }
   } catch (error) {
     return res
       .status(400)
@@ -45,78 +91,124 @@ export const getEspecialistaById = async (req: Request, res: Response) => {
   return res.status(400).json({ error: "Especialista no existe." });
 };
 
-export const getEspecialistaByEspecialidad = async (
-  req: Request,
-  res: Response
-) => {
+export const getAllByEspecialidad = async (req: Request, res: Response) => {
   const { especialidad } = req.params;
-  const especialistasFound = await Especialista.find({
-    where: { especialidad: especialidad },
+  const especialistasFound = await repo.find({
+    where: { especialidad: { nombre: especialidad } },
   });
-  return res.status(200).json(especialistasFound);
-};
-
-export const getEspecialistaByArea = async (req: Request, res: Response) => {
-  const { area } = req.params;
-  const especialistasFound = await Especialista.find({
-    where: { area_especialidad: area },
-  });
-
   return res.status(200).json(especialistasFound);
 };
 
 export const getAllEspecialista = async (req: Request, res: Response) => {
-  const especialistasFound = await Especialista.find();
+  const especialistasFound = await repo.find();
+
   return res.status(200).json(especialistasFound);
 };
 
 export const updateEspecialista = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { correo, segundo_nombre } = req.body;
+  const {
+    nombre,
+    ape_paterno,
+    ape_materno,
+    fecha_nac,
+    sexo,
+    correo,
+    telefono,
+    calle,
+    colonia,
+    estado,
+    codigo_postal,
+    username,
+    password,
+    imagen,
+    rol_id,
+    cedula_prof,
+    especialidad_id,
+    activo,
+  } = req.body;
 
-  const especialistaFound = await Especialista.findOne({
-    where: { id: Number(id) },
-  });
+  const especialistaFound = await repo
+    .createQueryBuilder("especialista")
+    .where("especialista.id = :id", { id: Number(id) })
+    .leftJoinAndSelect("especialista.domicilio", "domicilio")
+    .addSelect(["*"])
+    .leftJoinAndSelect("especialista.especialidad", "especialidad")
+    .addSelect(["*"])
+    .leftJoinAndSelect("especialista.usuario", "usuario")
+    .addSelect(["*"])
+    .addSelect("usuario.password")
+    .getOne();
 
   if (!especialistaFound)
     return res.status(400).json({
       error: "Especialista no existe.",
     });
 
-  const especialistaUpdated = await repo
-    .createQueryBuilder()
-    .update({
-      nombre: req.body.nombre,
-      segundo_nombre: segundo_nombre ? segundo_nombre : "",
-      ape_paterno: req.body.ape_paterno,
-      ape_materno: req.body.ape_materno,
-      edad: req.body.edad,
-      sexo: req.body.sexo,
-      foto_especialista: req.body.foto_especialista,
-      especialidad: req.body.especialidad,
-      cedula: req.body.cedula,
-      area_especialidad: req.body.area_especialidad,
-      telefono: req.body.telefono,
-      telefono_casa: req.body.telefono_casa,
-      correo: correo,
-    })
-    .where({
-      id: especialistaFound.id,
-    })
-    .returning("*")
-    .execute();
+  try {
+    const personaUpdate = await Persona.update(
+      { id: Number(especialistaFound.usuario.persona_id) },
+      {
+        nombre: nombre,
+        ape_paterno: ape_paterno,
+        ape_materno: ape_materno,
+        fecha_nac: new Date(fecha_nac),
+        sexo: sexo,
+        telefono: telefono,
+        correo: correo,
+      }
+    );
 
-  if (especialistaUpdated.affected == 0)
+    const hashedPassword = password
+      ? await argon2.hash(password)
+      : especialistaFound.usuario.password;
+
+    console.log(especialistaFound.usuario.password);
+
+    const usuarioUpdate = await Usuario.update(
+      { id: Number(especialistaFound.usuario_id) },
+      {
+        username: username,
+        password: hashedPassword,
+        imagen: imagen,
+        activo: activo,
+        rol_id: rol_id,
+      }
+    );
+
+    const domicilioUpdate = await Domicilio.update(
+      { id: Number(especialistaFound.domicilio_id) },
+      {
+        calle: calle,
+        colonia: colonia,
+        estado: estado,
+        codigo_postal: codigo_postal,
+      }
+    );
+
+    const especialistaUpdate = await Especialista.update(
+      { id: Number(especialistaFound.id) },
+      {
+        cedula_prof: cedula_prof,
+        especialidad_id: especialidad_id,
+      }
+    );
+
+    const especialistaUpdated = await Especialista.findOne({
+      where: { id: Number(id) },
+    });
+
+    return res.status(201).json({ especialista: especialistaUpdated });
+  } catch (error) {
     return res.status(400).json({ error: "Hubo un error al actualizar." });
-
-  return res.status(201).json({ especialista: especialistaUpdated.raw[0] });
+  }
 };
 
 export const deleteEspecialista = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   const especialistaFound = await Especialista.findOne({
-    where: { id: Number(id) },
+    where: { usuario_id: Number(id) },
   });
 
   if (!especialistaFound)
@@ -125,37 +217,26 @@ export const deleteEspecialista = async (req: Request, res: Response) => {
     });
 
   try {
-    const especialistaDeleted = await Especialista.delete({
-      id: especialistaFound.id,
+    const especialistaDeleted = await Usuario.delete({
+      id: especialistaFound.usuario_id,
     });
 
-    if (especialistaDeleted.affected == 0)
+    if (especialistaDeleted.affected == 0) {
       return res.status(400).json({ error: "Hubo un error al eliminar." });
+    } else {
+      const domicilioDeleted = await Domicilio.delete({
+        id: especialistaFound.domicilio_id,
+      });
 
-    return res.status(200).json({
-      id: Number(id),
-      message: "Especialista eliminado correctamente.",
-    });
-  } catch (error) {
-    return res.status(400).json({ error: "Hubo un error al eliminar." });
-  }
-};
+      const personaDeleted = await Persona.delete({
+        id: especialistaFound.usuario.persona_id,
+      });
 
-export const deleteManyEspecialista = async (req: Request, res: Response) => {
-  const { ids } = req.body;
-
-  try {
-    const especialistasDeleted = await Especialista.delete({ id: In(ids) });
-
-    if (especialistasDeleted) {
-      if (especialistasDeleted.affected == 0)
-        return res.status(400).json({ error: "Hubo un error al eliminar." });
-
-      return res
-        .status(200)
-        .json({ ids: ids, message: "Especialista eliminados correctamente." });
+      return res.status(200).json({
+        id: Number(id),
+        message: "Especialista eliminado correctamente.",
+      });
     }
-    return res.status(400).json({ error: "No se encontraron coincidencias." });
   } catch (error) {
     return res.status(400).json({ error: "Hubo un error al eliminar." });
   }

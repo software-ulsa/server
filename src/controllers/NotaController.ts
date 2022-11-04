@@ -1,7 +1,6 @@
-import { Request, Response } from "express";
 import { In } from "typeorm";
-
 import { dataSource } from "../db.config";
+import { Request, Response } from "express";
 import { Nota } from "../entities/Nota";
 
 const repo = dataSource.getRepository(Nota);

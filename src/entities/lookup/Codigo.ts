@@ -4,9 +4,9 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  JoinColumn
+  JoinColumn,
 } from "typeorm";
-import { Usuario } from "./Usuario";
+import { Usuario } from "../Usuario";
 
 @Entity()
 export class Codigo extends BaseEntity {
@@ -16,14 +16,13 @@ export class Codigo extends BaseEntity {
   @Column()
   codigo!: number;
 
-  @Column({ name: "id_user" })
-  id_user!: number;
+  @Column({ name: "usuario_id" })
+  usuario_id!: number;
 
   @ManyToOne((type) => Usuario, (usuario) => usuario.id, {
     cascade: ["update"],
     nullable: false,
   })
-
-  @JoinColumn({ name: "id_user" })
+  @JoinColumn({ name: "usuario_id" })
   usuario!: Usuario;
 }

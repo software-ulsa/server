@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { Codigo } from "../entities/Codigo";
+import { dataSource } from "../../db.config";
+import { Usuario } from "../../entities/Usuario";
+import { Codigo } from "../../entities/lookup/Codigo";
 
-import { dataSource } from "../db.config";
-import { Usuario } from "../entities/Usuario";
 const repo = dataSource.getRepository(Codigo);
 
 export const obtenerCodigo = async (req: Request, res: Response) => {
@@ -10,7 +10,7 @@ export const obtenerCodigo = async (req: Request, res: Response) => {
     const { id } = req.params;
     const codigoFound = await repo
       .createQueryBuilder("codigo")
-      .where("codigo.id_user = :id", { id: Number(id) })
+      .where("codigo.usuario_id = :id", { id: Number(id) })
       .getOne();
 
     if (codigoFound) return res.status(200).json(codigoFound);
@@ -28,13 +28,13 @@ export const validarCodigo = async (req: Request, res: Response) => {
     const { id, codigoEnviado } = req.params;
     const codigoFound = await repo
       .createQueryBuilder("codigo")
-      .where("codigo.id_user = :id", { id: Number(id) })
+      .where("codigo.usuario_id = :id", { id: Number(id) })
       .getOne();
 
     if (codigoFound) {
       if (codigoFound?.codigo == Number(codigoEnviado)) {
         await Usuario.update(
-          { id: codigoFound.id_user },
+          { id: codigoFound.usuario_id },
           {
             activo: true,
           }

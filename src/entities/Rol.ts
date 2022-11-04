@@ -18,7 +18,10 @@ export class Rol extends BaseEntity {
   @Column({ type: "varchar", length: 150 })
   descripcion!: string;
 
-  @OneToMany((type) => Usuario, (usuario) => usuario.rol, {
+  @Column({ type: "varchar", array: true })
+  permisos!: string[];
+
+  @OneToMany(() => Usuario, (usuario) => usuario.rol, {
     cascade: true,
     onDelete: "CASCADE",
   })

@@ -8,17 +8,17 @@ export class Nota extends BaseEntity {
   @Column({ type: "varchar", length: 60 })
   titulo!: string;
 
-  @Column({ type: "varchar", length: 30 })
-  tema!: string;
-
-  @Column({ type: "text" })
-  foto_thumbnail!: string;
-
-  @Column({ type: "text" })
-  foto_principal!: string;
-
   @Column({ type: "text" })
   contenido!: string;
+
+  @Column({ type: "text" })
+  imagen!: string;
+
+  @Column({ type: "varchar", length: 30 })
+  estado!: string;
+
+  @Column({ type: "varchar", length: 30 })
+  tema!: string;
 
   @Column({ type: "varchar", length: 50, array: true })
   palabras_clave!: string[];

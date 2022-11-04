@@ -1,13 +1,11 @@
 import { Router } from "express";
 import {
   createEspecialista,
-  deleteEspecialista,
-  deleteManyEspecialista,
   getAllEspecialista,
-  getEspecialistaByArea,
-  getEspecialistaByEspecialidad,
+  getAllByEspecialidad,
   getEspecialistaById,
   updateEspecialista,
+  deleteEspecialista,
 } from "../controllers/EspecialistaController";
 
 const router = Router();
@@ -21,17 +19,13 @@ router.get(prefix + "/:id", VerifyToken, getEspecialistaById);
 router.get(
   prefix + "/getByEspecialidad/:especialidad",
   VerifyToken,
-  getEspecialistaByEspecialidad
+  getAllByEspecialidad
 );
-
-router.get(prefix + "/getByArea/:area", VerifyToken, getEspecialistaByArea);
 
 router.get(prefix, VerifyToken, getAllEspecialista);
 
-router.put(prefix + "/:id", VerifyToken, updateEspecialista);
+router.put(prefix + "/:id", updateEspecialista);
 
 router.delete(prefix + "/:id", VerifyToken, deleteEspecialista);
-
-router.post(prefix + "/batch", VerifyToken, deleteManyEspecialista);
 
 export default router;

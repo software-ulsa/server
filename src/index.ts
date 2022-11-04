@@ -34,15 +34,15 @@ const main = async () => {
 
   app.use(morgan("dev"));
 
-  app.use(userRoutes);
+  //app.use(userRoutes);
   app.use(rolRoutes);
   app.use(imagesRoutes);
   app.use(actividadRoutes);
   app.use(cursoRoutes);
   app.use(especialistaRoutes);
-  app.use(notaRoutes);
-  app.use(publicidadRoutes);
-  app.use(codigoRoutes);
+  // app.use(notaRoutes);
+  // app.use(publicidadRoutes);
+  // app.use(codigoRoutes);
 
   app.listen(_apiPort);
   console.log("Listening on port: ", _apiPort);

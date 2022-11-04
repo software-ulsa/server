@@ -4,7 +4,7 @@ import { Usuario } from "../entities/Usuario";
 import * as argon2 from "argon2";
 import { dataSource } from "../db.config";
 import { _token } from "../constants";
-import { Codigo } from "../entities/Codigo";
+import { Codigo } from "../entities/lookup/Codigo";
 import { enviarCorreo } from "./EmailController";
 import { In } from "typeorm";
 

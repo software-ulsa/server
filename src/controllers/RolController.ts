@@ -1,16 +1,16 @@
-import { Request, Response } from "express";
 import { In } from "typeorm";
-import { Rol } from "../entities/Rol";
-
 import { dataSource } from "../db.config";
+import { Request, Response } from "express";
+import { Rol } from "../entities/Rol";
 const repo = dataSource.getRepository(Rol);
 
 export const createRol = async (req: Request, res: Response) => {
-  const { nombre, descripcion } = req.body;
+  const { nombre, descripcion, permisos } = req.body;
 
   const rolInsert = await Rol.save({
     nombre: nombre,
     descripcion: descripcion,
+    permisos: permisos,
   });
 
   if (rolInsert) return res.status(201).json({ rol: rolInsert });
@@ -33,7 +33,7 @@ export const getAllRoles = async (req: Request, res: Response) => {
 
 export const updateRol = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { nombre, descripcion } = req.body;
+  const { nombre, descripcion, permisos } = req.body;
 
   const rolFound = await Rol.findOneBy({
     id: Number(id),
@@ -49,6 +49,7 @@ export const updateRol = async (req: Request, res: Response) => {
     .update({
       nombre,
       descripcion,
+      permisos,
     })
     .where({
       id: rolFound.id,

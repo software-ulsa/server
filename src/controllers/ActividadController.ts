@@ -1,18 +1,17 @@
-import { Request, Response } from "express";
 import { In } from "typeorm";
-
 import { dataSource } from "../db.config";
+import { Request, Response } from "express";
 import { Actividad } from "../entities/Actividad";
 const repo = dataSource.getRepository(Actividad);
 
 export const createActividad = async (req: Request, res: Response) => {
+  const { titulo, descripcion, url_media, curso_id } = req.body;
   try {
     const actividadInsert = await Actividad.save({
-      titulo: req.body.titulo,
-      descripcion: req.body.descripcion,
-      url_media: req.body.url_media,
-      peso: req.body.peso,
-      id_curso: req.body.id_curso,
+      titulo: titulo,
+      descripcion: descripcion,
+      url_media: url_media,
+      curso_id: curso_id,
     });
 
     if (actividadInsert)
@@ -39,9 +38,9 @@ export const getAllActividad = async (req: Request, res: Response) => {
 };
 
 export const getAllActividadByCursoId = async (req: Request, res: Response) => {
-  const { id_curso } = req.params;
+  const { curso_id } = req.params;
   const actividadesFound = Actividad.find({
-    where: { id_curso: Number(id_curso) },
+    where: { curso_id: Number(curso_id) },
   });
 
   return res.status(200).json(actividadesFound);
@@ -49,6 +48,7 @@ export const getAllActividadByCursoId = async (req: Request, res: Response) => {
 
 export const updateActividad = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const { titulo, descripcion, url_media, curso_id } = req.body;
 
   const actividadFound = await Actividad.findOne({
     where: { id: Number(id) },
@@ -62,11 +62,10 @@ export const updateActividad = async (req: Request, res: Response) => {
   const actividadUpdated = await repo
     .createQueryBuilder()
     .update({
-      titulo: req.body.titulo,
-      descripcion: req.body.descripcion,
-      url_media: req.body.url_media,
-      peso: req.body.peso,
-      id_curso: req.body.id_curso,
+      titulo: titulo,
+      descripcion: descripcion,
+      url_media: url_media,
+      curso_id: curso_id,
     })
     .where({
       id: actividadFound.id,

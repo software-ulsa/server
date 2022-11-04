@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
 import { In } from "typeorm";
 import { dataSource } from "../db.config";
+import { Request, Response } from "express";
 import { Publicidad } from "../entities/Publicidad";
 
 const repo = dataSource.getRepository(Publicidad);

@@ -4,9 +4,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Curso } from "./Curso";
+import { Historial } from "./relation/Historial";
 
 @Entity()
 export class Actividad extends BaseEntity {
@@ -17,21 +19,25 @@ export class Actividad extends BaseEntity {
   titulo!: string;
 
   @Column({ type: "text" })
-  url_media!: string;
-
-  @Column({ type: "text" })
   descripcion!: string;
 
-  @Column({ type: "integer" })
-  peso!: number;
+  @Column({ type: "text" })
+  url_media!: string;
 
-  @Column({ name: "id_curso" })
-  id_curso!: number;
+  @Column({ name: "curso_id" })
+  curso_id!: number;
 
   @ManyToOne(() => Curso, (curso) => curso.actividades, {
     cascade: ["update"],
+    onDelete: "CASCADE",
     nullable: false,
   })
-  @JoinColumn({ name: "id_curso" })
+  @JoinColumn({ name: "curso_id" })
   curso!: Curso;
+
+  @OneToMany(() => Historial, (historial) => historial.actividad, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  historial!: Historial[];
 }

@@ -1,46 +1,61 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Domicilio } from "./lookup/Domicilio";
+import { Especialidad } from "./lookup/Especialidad";
+import { Chat } from "./relation/Chat";
+import { Usuario } from "./Usuario";
 
 @Entity()
 export class Especialista extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: "varchar", length: 60 })
-  nombre!: string;
+  @Column({ type: "varchar", length: 10 })
+  cedula_prof!: string;
 
-  @Column({ type: "varchar", length: 30, nullable: true })
-  segundo_nombre!: string;
+  @Column({ name: "domicilio_id" })
+  domicilio_id!: number;
 
-  @Column({ type: "varchar", length: 30 })
-  ape_paterno!: string;
+  @OneToOne(() => Domicilio, {
+    eager: true,
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "domicilio_id" })
+  domicilio!: Domicilio;
 
-  @Column({ type: "varchar", length: 30 })
-  ape_materno!: string;
+  @Column({ name: "especialidad_id" })
+  especialidad_id!: number;
 
-  @Column({ type: "integer" })
-  edad!: number;
+  @ManyToOne(() => Especialidad, (especialidad) => especialidad.especialistas, {
+    cascade: ["update"],
+    nullable: false,
+    eager: true,
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "especialidad_id" })
+  especialidad!: Especialidad;
 
-  @Column({ type: "varchar", length: 30 })
-  sexo!: string;
+  @Column({ name: "usuario_id" })
+  usuario_id!: number;
 
-  @Column({ type: "text" })
-  foto_especialista!: string;
+  @OneToOne(() => Usuario, {
+    eager: true,
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "usuario_id" })
+  usuario!: Usuario;
 
-  @Column({ type: "varchar", length: 30 })
-  especialidad!: string;
-
-  @Column({ type: "varchar", length: 30 })
-  cedula!: string;
-
-  @Column({ type: "varchar", length: 30 })
-  area_especialidad!: string;
-
-  @Column({ type: "varchar", length: 30 })
-  telefono!: string;
-
-  @Column({ type: "varchar", length: 30, nullable: true })
-  telefono_casa!: string;
-
-  @Column({ type: "varchar", length: 80, unique: true })
-  correo!: string;
+  @OneToMany(() => Chat, (chat) => chat.especialista, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  chat!: Chat[];
 }

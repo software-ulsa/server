@@ -1,16 +1,34 @@
-import { Request, Response } from "express";
-import { Curso } from "../entities/Curso";
-
-import { dataSource } from "../db.config";
 import { In } from "typeorm";
+import { Request, Response } from "express";
+import { dataSource } from "../db.config";
+import { Curso } from "../entities/Curso";
 const repo = dataSource.getRepository(Curso);
 
 export const createCurso = async (req: Request, res: Response) => {
+  const {
+    titulo,
+    descripcion,
+    objetivo,
+    fecha_inicio,
+    fecha_fin,
+    duracion,
+    activo,
+    imagen,
+    palabras_clave,
+    categoria_id,
+  } = req.body;
   try {
     const cursoInsert = await Curso.save({
-      titulo: req.body.titulo,
-      descripcion: req.body.descripcion,
-      icono: req.body.icono,
+      titulo: titulo,
+      descripcion: descripcion,
+      objetivo: objetivo,
+      fecha_inicio: new Date(fecha_inicio),
+      fecha_fin: new Date(fecha_fin),
+      duracion: duracion,
+      activo: activo,
+      imagen: imagen,
+      palabras_clave: palabras_clave,
+      categoria_id: categoria_id,
     });
 
     if (cursoInsert) return res.status(200).json({ curso: cursoInsert });
@@ -45,6 +63,18 @@ export const getAllCurso = async (req: Request, res: Response) => {
 
 export const updateCurso = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const {
+    titulo,
+    descripcion,
+    objetivo,
+    fecha_inicio,
+    fecha_fin,
+    duracion,
+    activo,
+    imagen,
+    palabras_clave,
+    categoria_id,
+  } = req.body;
 
   const cursoFound = await Curso.findOne({
     where: { id: Number(id) },
@@ -58,9 +88,16 @@ export const updateCurso = async (req: Request, res: Response) => {
   const cursoUpdated = await repo
     .createQueryBuilder()
     .update({
-      titulo: req.body.titulo,
-      descripcion: req.body.descripcion,
-      icono: req.body.icono,
+      titulo: titulo,
+      descripcion: descripcion,
+      objetivo: objetivo,
+      fecha_inicio: new Date(fecha_inicio),
+      fecha_fin: new Date(fecha_fin),
+      duracion: duracion,
+      activo: activo,
+      imagen: imagen,
+      palabras_clave: palabras_clave,
+      categoria_id: categoria_id,
     })
     .where({
       id: cursoFound.id,
