@@ -44,6 +44,7 @@ const main = async () => {
   app.use(notaRoutes);
   app.use(publicidadRoutes);
   app.use(codigoRoutes);
+  app.use(categoriaRoutes);
 
   app.listen(_apiPort);
   console.log("Listening on port: ", _apiPort);
