@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
   createUser,
-  deleteManyUser,
   deleteUser,
   getAllUsers,
   getUserById,
@@ -27,7 +26,5 @@ router.get(prefix, getAllUsers);
 router.put(prefix + "/:id", VerifyToken, updateUser);
 
 router.delete(prefix + "/:id", deleteUser);
-
-router.post(prefix + "/batch", VerifyToken, deleteManyUser);
 
 export default router;

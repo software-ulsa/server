@@ -51,6 +51,7 @@ export class Usuario extends BaseEntity {
   rol_id!: number;
 
   @ManyToOne(() => Rol, (rol) => rol.usuario, {
+    eager: true,
     cascade: ["update"],
     nullable: false,
   })
