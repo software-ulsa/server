@@ -12,6 +12,7 @@ import especialistaRoutes from "./routes/EspecialistaRoutes";
 import notaRoutes from "./routes/NotaRoutes";
 import publicidadRoutes from "./routes/PublicidadRoutes";
 import codigoRoutes from "./routes/CodigoRoutes";
+import categoriaRoutes from "./routes/CategoriaRoutes";
 
 import { connectDB } from "./db.config";
 import { _apiPort, _clientURL, _isProd } from "./constants";

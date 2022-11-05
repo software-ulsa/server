@@ -13,16 +13,16 @@ const router = Router();
 const prefix = "/publicidad";
 const VerifyToken = require("../middleware/VerifyToken");
 
-router.post(prefix, VerifyToken, createPublicidad);
+router.post(prefix,  createPublicidad);
 
-router.get(prefix, VerifyToken, getAllPublicidad);
+router.get(prefix,  getAllPublicidad);
 
-router.get(prefix + "/:id", VerifyToken, getPublicidadById);
+router.get(prefix + "/:id", getPublicidadById);
 
-router.put(prefix + "/:id", VerifyToken, updatePublicidad);
+router.put(prefix + "/:id",  updatePublicidad);
 
-router.delete(prefix + "/:id", VerifyToken, deletePublicidad);
+router.delete(prefix + "/:id",  deletePublicidad);
 
-router.post(prefix + "/batch", VerifyToken, deleteManyPublicidad);
+router.post(prefix + "/batch",  deleteManyPublicidad);
 
 export default router;

@@ -6,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Curso } from "../Curso";
-import { Publicidad } from "../Publicidad";
 
 @Entity()
 export class Categoria extends BaseEntity {
@@ -27,10 +26,4 @@ export class Categoria extends BaseEntity {
     onDelete: "CASCADE",
   })
   curso!: Curso[];
-
-  @OneToMany(() => Publicidad, (publicidad) => publicidad.categoria, {
-    cascade: true,
-    onDelete: "CASCADE",
-  })
-  publicidad!: Publicidad[];
 }

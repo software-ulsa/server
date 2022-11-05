@@ -13,18 +13,18 @@ const router = Router();
 const prefix = "/notas";
 const VerifyToken = require("../middleware/VerifyToken");
 
-router.post(prefix, VerifyToken,  createNota);
+router.post(prefix,   createNota);
 
-router.get(prefix + "/:id",  VerifyToken, getNotaById);
+router.get(prefix + "/:id",   getNotaById);
 
-router.post(prefix + "/getByKeyword",  VerifyToken, getNotaByKeyword);
+router.post(prefix + "/getByKeyword",   getNotaByKeyword);
 
-router.get(prefix,  VerifyToken, getAllNotas);
+router.get(prefix,   getAllNotas);
 
-router.put(prefix + "/:id",  VerifyToken, updateNota);
+router.put(prefix + "/:id",   updateNota);
 
-router.delete(prefix + "/:id",  VerifyToken, deleteNota);
+router.delete(prefix + "/:id",   deleteNota);
 
-router.post(prefix + "/batch",  VerifyToken, deleteManyNota);
+router.post(prefix + "/batch",   deleteManyNota);
 
 export default router;

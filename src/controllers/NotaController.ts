@@ -7,14 +7,7 @@ const repo = dataSource.getRepository(Nota);
 require("dotenv").config();
 
 export const createNota = async (req: Request, res: Response) => {
-  const {
-    titulo,
-    tema,
-    contenido,
-    estado,
-    imagen,
-    palabras_clave,
-  } = req.body;
+  const { titulo, tema, contenido, estado, imagen, palabras_clave } = req.body;
   try {
     const notaInsert = await Nota.save({
       titulo: titulo,
@@ -27,9 +20,7 @@ export const createNota = async (req: Request, res: Response) => {
 
     if (notaInsert) return res.status(200).json({ nota: notaInsert });
   } catch (error) {
-    return res
-      .status(400)
-      .json({ error: "Hubo un error al registrar la nota." });
+    return res.status(400).json({ error: "Hubo un error al registrar la nota." });
   }
 };
 
@@ -62,16 +53,7 @@ export const getAllNotas = async (req: Request, res: Response) => {
 };
 
 export const updateNota = async (req: Request, res: Response) => {
-  console.log(req.params)
   const { id } = req.params;
-  const {
-    titulo,
-    contenido,
-    imagen,
-    estado,
-    tema,
-    palabras_clave,
-  } = req.body;
 
   const notaFound = await Nota.findOneBy({
     id: Number(id),
@@ -82,26 +64,21 @@ export const updateNota = async (req: Request, res: Response) => {
       error: "Nota no existe.",
     });
 
-  const notaUpdated = await repo
-    .createQueryBuilder()
-    .update({
-      titulo: titulo,
-      tema: tema,
-      imagen: imagen,
-      estado: estado,
-      contenido: contenido,
-      palabras_clave: palabras_clave,
-    })
-    .where({
-      id: notaFound.id,
-    })
-    .returning("*")
-    .execute();
+  try {
+    const notaUpdated = await Nota.update({ id: parseInt(id) }, req.body);
 
-  if (notaUpdated.affected == 0)
-    return res.status(400).json({ error: "Hubo un error al actualizar." });
+    if (notaUpdated.affected == 0)
+      return res.status(400).json({ error: "Hubo un error al actualizar." });
 
-  return res.status(201).json({ nota: notaUpdated.raw[0] });
+    const notaActualizada = await Nota.findOne({
+      where: { id: Number(id) },
+    });
+
+    return res.status(201).json({ nota: notaActualizada });
+
+  } catch (error) {
+    return res.status(400).json({ error: "Hubo un error al editar la nota." });
+  }
 };
 
 export const deleteNota = async (req: Request, res: Response) => {
@@ -120,9 +97,7 @@ export const deleteNota = async (req: Request, res: Response) => {
     if (notaDeleted.affected == 0)
       return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-    return res
-      .status(200)
-      .json({ id: Number(id), message: "Nota eliminada correctamente." });
+    return res.status(200).json({ id: Number(id), message: "Nota eliminada correctamente." });
   } catch (error) {
     return res.status(400).json({ error: "Hubo un error al eliminar." });
   }
@@ -137,9 +112,7 @@ export const deleteManyNota = async (req: Request, res: Response) => {
       if (notasDeleted.affected == 0)
         return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-      return res
-        .status(200)
-        .json({ ids: ids, message: "Notas eliminadas correctamente." });
+      return res.status(200).json({ ids: ids, message: "Notas eliminadas correctamente." });
     }
     return res.status(400).json({ error: "No se encontraron coincidencias." });
   } catch (error) {
