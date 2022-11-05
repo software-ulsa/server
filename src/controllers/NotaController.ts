@@ -35,7 +35,7 @@ export const getNotaById = async (req: Request, res: Response) => {
 
 export const getNotaByKeyword = async (req: Request, res: Response) => {
   const { palabras_clave } = req.body;
-  console.log(palabras_clave);
+  
   const notasFound = await repo
     .createQueryBuilder("nota")
     .where("nota.palabras_clave IN (:palabras_clave)", {
