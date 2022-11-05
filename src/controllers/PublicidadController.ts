@@ -8,30 +8,30 @@ const repo = dataSource.getRepository(Publicidad);
 export const createPublicidad = async (req: Request, res: Response) => {
   const {
     nombre,
-    dot_empresa,
     descripcion,
-    email,
-    url,
+    empresa,
+    correo_empresa,
+    url_empresa,
     fecha_inicio,
-    fecha_vencimiento,
+    fecha_fin,
+    imagen,
   } = req.body;
   try {
     const publicidadInsert = await Publicidad.save({
       nombre: nombre,
-      dot_empresa: dot_empresa,
       descripcion: descripcion,
-      email: email,
-      url: url,
+      empresa: empresa,
+      correo_empresa: correo_empresa,
+      url_empresa: url_empresa,
+      imagen: imagen,
       fecha_inicio: new Date(fecha_inicio),
-      fecha_vencimiento: new Date(fecha_vencimiento),
+      fecha_fin: new Date(fecha_fin),
     });
 
-    if (publicidadInsert)
-      return res.status(200).json({ publicidad: publicidadInsert });
+    if (publicidadInsert) return res.status(200).json({ publicidad: publicidadInsert });
   } catch (error) {
-    return res
-      .status(400)
-      .json({ error: "Hubo un error al agregar la publicidad." });
+    console.log(error)
+    return res.status(400).json({ error: "Hubo un error al agregar la publicidad." });
   }
 };
 
@@ -59,12 +59,13 @@ export const updatePublicidad = async (req: Request, res: Response) => {
   const { id } = req.params;
   const {
     nombre,
-    dot_empresa,
     descripcion,
-    email,
-    url,
+    empresa,
+    correo_empresa,
+    url_empresa,
     fecha_inicio,
-    fecha_vencimiento,
+    fecha_fin,
+    imagen,
   } = req.body;
 
   const publicidadFound = await Publicidad.findOne({
@@ -76,12 +77,13 @@ export const updatePublicidad = async (req: Request, res: Response) => {
       .createQueryBuilder()
       .update({
         nombre: nombre,
-        dot_empresa: dot_empresa,
         descripcion: descripcion,
-        email: email,
-        url: url,
+        empresa: empresa,
+        correo_empresa: correo_empresa,
+        url_empresa: url_empresa,
+        imagen: imagen,
         fecha_inicio: new Date(fecha_inicio),
-        fecha_vencimiento: new Date(fecha_vencimiento),
+        fecha_fin: new Date(fecha_fin),
       })
       .where({
         id: publicidadFound.id,
@@ -134,9 +136,7 @@ export const deleteManyPublicidad = async (req: Request, res: Response) => {
       if (publicidadesDeleted.affected == 0)
         return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-      return res
-        .status(200)
-        .json({ ids: ids, message: "Publicidades eliminadas correctamente." });
+      return res.status(200).json({ ids: ids, message: "Publicidades eliminadas correctamente." });
     }
     return res.status(400).json({ error: "No se encontraron coincidencias." });
   } catch (error) {

@@ -36,14 +36,4 @@ export class Publicidad extends BaseEntity {
 
   @Column({ type: "text" })
   imagen!: string;
-
-  @Column({ name: "categoria_id" })
-  categoria_id!: number;
-
-  @ManyToOne(() => Categoria, (categoria) => categoria.publicidad, {
-    cascade: ["update"],
-    nullable: false,
-  })
-  @JoinColumn({ name: "categoria_id" })
-  categoria!: Categoria;
 }

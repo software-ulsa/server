@@ -41,7 +41,7 @@ const main = async () => {
   app.use(cursoRoutes);
   app.use(especialistaRoutes);
   app.use(notaRoutes);
-  // app.use(publicidadRoutes);
+  app.use(publicidadRoutes);
   app.use(codigoRoutes);
 
   app.listen(_apiPort);
