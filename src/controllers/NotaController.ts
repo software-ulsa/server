@@ -10,23 +10,24 @@ export const createNota = async (req: Request, res: Response) => {
   const {
     titulo,
     tema,
-    foto_thumbnail,
-    foto_principal,
     contenido,
+    estado,
+    imagen,
     palabras_clave,
   } = req.body;
   try {
     const notaInsert = await Nota.save({
       titulo: titulo,
-      tema: tema,
-      foto_thumbnail: foto_thumbnail,
-      foto_principal: foto_principal,
       contenido: contenido,
+      imagen: imagen,
+      estado: estado,
+      tema: tema,
       palabras_clave: palabras_clave,
     });
 
     if (notaInsert) return res.status(200).json({ nota: notaInsert });
   } catch (error) {
+    console.log(error)
     return res
       .status(400)
       .json({ error: "Hubo un error al registrar la nota." });
@@ -44,6 +45,7 @@ export const getNotaById = async (req: Request, res: Response) => {
 
 export const getNotaByKeyword = async (req: Request, res: Response) => {
   const { palabras_clave } = req.body;
+  console.log(palabras_clave);
   const notasFound = await repo
     .createQueryBuilder("nota")
     .where("nota.palabras_clave IN (:palabras_clave)", {
@@ -61,13 +63,14 @@ export const getAllNotas = async (req: Request, res: Response) => {
 };
 
 export const updateNota = async (req: Request, res: Response) => {
+  console.log(req.params)
   const { id } = req.params;
   const {
     titulo,
-    tema,
-    foto_thumbnail,
-    foto_principal,
     contenido,
+    imagen,
+    estado,
+    tema,
     palabras_clave,
   } = req.body;
 
@@ -85,8 +88,8 @@ export const updateNota = async (req: Request, res: Response) => {
     .update({
       titulo: titulo,
       tema: tema,
-      foto_thumbnail: foto_thumbnail,
-      foto_principal: foto_principal,
+      imagen: imagen,
+      estado: estado,
       contenido: contenido,
       palabras_clave: palabras_clave,
     })
