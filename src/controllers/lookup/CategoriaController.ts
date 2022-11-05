@@ -6,19 +6,25 @@ import { Categoria } from "../../entities/lookup/Categoria";
 const repo = dataSource.getRepository(Categoria);
 
 export const createCategoria = async (req: Request, res: Response) => {
-  const { nombre, descripcion, tipo } = req.body;
+  try {
+    const { nombre, descripcion, tipo } = req.body;
 
-  const categoriaInsert = await Categoria.save({
-    nombre: nombre,
-    descripcion: descripcion,
-    tipo: tipo,
-  });
+    const categoriaInsert = await Categoria.save({
+      nombre: nombre,
+      descripcion: descripcion,
+      tipo: tipo,
+    });
 
-  if (categoriaInsert)
-    return res.status(201).json({ categoria: categoriaInsert });
-  return res
-    .status(400)
-    .json({ error: "Hubo un error al crear la categoria." });
+    if (categoriaInsert)
+      return res.status(201).json({ categoria: categoriaInsert });
+    return res
+      .status(400)
+      .json({ error: "Hubo un error al crear la categoria." });
+  } catch (error) {
+    return res
+      .status(400)
+      .json({ error: "Hubo un error al agregar la publicidad." });
+  }
 };
 
 export const getCategoriaById = async (req: Request, res: Response) => {
