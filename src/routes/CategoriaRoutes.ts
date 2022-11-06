@@ -10,7 +10,7 @@ import {
 const VerifyToken = require("../middleware/VerifyToken");
 
 const router = Router();
-const prefix = "/categoria";
+const prefix = "/categorias";
 
 router.post(prefix, VerifyToken, createCategoria);
 

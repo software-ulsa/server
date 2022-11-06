@@ -18,7 +18,15 @@ import { Curso } from "./entities/Curso";
 import { Nota } from "./entities/Nota";
 import { Publicidad } from "./entities/Publicidad";
 import { Codigo } from "./entities/lookup/Codigo";
-import { createEspecialistas } from "./createDummyData";
+import {
+  createAdmin,
+  createCarreras,
+  createCategorias,
+  createEspecialidades,
+  createEspecialistas,
+  createPacientes,
+  createRoles,
+} from "./createDummyData";
 import { Paciente } from "./entities/Paciente";
 import { Chat } from "./entities/relation/Chat";
 import { Historial } from "./entities/relation/Historial";
@@ -66,7 +74,16 @@ export const connectDB = async () => {
     .initialize()
     .then(() => {
       console.log("Conectado a la base de datos");
-      createEspecialistas();
+      try {
+        createRoles();
+        createCarreras();
+        createCategorias();
+        createEspecialidades();
+
+        createAdmin();
+        createPacientes();
+        createEspecialistas();
+      } catch (error) {}
     })
     .catch((err: any) => {
       console.error(err);

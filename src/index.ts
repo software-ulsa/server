@@ -3,16 +3,21 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import morgan from "morgan";
 
-import userRoutes from "./routes/UsuarioRoutes";
-import rolRoutes from "./routes/RolRoutes";
 import imagesRoutes from "./routes/ImagesRoutes";
-import actividadRoutes from "./routes/ActividadRoutes";
-import cursoRoutes from "./routes/CursoRoutes";
+
+import rolRoutes from "./routes/RolRoutes";
+import userRoutes from "./routes/UsuarioRoutes";
+import codigoRoutes from "./routes/CodigoRoutes";
 import especialistaRoutes from "./routes/EspecialistaRoutes";
+
+import cursoRoutes from "./routes/CursoRoutes";
+import actividadRoutes from "./routes/ActividadRoutes";
 import notaRoutes from "./routes/NotaRoutes";
 import publicidadRoutes from "./routes/PublicidadRoutes";
-import codigoRoutes from "./routes/CodigoRoutes";
+
 import categoriaRoutes from "./routes/CategoriaRoutes";
+import especialidadRoutes from "./routes/EspecialidadRoutes";
+import carreraRoutes from "./routes/CarreraRoutes";
 
 import { connectDB } from "./db.config";
 import { _apiPort, _clientURL, _isProd } from "./constants";
@@ -35,16 +40,25 @@ const main = async () => {
 
   app.use(morgan("dev"));
 
-  app.use(userRoutes);
-  app.use(rolRoutes);
+  // Para las imagenes
   app.use(imagesRoutes);
-  app.use(actividadRoutes);
-  app.use(cursoRoutes);
+
+  // Para los usuarios y entidades relacionadas
+  app.use(rolRoutes);
+  app.use(userRoutes);
+  app.use(codigoRoutes);
   app.use(especialistaRoutes);
+
+  // Para funcionalidades
+  app.use(cursoRoutes);
+  app.use(actividadRoutes);
   app.use(notaRoutes);
   app.use(publicidadRoutes);
-  app.use(codigoRoutes);
+
+  // Para los catalogos
   app.use(categoriaRoutes);
+  app.use(especialidadRoutes);
+  app.use(carreraRoutes);
 
   app.listen(_apiPort);
   console.log("Listening on port: ", _apiPort);

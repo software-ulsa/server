@@ -1,119 +1,313 @@
-import { Rol } from "./entities/Rol";
-import { Usuario } from "./entities/Usuario";
-import { Especialista } from "./entities/Especialista";
-import { Actividad } from "./entities/Actividad";
-import { Curso } from "./entities/Curso";
-import { Nota } from "./entities/Nota";
-import { Publicidad } from "./entities/Publicidad";
-import { Codigo } from "./entities/lookup/Codigo";
-
 import { _token } from "./constants";
 import * as argon2 from "argon2";
-import { Domicilio } from "./entities/lookup/Domicilio";
+
+import { Rol } from "./entities/Rol";
 import { Persona } from "./entities/Persona";
+import { Usuario } from "./entities/Usuario";
+import { Codigo } from "./entities/lookup/Codigo";
+import { Especialista } from "./entities/Especialista";
+
+import { Curso } from "./entities/Curso";
+import { Actividad } from "./entities/Actividad";
+import { Nota } from "./entities/Nota";
+import { Publicidad } from "./entities/Publicidad";
+
+import { Domicilio } from "./entities/lookup/Domicilio";
 import { Especialidad } from "./entities/lookup/Especialidad";
+import { Paciente } from "./entities/Paciente";
+import { Carrera } from "./entities/lookup/Carrera";
+import { Categoria } from "./entities/lookup/Categoria";
 
 const jwt = require("jsonwebtoken");
 
-// export const createUsuarios = async () => {
-//   const adminFound = await Usuario.findOne({
-//     where: { correo: "admin@gmail.com" },
-//   });
+export const createRoles = async () => {
+  const adminFound = await Rol.findOne({ where: { nombre: "Administrador" } });
 
-//   const userFound = await Usuario.findOne({
-//     where: { correo: "pitudo@gmail.com" },
-//   });
+  if (!adminFound) {
+    try {
+      const adminRol = await Rol.save({
+        nombre: "Administrador",
+        descripcion: "Superusuario con todos los permisos",
+        permisos: ["chat"],
+      });
+      if (adminRol) console.log("Admin Rol de prueba creado");
 
-//   const hashedPassword = await argon2.hash("t3mpor4l");
+      const usuarioRol = await Rol.save({
+        nombre: "Usuario",
+        descripcion: "Miembro de ASAP - A safe place",
+        permisos: ["chat"],
+      });
+      if (usuarioRol) console.log("Usuario Rol de prueba creado");
 
-//   if (!adminFound) {
-//     const adminRol = await Rol.save({
-//       nombre: "Administrador",
-//       descripcion: "Superusuario con todos los permisos",
-//     });
+      const pacienteRol = await Rol.save({
+        nombre: "Paciente",
+        descripcion: "Estudiante de la Universidad La Salle Oaxaca",
+        permisos: ["chat"],
+      });
+      if (pacienteRol) console.log("Paciente Rol de prueba creado");
 
-//     try {
-//       const adminInsert = await Usuario.save({
-//         foto_perfil: "74f5c624ad4056684b2e083c56b5c3b4",
-//         nombre: "Administrador",
-//         ape_paterno: "De Los",
-//         ape_materno: "Dioses",
-//         correo: "admin@gmail.com",
-//         password: hashedPassword,
-//         telefono: "9514268601",
-//         edad: 100,
-//         matricula: "014419799",
-//         sexo: "Masculino",
-//         activo: true,
-//         id_rol: adminRol.id,
-//       });
-//       if (adminInsert) {
-//         let payload = {
-//           id: adminInsert.id,
-//           correo: "admin@gmail.com",
-//         };
-//         jwt.sign(payload, _token);
-//         console.log("Administrador creado");
-//       }
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   }
+      const especialistaRol = await Rol.save({
+        nombre: "Especialista",
+        descripcion: "Profesional de salud",
+        permisos: ["chat"],
+      });
+      if (especialistaRol) console.log("Especialista Rol de prueba creado");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
 
-//   if (!userFound) {
-//     const userRol = await Rol.save({
-//       nombre: "Usuario",
-//       descripcion: "Permiso solo para consumir la informacion",
-//     });
+export const createCarreras = async () => {
+  const carreraFound = await Carrera.findOne({
+    where: { abreviatura: "Ing. de Software" },
+  });
 
-//     try {
-//       const userInsert = await Usuario.save({
-//         foto_perfil: "74f5c624ad4056684b2e083c56b5c3b4",
-//         nombre: "Carlos",
-//         segundo_nombre: "Daniel",
-//         ape_paterno: "Valdez",
-//         ape_materno: "Martinez",
-//         correo: "pitudo@gmail.com",
-//         password: hashedPassword,
-//         telefono: "9514268601",
-//         edad: 100,
-//         matricula: "014419799",
-//         sexo: "Masculino",
-//         activo: true,
-//         id_rol: userRol.id,
-//       });
+  if (!carreraFound) {
+    try {
+      const carreraUno = await Carrera.save({
+        nombre: "Ingenieria de Software y Sistemas Computacionales",
+        abreviatura: "Ing. de Software",
+      });
+      if (carreraUno) console.log("Carrera 1 de prueba creada");
 
-//       if (userInsert) {
-//         let payload = {
-//           id: userInsert.id,
-//           correo: "pitudo@gmail.com",
-//         };
-//         jwt.sign(payload, _token);
-//         console.log("Usuario de prueba creado");
-//       }
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   }
-// };
+      const carreraDos = await Carrera.save({
+        nombre: "Ingenieria Electronica y de Telecomunicaciones",
+        abreviatura: "Ing. Electronica",
+      });
+      if (carreraDos) console.log("Carrera 2 de prueba creada");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+
+export const createCategorias = async () => {
+  const categoriaFound = await Categoria.findOne({
+    where: { nombre: "Salud y belleza" },
+  });
+
+  if (!categoriaFound) {
+    try {
+      const categoriaUno = await Categoria.save({
+        nombre: "Salud y belleza",
+        descripcion: "Todo lo relacionado a la salud fisica y cuidado personal",
+        tipo: "Nota",
+      });
+      if (categoriaUno) console.log("Categoria 1 de prueba creada");
+
+      const categoriaDos = await Categoria.save({
+        nombre: "Social",
+        descripcion: "Todo lo relacionado a las relaciones interpersonales",
+        tipo: "Curso",
+      });
+      if (categoriaDos) console.log("Categoria 2 de prueba creada");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+
+export const createEspecialidades = async () => {
+  const especialidadFound = await Especialidad.findOne({
+    where: { nombre: "Traumatologia" },
+  });
+
+  if (!especialidadFound) {
+    try {
+      const especialidadUno = await Especialidad.save({
+        nombre: "Traumatologia",
+        tipo: "Medica",
+      });
+      if (especialidadUno) console.log("Especialidad 1 de prueba creada");
+
+      const especialidadDos = await Especialidad.save({
+        nombre: "Obstetricia",
+        tipo: "Medica",
+      });
+      if (especialidadDos) console.log("Especialidad 2 de prueba creada");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+
+export const createAdmin = async () => {
+  const adminFound = await Usuario.findOne({ where: { username: "admin" } });
+  const hashedPassword = await argon2.hash("123");
+
+  if (!adminFound) {
+    try {
+      const personaAdminInsert = await Persona.save({
+        nombre: "Octavio Agustin",
+        ape_paterno: "Celaya",
+        ape_materno: "Ojeda",
+        fecha_nac: new Date("2002-01-28"),
+        sexo: "Masculino",
+        telefono: "9514562431",
+        correo: "admin@gmail.com",
+      });
+
+      const usuarioAdminInsert = await Usuario.save({
+        username: "admin",
+        password: hashedPassword,
+        imagen: "0c964b47b4c845fb697de37375ad51aa",
+        activo: true,
+        rol_id: 1,
+        persona_id: personaAdminInsert.id,
+      });
+
+      if (usuarioAdminInsert) console.log("Administrador creado");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+
+export const createUsuarios = async () => {
+  const usuarioUno = await Usuario.findOne({
+    where: { persona: { correo: "userOne@gmail.com" } },
+  });
+
+  const usuarioDos = await Usuario.findOne({
+    where: { persona: { correo: "userTwo@gmail.com" } },
+  });
+
+  const hashedPassword = await argon2.hash("123");
+
+  if (!usuarioUno) {
+    try {
+      const personaUnoInsert = await Persona.save({
+        nombre: "Carlos Daniel",
+        ape_paterno: "Valdez",
+        ape_materno: "Martinez",
+        fecha_nac: new Date("2002-01-28"),
+        sexo: "Masculino",
+        telefono: "9514562431",
+        correo: "userOne@gmail.com",
+      });
+
+      const usuarioUnoInsert = await Usuario.save({
+        username: "daniboy",
+        password: hashedPassword,
+        imagen: "0c964b47b4c845fb697de37375ad51aa",
+        activo: true,
+        rol_id: 2,
+        persona_id: personaUnoInsert.id,
+      });
+      if (usuarioUnoInsert) console.log("Paciente 1 de prueba creado");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  if (!usuarioDos) {
+    try {
+      const personaDosInsert = await Persona.save({
+        nombre: "Jairo Esteban",
+        ape_paterno: "Martinez",
+        ape_materno: "Portillo",
+        fecha_nac: new Date("2002-01-28"),
+        sexo: "Masculino",
+        telefono: "9514562431",
+        correo: "userTwo@gmail.com",
+      });
+
+      const usuarioDosInsert = await Usuario.save({
+        username: "jairoBoss",
+        password: hashedPassword,
+        imagen: "023c6c21d8db61412ba261c7fb8719c1",
+        activo: true,
+        rol_id: 2,
+        persona_id: personaDosInsert.id,
+      });
+
+      if (usuarioDosInsert) console.log("Paciente 2 de prueba creado");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+};
+
+export const createPacientes = async () => {
+  const pacienteUno = await Paciente.findOne({
+    where: { usuario: { persona: { correo: "pacientOne@gmail.com" } } },
+  });
+
+  const pacienteDos = await Paciente.findOne({
+    where: { usuario: { persona: { correo: "pacientTwo@gmail.com" } } },
+  });
+
+  const hashedPassword = await argon2.hash("123");
+
+  if (!pacienteUno) {
+    try {
+      const personaUnoInsert = await Persona.save({
+        nombre: "Azucena",
+        ape_paterno: "Reyes",
+        ape_materno: "Santiago",
+        fecha_nac: new Date("2002-01-28"),
+        sexo: "Femenino",
+        telefono: "9514562431",
+        correo: "pacientOne@gmail.com",
+      });
+
+      const usuarioUnoInsert = await Usuario.save({
+        username: "azucena",
+        password: hashedPassword,
+        imagen: "0c964b47b4c845fb697de37375ad51aa",
+        activo: true,
+        rol_id: 3,
+        persona_id: personaUnoInsert.id,
+      });
+
+      const pacienteUnoInsert = await Paciente.save({
+        usuario_id: usuarioUnoInsert.id,
+        carrera_id: 1,
+        matricula: "014419799",
+      });
+
+      if (pacienteUnoInsert) console.log("Paciente 1 de prueba creado");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  if (!pacienteDos) {
+    try {
+      const personaDosInsert = await Persona.save({
+        nombre: "Gerardo",
+        ape_paterno: "Crisanto",
+        ape_materno: "Ulloa",
+        fecha_nac: new Date("2002-01-28"),
+        sexo: "Masculino",
+        telefono: "9514562431",
+        correo: "pacientTwo@gmail.com",
+      });
+
+      const usuarioDosInsert = await Usuario.save({
+        username: "geraGOD",
+        password: hashedPassword,
+        imagen: "023c6c21d8db61412ba261c7fb8719c1",
+        activo: true,
+        rol_id: 3,
+        persona_id: personaDosInsert.id,
+      });
+
+      const pacienteDosInsert = await Paciente.save({
+        usuario_id: usuarioDosInsert.id,
+        carrera_id: 2,
+        matricula: "014419799",
+      });
+
+      if (pacienteDosInsert) console.log("Paciente 2 de prueba creado");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+};
 
 export const createEspecialistas = async () => {
-  const especialistaRol = await Rol.save({
-    nombre: "Especialista",
-    descripcion: "Profesional de salud",
-    permisos: ["chat"],
-  });
-
-  const especialidadUno = await Especialidad.save({
-    nombre: "Traumatologia",
-    tipo: "Medica",
-  });
-
-  const especialidadDos = await Especialidad.save({
-    nombre: "Obstetricia",
-    tipo: "Medica",
-  });
-
   const especialistaUno = await Especialista.findOne({
     where: { usuario: { persona: { correo: "specOne@gmail.com" } } },
   });
@@ -122,21 +316,7 @@ export const createEspecialistas = async () => {
     where: { usuario: { persona: { correo: "specTwo@gmail.com" } } },
   });
 
-  const hashedPassword = await argon2.hash("t3mpor4l");
-
-  const domicilioUnoInsert = await Domicilio.save({
-    calle: "Av. de las Huertas",
-    colonia: "Colonia Reforma",
-    estado: "Oaxaca",
-    codigo_postal: "68050",
-  });
-
-  const domicilioDosInsert = await Domicilio.save({
-    calle: "Av. de las Huertas",
-    colonia: "Colonia Reforma",
-    estado: "Oaxaca",
-    codigo_postal: "68050",
-  });
+  const hashedPassword = await argon2.hash("123");
 
   if (!especialistaUno) {
     try {
@@ -155,14 +335,21 @@ export const createEspecialistas = async () => {
         password: hashedPassword,
         imagen: "0c964b47b4c845fb697de37375ad51aa",
         activo: true,
-        rol_id: especialistaRol.id,
+        rol_id: 4,
         persona_id: personaUnoInsert.id,
+      });
+
+      const domicilioUnoInsert = await Domicilio.save({
+        calle: "Av. de las Huertas",
+        colonia: "Colonia Reforma",
+        estado: "Oaxaca",
+        codigo_postal: "68050",
       });
 
       const especialistaUnoInsert = await Especialista.save({
         cedula_prof: "123456789",
         domicilio_id: domicilioUnoInsert.id,
-        especialidad_id: especialidadUno.id,
+        especialidad_id: 1,
         usuario_id: usuarioUnoInsert.id,
       });
 
@@ -189,14 +376,21 @@ export const createEspecialistas = async () => {
         password: hashedPassword,
         imagen: "023c6c21d8db61412ba261c7fb8719c1",
         activo: true,
-        rol_id: especialistaRol.id,
+        rol_id: 4,
         persona_id: personaDosInsert.id,
+      });
+
+      const domicilioDosInsert = await Domicilio.save({
+        calle: "Av. de las Huertas",
+        colonia: "Colonia Reforma",
+        estado: "Oaxaca",
+        codigo_postal: "68050",
       });
 
       const especialistaDosInsert = await Especialista.save({
         cedula_prof: "123456789",
         domicilio_id: domicilioDosInsert.id,
-        especialidad_id: especialidadDos.id,
+        especialidad_id: 2,
         usuario_id: usuarioDosInsert.id,
       });
 
