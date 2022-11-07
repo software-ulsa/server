@@ -59,7 +59,7 @@ export const updateCarrera = async (req: Request, res: Response) => {
   if (carrerasUpdated.affected == 0)
     return res.status(400).json({ error: "Hubo un error al actualizar." });
 
-  return res.status(201).json({ carreras: carrerasUpdated.raw[0] });
+  return res.status(201).json({ carrera: carrerasUpdated.raw[0] });
 };
 
 export const deleteCarrera = async (req: Request, res: Response) => {

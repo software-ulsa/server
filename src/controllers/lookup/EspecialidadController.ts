@@ -62,7 +62,7 @@ export const updateEspecialidad = async (req: Request, res: Response) => {
   if (especialidadesUpdated.affected == 0)
     return res.status(400).json({ error: "Hubo un error al actualizar." });
 
-  return res.status(201).json({ especialidades: especialidadesUpdated.raw[0] });
+  return res.status(201).json({ especialidad: especialidadesUpdated.raw[0] });
 };
 
 export const deleteEspecialidad = async (req: Request, res: Response) => {

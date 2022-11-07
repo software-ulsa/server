@@ -178,7 +178,7 @@ export const deletePaciente = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   const pacienteFound = await Paciente.findOne({
-    where: { usuario_id: Number(id) },
+    where: { id: Number(id) },
   });
 
   if (!pacienteFound)

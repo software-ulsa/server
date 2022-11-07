@@ -6,6 +6,7 @@ import { Especialista } from "../entities/Especialista";
 import { Domicilio } from "../entities/lookup/Domicilio";
 import { Persona } from "../entities/Persona";
 import { Usuario } from "../entities/Usuario";
+import { Rol } from "../entities/Rol";
 
 const repo = dataSource.getRepository(Especialista);
 
@@ -25,12 +26,13 @@ export const createEspecialista = async (req: Request, res: Response) => {
     username,
     password,
     imagen,
-    rol_id,
     cedula_prof,
     especialidad_id,
   } = req.body;
 
   try {
+    const rol = await Rol.findOne({ where: { nombre: "ESPECIALISTA" } });
+
     const personaInsert = await Persona.save({
       nombre: nombre,
       ape_paterno: ape_paterno,
@@ -48,7 +50,7 @@ export const createEspecialista = async (req: Request, res: Response) => {
       password: hashedPassword,
       imagen: imagen,
       activo: true,
-      rol_id: rol_id,
+      rol_id: rol!.id,
       persona_id: personaInsert.id,
     });
 
@@ -113,7 +115,6 @@ export const updateEspecialista = async (req: Request, res: Response) => {
     ape_materno,
     fecha_nac,
     sexo,
-    correo,
     telefono,
     calle,
     colonia,
@@ -122,10 +123,8 @@ export const updateEspecialista = async (req: Request, res: Response) => {
     username,
     password,
     imagen,
-    rol_id,
     cedula_prof,
     especialidad_id,
-    activo,
   } = req.body;
 
   const especialistaFound = await repo
@@ -155,15 +154,13 @@ export const updateEspecialista = async (req: Request, res: Response) => {
         fecha_nac: new Date(fecha_nac),
         sexo: sexo,
         telefono: telefono,
-        correo: correo,
       }
     );
 
-    const hashedPassword = password
-      ? await argon2.hash(password)
-      : especialistaFound.usuario.password;
-
-    console.log(especialistaFound.usuario.password);
+    const hashedPassword =
+      password !== ""
+        ? await argon2.hash(password)
+        : especialistaFound.usuario.password;
 
     const usuarioUpdate = await Usuario.update(
       { id: Number(especialistaFound.usuario_id) },
@@ -171,8 +168,6 @@ export const updateEspecialista = async (req: Request, res: Response) => {
         username: username,
         password: hashedPassword,
         imagen: imagen,
-        activo: activo,
-        rol_id: rol_id,
       }
     );
 
@@ -208,7 +203,7 @@ export const deleteEspecialista = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   const especialistaFound = await Especialista.findOne({
-    where: { usuario_id: Number(id) },
+    where: { id: Number(id) },
   });
 
   if (!especialistaFound)
@@ -238,6 +233,7 @@ export const deleteEspecialista = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
+    console.log(error);
     return res.status(400).json({ error: "Hubo un error al eliminar." });
   }
 };

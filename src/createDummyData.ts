@@ -21,33 +21,33 @@ import { Categoria } from "./entities/lookup/Categoria";
 const jwt = require("jsonwebtoken");
 
 export const createRoles = async () => {
-  const adminFound = await Rol.findOne({ where: { nombre: "Administrador" } });
+  const adminFound = await Rol.findOne({ where: { nombre: "ADMINISTRADOR" } });
 
   if (!adminFound) {
     try {
       const adminRol = await Rol.save({
-        nombre: "Administrador",
+        nombre: "ADMINISTRADOR",
         descripcion: "Superusuario con todos los permisos",
         permisos: ["chat"],
       });
       if (adminRol) console.log("Admin Rol de prueba creado");
 
       const usuarioRol = await Rol.save({
-        nombre: "Usuario",
+        nombre: "USUARIO",
         descripcion: "Miembro de ASAP - A safe place",
         permisos: ["chat"],
       });
       if (usuarioRol) console.log("Usuario Rol de prueba creado");
 
       const pacienteRol = await Rol.save({
-        nombre: "Paciente",
+        nombre: "PACIENTE",
         descripcion: "Estudiante de la Universidad La Salle Oaxaca",
         permisos: ["chat"],
       });
       if (pacienteRol) console.log("Paciente Rol de prueba creado");
 
       const especialistaRol = await Rol.save({
-        nombre: "Especialista",
+        nombre: "ESPECIALISTA",
         descripcion: "Profesional de salud",
         permisos: ["chat"],
       });
