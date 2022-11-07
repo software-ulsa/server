@@ -6,6 +6,7 @@ import { Domicilio } from "../entities/lookup/Domicilio";
 import { Persona } from "../entities/Persona";
 import { Usuario } from "../entities/Usuario";
 import { Paciente } from "../entities/Paciente";
+import { Rol } from "../entities/Rol";
 
 const repo = dataSource.getRepository(Paciente);
 
@@ -21,12 +22,13 @@ export const createPaciente = async (req: Request, res: Response) => {
     username,
     password,
     imagen,
-    rol_id,
     matricula,
     carrera_id,
   } = req.body;
 
   try {
+    const rol = await Rol.findOne({ where: { nombre: "PACIENTE" } });
+
     const personaInsert = await Persona.save({
       nombre: nombre,
       ape_paterno: ape_paterno,
@@ -44,7 +46,7 @@ export const createPaciente = async (req: Request, res: Response) => {
       password: hashedPassword,
       imagen: imagen,
       activo: true,
-      rol_id: rol_id,
+      rol_id: rol!.id,
       persona_id: personaInsert.id,
     });
 
@@ -106,7 +108,6 @@ export const updatePaciente = async (req: Request, res: Response) => {
     username,
     password,
     imagen,
-    rol_id,
     matricula,
     carrera_id,
     activo,
@@ -152,7 +153,6 @@ export const updatePaciente = async (req: Request, res: Response) => {
         password: hashedPassword,
         imagen: imagen,
         activo: activo,
-        rol_id: rol_id,
       }
     );
 
