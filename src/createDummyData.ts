@@ -455,3 +455,49 @@ export const createCursos = async () => {
     }
   }
 };
+
+export const createNotas = async () => {
+  const notaFound = await Nota.findOne({ where: { titulo: "Apoco si pa" } });
+
+  if (!notaFound) {
+    try {
+      const notaUnoInsert = await Nota.save({
+        titulo: "Y se marcho",
+        contenido:
+          "<div><b>hola pa</b></div><div><b><i>saludos</i></b></div><div><b><i><br></i></b></div><div><b><i>atte. la vida</i></b></div>",
+        imagen: "0df310c93690f31fd35f81754e704bed",
+        estado: "Aceptado",
+        tema: "Tema2",
+        palabras_clave: ["TURIP", "IP", "IP"],
+        usuario_id: 1,
+      });
+      if (notaUnoInsert) console.log("Nota 1 de prueba creada");
+
+      const notaDosInsert = await Nota.save({
+        titulo: "Y a su viaje le llamo libertad",
+        contenido:
+          "<div><b>hola pa</b></div><div><b><i>saludos</i></b></div><div><b><i><br></i></b></div><div><b><i>atte. la vida</i></b></div>",
+        imagen: "0c9798a3188afc13612058fb056da180",
+        estado: "Rechazado",
+        tema: "Tema1",
+        palabras_clave: ["El", "Me", "Mintio"],
+        usuario_id: 1,
+      });
+      if (notaDosInsert) console.log("Nota 2 de prueba creada");
+
+      const notaTresInsert = await Nota.save({
+        titulo: "En el cielo dibujo, gaviotas",
+        contenido:
+          "<div><b>hola pa</b></div><div><b><i>saludos</i></b></div><div><b><i><br></i></b></div><div><b><i>atte. la vida</i></b></div>",
+        imagen: "0c9798a3188afc13612058fb056da180",
+        estado: "Aceptado",
+        tema: "Tema1",
+        palabras_clave: ["Ella", "No", "Me", "Quiere"],
+        usuario_id: 1,
+      });
+      if (notaTresInsert) console.log("Nota 3 de prueba creada");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};

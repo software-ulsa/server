@@ -20,7 +20,9 @@ export const createNota = async (req: Request, res: Response) => {
 
     if (notaInsert) return res.status(200).json({ nota: notaInsert });
   } catch (error) {
-    return res.status(400).json({ error: "Hubo un error al registrar la nota." });
+    return res
+      .status(400)
+      .json({ error: "Hubo un error al registrar la nota." });
   }
 };
 
@@ -35,7 +37,7 @@ export const getNotaById = async (req: Request, res: Response) => {
 
 export const getNotaByKeyword = async (req: Request, res: Response) => {
   const { palabras_clave } = req.body;
-  
+
   const notasFound = await repo
     .createQueryBuilder("nota")
     .where("nota.palabras_clave IN (:palabras_clave)", {
@@ -48,6 +50,15 @@ export const getNotaByKeyword = async (req: Request, res: Response) => {
 
 export const getAllNotas = async (req: Request, res: Response) => {
   const notasFound = await Nota.find();
+
+  return res.status(200).json(notasFound);
+};
+
+export const getAllByUsuarioId = async (req: Request, res: Response) => {
+  const { usuario_id } = req.params;
+  const notasFound = await Nota.find({
+    where: { usuario_id: Number(usuario_id) },
+  });
 
   return res.status(200).json(notasFound);
 };
@@ -75,7 +86,6 @@ export const updateNota = async (req: Request, res: Response) => {
     });
 
     return res.status(201).json({ nota: notaActualizada });
-
   } catch (error) {
     return res.status(400).json({ error: "Hubo un error al editar la nota." });
   }
@@ -97,7 +107,9 @@ export const deleteNota = async (req: Request, res: Response) => {
     if (notaDeleted.affected == 0)
       return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-    return res.status(200).json({ id: Number(id), message: "Nota eliminada correctamente." });
+    return res
+      .status(200)
+      .json({ id: Number(id), message: "Nota eliminada correctamente." });
   } catch (error) {
     return res.status(400).json({ error: "Hubo un error al eliminar." });
   }
@@ -112,7 +124,9 @@ export const deleteManyNota = async (req: Request, res: Response) => {
       if (notasDeleted.affected == 0)
         return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-      return res.status(200).json({ ids: ids, message: "Notas eliminadas correctamente." });
+      return res
+        .status(200)
+        .json({ ids: ids, message: "Notas eliminadas correctamente." });
     }
     return res.status(400).json({ error: "No se encontraron coincidencias." });
   } catch (error) {
