@@ -8,6 +8,7 @@ import imagesRoutes from "./routes/ImagesRoutes";
 import rolRoutes from "./routes/RolRoutes";
 import userRoutes from "./routes/UsuarioRoutes";
 import codigoRoutes from "./routes/CodigoRoutes";
+import pacienteRoutes from "./routes/PacienteRoutes";
 import especialistaRoutes from "./routes/EspecialistaRoutes";
 
 import cursoRoutes from "./routes/CursoRoutes";
@@ -47,6 +48,7 @@ const main = async () => {
   app.use(rolRoutes);
   app.use(userRoutes);
   app.use(codigoRoutes);
+  app.use(pacienteRoutes);
   app.use(especialistaRoutes);
 
   // Para funcionalidades
