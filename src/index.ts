@@ -7,7 +7,7 @@ import imagesRoutes from "./routes/ImagesRoutes";
 
 import rolRoutes from "./routes/RolRoutes";
 import userRoutes from "./routes/UsuarioRoutes";
-import codigoRoutes from "./routes/CodigoRoutes";
+import codigoRoutes from "./routes/lookup/CodigoRoutes";
 import pacienteRoutes from "./routes/PacienteRoutes";
 import especialistaRoutes from "./routes/EspecialistaRoutes";
 
@@ -16,9 +16,9 @@ import actividadRoutes from "./routes/ActividadRoutes";
 import notaRoutes from "./routes/NotaRoutes";
 import publicidadRoutes from "./routes/PublicidadRoutes";
 
-import categoriaRoutes from "./routes/CategoriaRoutes";
-import especialidadRoutes from "./routes/EspecialidadRoutes";
-import carreraRoutes from "./routes/CarreraRoutes";
+import categoriaRoutes from "./routes/lookup/CategoriaRoutes";
+import especialidadRoutes from "./routes/lookup/EspecialidadRoutes";
+import carreraRoutes from "./routes/lookup/CarreraRoutes";
 
 import { connectDB } from "./db.config";
 import { _apiPort, _clientURL, _isProd } from "./constants";

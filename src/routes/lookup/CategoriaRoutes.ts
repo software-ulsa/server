@@ -6,8 +6,8 @@ import {
   getAllCategorias,
   getCategoriaById,
   updateCategoria,
-} from "../controllers/lookup/CategoriaController";
-const VerifyToken = require("../middleware/VerifyToken");
+} from "../../controllers/lookup/CategoriaController";
+const VerifyToken = require("../../middleware/VerifyToken");
 
 const router = Router();
 const prefix = "/categorias";

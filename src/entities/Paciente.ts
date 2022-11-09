@@ -28,6 +28,8 @@ export class Paciente extends BaseEntity {
   @ManyToOne(() => Carrera, (carrera) => carrera.pacientes, {
     cascade: ["update"],
     nullable: false,
+    eager: true,
+    onDelete: "CASCADE",
   })
   @JoinColumn({ name: "carrera_id" })
   carrera!: Carrera;
@@ -35,7 +37,10 @@ export class Paciente extends BaseEntity {
   @Column({ name: "usuario_id" })
   usuario_id!: number;
 
-  @OneToOne(() => Usuario)
+  @OneToOne(() => Usuario, {
+    eager: true,
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "usuario_id" })
   usuario!: Usuario;
 
