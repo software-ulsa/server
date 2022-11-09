@@ -22,7 +22,7 @@ router.post(prefix + "/getByKeyword", getNotaByKeyword);
 
 router.get(prefix, getAllNotas);
 
-router.get(prefix + "/:usuario_id", getAllByUsuarioId);
+router.get(prefix + "/getMyNotes/:usuario_id", getAllByUsuarioId);
 
 router.put(prefix + "/:id", updateNota);
 
