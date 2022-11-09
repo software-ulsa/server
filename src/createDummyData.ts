@@ -102,6 +102,13 @@ export const createCategorias = async () => {
         tipo: "Curso",
       });
       if (categoriaDos) console.log("Categoria 2 de prueba creada");
+
+      const categoriaTres = await Categoria.save({
+        nombre: "Tecnologia",
+        descripcion: "Todo lo relacionado al desarrollo web",
+        tipo: "Curso",
+      });
+      if (categoriaTres) console.log("Categoria 3 de prueba creada");
     } catch (error) {
       console.log(error);
     }
@@ -397,6 +404,54 @@ export const createEspecialistas = async () => {
       if (especialistaDosInsert) console.log("Especialista 2 de prueba creado");
     } catch (error) {
       console.error(error);
+    }
+  }
+};
+
+export const createCursos = async () => {
+  const cursoFound = await Curso.findOne({
+    where: { titulo: "Aprende React" },
+  });
+
+  if (!cursoFound) {
+    try {
+      const cursoInsert = await Curso.save({
+        titulo: "Aprende React",
+        descripcion:
+          "En este curso gratuito de React (8 horas) aprenderás paso a paso todo lo que necesitas saber para comenzar a crear proyectos interactivos.",
+        objetivo:
+          "Aprenderás por qué es tan importante para el desarrollo web y por qué deberías aprenderlo.",
+        fecha_inicio: new Date("02-07-2001"),
+        fecha_fin: new Date("02-11-2022"),
+        duracion: 8,
+        activo: true,
+        imagen: "",
+        categoria_id: 3,
+        palabras_clave: ["React", "Tecnologia", "Desarrollo Web"],
+      });
+
+      if (cursoInsert) {
+        console.log("Curso 1 de prueba creado");
+        const actividadUno = await Actividad.save({
+          titulo: "Conceptos Básicos de React",
+          descripcion:
+            "Veamos algunos conceptos esenciales que necesitarás para comenzar a trabajar con React",
+          url_media: "https://www.youtube.com/watch?v=8SbUC-UaAxE",
+          curso_id: cursoInsert.id,
+        });
+        if (actividadUno) console.log("Actividad 1 de prueba creada");
+
+        const actividadDos = await Actividad.save({
+          titulo: "Estructura de una Aplicación de React",
+          descripcion:
+            "Cómo crear una aplicación de React con el comando npx create-react-app.",
+          url_media: "https://www.youtube.com/watch?v=8SbUC-UaAxE",
+          curso_id: cursoInsert.id,
+        });
+        if (actividadDos) console.log("Actividad 2 de prueba creada");
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 };

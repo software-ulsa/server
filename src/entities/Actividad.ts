@@ -15,7 +15,7 @@ export class Actividad extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: "varchar", length: 30 })
+  @Column({ type: "varchar", length: 120 })
   titulo!: string;
 
   @Column({ type: "text" })
