@@ -22,8 +22,10 @@ import {
   createAdmin,
   createCarreras,
   createCategorias,
+  createCursos,
   createEspecialidades,
   createEspecialistas,
+  createNotas,
   createPacientes,
   createRoles,
 } from "./createDummyData";
@@ -77,13 +79,19 @@ export const connectDB = async () => {
       try {
         createRoles();
         createCarreras();
-        createCategorias();
+        createCategorias().then(() => {
+          createCursos();
+        });
         createEspecialidades();
 
-        createAdmin();
+        createAdmin().then(() => {
+          createNotas();
+        });
         createPacientes();
         createEspecialistas();
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     })
     .catch((err: any) => {
       console.error(err);

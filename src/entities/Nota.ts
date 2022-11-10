@@ -1,4 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Usuario } from "./Usuario";
 
 @Entity()
 export class Nota extends BaseEntity {
@@ -22,4 +30,15 @@ export class Nota extends BaseEntity {
 
   @Column({ type: "varchar", length: 50, array: true })
   palabras_clave!: string[];
+
+  @Column({ name: "usuario_id" })
+  usuario_id!: number;
+
+  @ManyToOne(() => Usuario, (usuario) => usuario.notas, {
+    eager: true,
+    cascade: ["update"],
+    nullable: false,
+  })
+  @JoinColumn({ name: "usuario_id" })
+  usuario!: Usuario;
 }

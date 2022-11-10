@@ -6,8 +6,8 @@ import {
   getAllCarreras,
   getCarreraById,
   updateCarrera,
-} from "../controllers/lookup/CarreraController";
-const VerifyToken = require("../middleware/VerifyToken");
+} from "../../controllers/lookup/CarreraController";
+const VerifyToken = require("../../middleware/VerifyToken");
 
 const router = Router();
 const prefix = "/carreras";

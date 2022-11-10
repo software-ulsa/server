@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Codigo } from "./lookup/Codigo";
+import { Nota } from "./Nota";
 import { Persona } from "./Persona";
 import { Rol } from "./Rol";
 
@@ -30,6 +31,12 @@ export class Usuario extends BaseEntity {
     default: false,
   })
   activo!: boolean;
+
+  @OneToMany(() => Nota, (nota) => nota.usuario, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  notas!: Nota[];
 
   @OneToMany(() => Codigo, (codigo) => codigo.usuario, {
     cascade: true,

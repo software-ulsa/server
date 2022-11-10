@@ -6,8 +6,8 @@ import {
   getAllEspecialidades,
   getEspecialidadById,
   updateEspecialidad,
-} from "../controllers/lookup/EspecialidadController";
-const VerifyToken = require("../middleware/VerifyToken");
+} from "../../controllers/lookup/EspecialidadController";
+const VerifyToken = require("../../middleware/VerifyToken");
 
 const router = Router();
 const prefix = "/especialidades";
