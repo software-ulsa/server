@@ -15,6 +15,7 @@ export const createPublicidad = async (req: Request, res: Response) => {
     fecha_inicio,
     fecha_fin,
     imagen,
+    activo,
   } = req.body;
   try {
     const publicidadInsert = await Publicidad.save({
@@ -26,6 +27,7 @@ export const createPublicidad = async (req: Request, res: Response) => {
       imagen: imagen,
       fecha_inicio: new Date(fecha_inicio),
       fecha_fin: new Date(fecha_fin),
+      activo: activo,
     });
 
     if (publicidadInsert) return res.status(200).json({ publicidad: publicidadInsert });

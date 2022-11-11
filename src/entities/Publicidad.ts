@@ -36,4 +36,7 @@ export class Publicidad extends BaseEntity {
 
   @Column({ type: "text" })
   imagen!: string;
+
+  @Column({ type: "bool" })
+  activo!: string;
 }

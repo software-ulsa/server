@@ -7,7 +7,7 @@ const repo = dataSource.getRepository(Nota);
 require("dotenv").config();
 
 export const createNota = async (req: Request, res: Response) => {
-  const { titulo, tema, contenido, estado, imagen, palabras_clave } = req.body;
+  const { titulo, tema, contenido, estado, imagen, palabras_clave, usuario_id } = req.body;
   try {
     const notaInsert = await Nota.save({
       titulo: titulo,
@@ -16,6 +16,7 @@ export const createNota = async (req: Request, res: Response) => {
       estado: estado,
       tema: tema,
       palabras_clave: palabras_clave,
+      usuario_id: usuario_id,
     });
 
     if (notaInsert) return res.status(200).json({ nota: notaInsert });
