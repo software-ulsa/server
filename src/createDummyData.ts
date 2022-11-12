@@ -28,28 +28,28 @@ export const createRoles = async () => {
       const adminRol = await Rol.save({
         nombre: "ADMINISTRADOR",
         descripcion: "Superusuario con todos los permisos",
-        permisos: ["chat"],
+        permisos: ["*"],
       });
       if (adminRol) console.log("Admin Rol de prueba creado");
 
       const usuarioRol = await Rol.save({
         nombre: "USUARIO",
         descripcion: "Miembro de ASAP - A safe place",
-        permisos: ["chat"],
+        permisos: ["PUBLICIDADES", "NOTAS", "CURSOS", "ROLES"],
       });
       if (usuarioRol) console.log("Usuario Rol de prueba creado");
 
       const pacienteRol = await Rol.save({
         nombre: "PACIENTE",
         descripcion: "Estudiante de la Universidad La Salle Oaxaca",
-        permisos: ["chat"],
+        permisos: [],
       });
       if (pacienteRol) console.log("Paciente Rol de prueba creado");
 
       const especialistaRol = await Rol.save({
         nombre: "ESPECIALISTA",
         descripcion: "Profesional de salud",
-        permisos: ["chat"],
+        permisos: ["CURSOS"],
       });
       if (especialistaRol) console.log("Especialista Rol de prueba creado");
     } catch (error) {
@@ -202,7 +202,7 @@ export const createUsuarios = async () => {
         rol_id: 2,
         persona_id: personaUnoInsert.id,
       });
-      if (usuarioUnoInsert) console.log("Paciente 1 de prueba creado");
+      if (usuarioUnoInsert) console.log("Usuario 1 de prueba creado");
     } catch (error) {
       console.error(error);
     }
@@ -229,7 +229,7 @@ export const createUsuarios = async () => {
         persona_id: personaDosInsert.id,
       });
 
-      if (usuarioDosInsert) console.log("Paciente 2 de prueba creado");
+      if (usuarioDosInsert) console.log("Usuario 2 de prueba creado");
     } catch (error) {
       console.error(error);
     }

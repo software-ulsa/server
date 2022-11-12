@@ -28,6 +28,7 @@ import {
   createNotas,
   createPacientes,
   createRoles,
+  createUsuarios,
 } from "./createDummyData";
 import { Paciente } from "./entities/Paciente";
 import { Chat } from "./entities/relation/Chat";
@@ -77,7 +78,11 @@ export const connectDB = async () => {
     .then(() => {
       console.log("Conectado a la base de datos");
       try {
-        createRoles();
+        createRoles().then(() => {
+          createUsuarios();
+          createPacientes();
+          createEspecialistas();
+        });
         createCarreras();
         createCategorias().then(() => {
           createCursos();
@@ -87,8 +92,6 @@ export const connectDB = async () => {
         createAdmin().then(() => {
           createNotas();
         });
-        createPacientes();
-        createEspecialistas();
       } catch (error) {
         console.log(error);
       }
