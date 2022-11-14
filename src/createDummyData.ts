@@ -94,21 +94,18 @@ export const createCategorias = async () => {
       const categoriaUno = await Categoria.save({
         nombre: "Salud y belleza",
         descripcion: "Todo lo relacionado a la salud fisica y cuidado personal",
-        tipo: "Nota",
       });
       if (categoriaUno) console.log("Categoria 1 de prueba creada");
 
       const categoriaDos = await Categoria.save({
         nombre: "Social",
         descripcion: "Todo lo relacionado a las relaciones interpersonales",
-        tipo: "Curso",
       });
       if (categoriaDos) console.log("Categoria 2 de prueba creada");
 
       const categoriaTres = await Categoria.save({
         nombre: "Tecnologia",
         descripcion: "Todo lo relacionado al desarrollo web",
-        tipo: "Curso",
       });
       if (categoriaTres) console.log("Categoria 3 de prueba creada");
     } catch (error) {
