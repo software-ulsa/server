@@ -13,7 +13,7 @@ const VerifyToken = require("../middleware/VerifyToken");
 const router = Router();
 const prefix = "/users";
 
-router.post(prefix, VerifyToken, createUser);
+router.post(prefix, createUser);
 
 router.post(prefix + "/login", login);
 
