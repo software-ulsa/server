@@ -1,19 +1,11 @@
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { Categoria } from "./lookup/Categoria";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Publicidad extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: "varchar", length: 30 })
+  @Column({ type: "varchar", length: 120 })
   nombre!: string;
 
   @Column({ type: "text" })
@@ -22,7 +14,7 @@ export class Publicidad extends BaseEntity {
   @Column({ type: "text" })
   empresa!: string;
 
-  @Column({ type: "varchar", length: 60 })
+  @Column({ type: "varchar", length: 120 })
   correo_empresa!: string;
 
   @Column({ type: "text" })

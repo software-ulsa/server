@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  acceptNota,
   createNota,
   deleteManyNota,
   deleteNota,
@@ -7,6 +8,7 @@ import {
   getAllNotas,
   getNotaById,
   getNotaByKeyword,
+  rejectNota,
   updateNota,
 } from "../controllers/NotaController";
 
@@ -25,6 +27,10 @@ router.get(prefix, VerifyToken, getAllNotas);
 router.get(prefix + "/getMyNotes/:usuario_id", VerifyToken, getAllByUsuarioId);
 
 router.put(prefix + "/:id", VerifyToken, updateNota);
+
+router.put(prefix + "/aceptar/:id", VerifyToken, acceptNota);
+
+router.put(prefix + "/rechazar/:id", VerifyToken, rejectNota);
 
 router.delete(prefix + "/:id", VerifyToken, deleteNota);
 

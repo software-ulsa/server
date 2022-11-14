@@ -176,9 +176,8 @@ export const updateUser = async (req: Request, res: Response) => {
 
   if (!userFound) return res.status(400).json({ error: "Usuario no existe." });
 
-  const hashedPassword = password
-    ? await argon2.hash(password)
-    : userFound.password;
+  const hashedPassword =
+    password !== "" ? await argon2.hash(password) : userFound.password;
 
   const personaUpdate = await Persona.update(
     { id: userFound.persona_id },

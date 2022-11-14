@@ -20,6 +20,10 @@ import categoriaRoutes from "./routes/lookup/CategoriaRoutes";
 import especialidadRoutes from "./routes/lookup/EspecialidadRoutes";
 import carreraRoutes from "./routes/lookup/CarreraRoutes";
 
+import chatRoutes from "./routes/relation/ChatRoutes";
+import historialRoutes from "./routes/relation/HistorialRoutes";
+import suscripcionRoutes from "./routes/relation/SuscripcionRoutes";
+
 import { connectDB } from "./db.config";
 import { _apiPort, _clientURL, _isProd } from "./constants";
 
@@ -61,6 +65,11 @@ const main = async () => {
   app.use(categoriaRoutes);
   app.use(especialidadRoutes);
   app.use(carreraRoutes);
+
+  // Para los many-to-many
+  app.use(chatRoutes);
+  app.use(historialRoutes);
+  app.use(suscripcionRoutes);
 
   app.listen(_apiPort);
   console.log("Listening on port: ", _apiPort);

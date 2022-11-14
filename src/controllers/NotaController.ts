@@ -7,7 +7,15 @@ const repo = dataSource.getRepository(Nota);
 require("dotenv").config();
 
 export const createNota = async (req: Request, res: Response) => {
-  const { titulo, tema, contenido, estado, imagen, palabras_clave, usuario_id } = req.body;
+  const {
+    titulo,
+    tema,
+    contenido,
+    estado,
+    imagen,
+    palabras_clave,
+    usuario_id,
+  } = req.body;
   try {
     const notaInsert = await Nota.save({
       titulo: titulo,
@@ -82,6 +90,40 @@ export const updateNota = async (req: Request, res: Response) => {
     if (notaUpdated.affected == 0)
       return res.status(400).json({ error: "Hubo un error al actualizar." });
 
+    const notaActualizada = await Nota.findOne({
+      where: { id: Number(id) },
+    });
+
+    return res.status(201).json({ nota: notaActualizada });
+  } catch (error) {
+    return res.status(400).json({ error: "Hubo un error al editar la nota." });
+  }
+};
+
+export const acceptNota = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const notaUpdated = await Nota.update(
+      { id: parseInt(id) },
+      { estado: "Aceptado" }
+    );
+    const notaActualizada = await Nota.findOne({
+      where: { id: Number(id) },
+    });
+
+    return res.status(201).json({ nota: notaActualizada });
+  } catch (error) {
+    return res.status(400).json({ error: "Hubo un error al editar la nota." });
+  }
+};
+
+export const rejectNota = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const notaUpdated = await Nota.update(
+      { id: parseInt(id) },
+      { estado: "Rechazado" }
+    );
     const notaActualizada = await Nota.findOne({
       where: { id: Number(id) },
     });

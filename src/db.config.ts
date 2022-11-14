@@ -19,6 +19,7 @@ import { Nota } from "./entities/Nota";
 import { Publicidad } from "./entities/Publicidad";
 import { Codigo } from "./entities/lookup/Codigo";
 import {
+  createActividadesCompletadas,
   createAdmin,
   createCarreras,
   createCategorias,
@@ -78,16 +79,20 @@ export const connectDB = async () => {
     .then(() => {
       console.log("Conectado a la base de datos");
       try {
+        createCarreras();
+        createEspecialidades();
+
         createRoles().then(() => {
           createUsuarios();
-          createPacientes();
+          createPacientes().then(() => {
+            createCategorias().then(() => {
+              createCursos().then(() => {
+                createActividadesCompletadas();
+              });
+            });
+          });
           createEspecialistas();
         });
-        createCarreras();
-        createCategorias().then(() => {
-          createCursos();
-        });
-        createEspecialidades();
 
         createAdmin().then(() => {
           createNotas();
