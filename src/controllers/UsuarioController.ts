@@ -244,3 +244,24 @@ export const deleteUser = async (req: Request, res: Response) => {
 
   return res.send({ error: "No existe el usuario." });
 };
+
+export const verifyEmail = async (req: Request, res: Response) => {
+  try {
+    const { email, userName } = req.body;
+    if (!email || !userName)
+      return res
+        .status(400)
+        .send({ mensaje: "Debes de colocar un correo y un nombre de usuario" });
+
+    const userFound = await Usuario.findOneBy({ username: userName });
+    const personFound = await Persona.findOneBy({ correo: email });
+
+    return res.status(200).send({ userFound, personFound });
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Ha ocurrido un error, por favor inténtelo de nuevo más tarde.";
+    return res.status(500).send({ mensaje: message });
+  }
+};
