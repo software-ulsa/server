@@ -31,7 +31,10 @@ export const createCurso = async (req: Request, res: Response) => {
       categoria_id: categoria_id,
     });
 
-    if (cursoInsert) return res.status(200).json({ curso: cursoInsert });
+    if (cursoInsert) {
+      const newCurso = await Curso.findOne({ where: { id: cursoInsert.id } });
+      return res.status(200).json({ curso: newCurso });
+    }
   } catch (error) {
     return res.status(400).json({ error: "Hubo un error al crear el curso." });
   }
