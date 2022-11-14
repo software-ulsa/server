@@ -38,9 +38,9 @@ export const getAllActividad = async (req: Request, res: Response) => {
 };
 
 export const getAllActividadByCursoId = async (req: Request, res: Response) => {
-  const { curso_id } = req.params;
-  const actividadesFound = Actividad.find({
-    where: { curso_id: Number(curso_id) },
+  const { id_curso } = req.params;
+  const actividadesFound = await Actividad.find({
+    where: { curso_id: Number(id_curso) },
   });
 
   return res.status(200).json(actividadesFound);

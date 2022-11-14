@@ -48,6 +48,7 @@ export class Curso extends BaseEntity {
 
   @ManyToOne(() => Categoria, (categoria) => categoria.curso, {
     cascade: ["update"],
+    eager: true,
     nullable: false,
   })
   @JoinColumn({ name: "categoria_id" })
@@ -55,6 +56,7 @@ export class Curso extends BaseEntity {
 
   @OneToMany(() => Actividad, (actividad) => actividad.curso, {
     cascade: true,
+    eager: true,
     onDelete: "CASCADE",
   })
   actividades!: Actividad[];

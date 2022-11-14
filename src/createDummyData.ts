@@ -500,6 +500,18 @@ export const createNotas = async () => {
         usuario_id: 1,
       });
       if (notaTresInsert) console.log("Nota 3 de prueba creada");
+
+      const notaCuatroInsert = await Nota.save({
+        titulo: "Apoco si pa",
+        contenido:
+          "<div><b>hola pa</b></div><div><b><i>saludos</i></b></div><div><b><i><br></i></b></div><div><b><i>atte. la vida</i></b></div>",
+        imagen: "0df310c93690f31fd35f81754e704bed",
+        estado: "Pendiente",
+        tema: "Tema2",
+        palabras_clave: ["TURIP", "IP", "IP"],
+        usuario_id: 1,
+      });
+      if (notaCuatroInsert) console.log("Nota 4 de prueba creada");
     } catch (error) {
       console.log(error);
     }

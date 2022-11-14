@@ -52,11 +52,7 @@ export const getCursoById = async (req: Request, res: Response) => {
 };
 
 export const getAllCurso = async (req: Request, res: Response) => {
-  const cursosFound = await repo
-    .createQueryBuilder("curso")
-    .leftJoinAndSelect("curso.actividades", "actividad")
-    .addSelect(["*"])
-    .getMany();
+  const cursosFound = await Curso.find();
 
   return res.status(200).json(cursosFound);
 };
@@ -80,35 +76,41 @@ export const updateCurso = async (req: Request, res: Response) => {
     where: { id: Number(id) },
   });
 
-  if (!cursoFound)
+  if (!cursoFound) {
     return res.status(400).json({
       error: "Curso no existe.",
     });
+  }
 
-  const cursoUpdated = await repo
-    .createQueryBuilder()
-    .update({
-      titulo: titulo,
-      descripcion: descripcion,
-      objetivo: objetivo,
-      fecha_inicio: new Date(fecha_inicio),
-      fecha_fin: new Date(fecha_fin),
-      duracion: duracion,
-      activo: activo,
-      imagen: imagen,
-      palabras_clave: palabras_clave,
-      categoria_id: categoria_id,
-    })
-    .where({
-      id: cursoFound.id,
-    })
-    .returning("*")
-    .execute();
+  try {
+    const cursoUpdate = await Curso.update(
+      { id: Number(id) },
+      {
+        titulo: titulo,
+        descripcion: descripcion,
+        objetivo: objetivo,
+        fecha_inicio: new Date(fecha_inicio),
+        fecha_fin: new Date(fecha_fin),
+        duracion: duracion,
+        activo: activo,
+        imagen: imagen,
+        palabras_clave: palabras_clave,
+        categoria_id: categoria_id,
+      }
+    );
 
-  if (cursoUpdated.affected == 0)
+    if (cursoUpdate.affected == 0) {
+      return res.status(400).json({ error: "Hubo un error al actualizar." });
+    }
+
+    const cursoUpdated = await Curso.findOne({
+      where: { id: Number(id) },
+    });
+
+    return res.status(201).json({ curso: cursoUpdated });
+  } catch (error) {
     return res.status(400).json({ error: "Hubo un error al actualizar." });
-
-  return res.status(201).json({ curso: cursoUpdated.raw[0] });
+  }
 };
 
 export const deleteCurso = async (req: Request, res: Response) => {

@@ -30,10 +30,13 @@ export const createPublicidad = async (req: Request, res: Response) => {
       activo: activo,
     });
 
-    if (publicidadInsert) return res.status(200).json({ publicidad: publicidadInsert });
+    if (publicidadInsert)
+      return res.status(200).json({ publicidad: publicidadInsert });
   } catch (error) {
     console.log(error);
-    return res.status(400).json({ error: "Hubo un error al agregar la publicidad." });
+    return res
+      .status(400)
+      .json({ error: "Hubo un error al agregar la publicidad." });
   }
 };
 
@@ -48,21 +51,15 @@ export const getPublicidadById = async (req: Request, res: Response) => {
 
     return res.status(400).json({ error: "Publicidad no existe" });
   } catch (error) {
-    return res.status(400).json({ error: "Hubo un error al agregar la publicidad." });
+    return res
+      .status(400)
+      .json({ error: "Hubo un error al agregar la publicidad." });
   }
 };
 
 export const getAllPublicidad = async (req: Request, res: Response) => {
-  try {
-    const publicidadesFound = await Publicidad.find();
-
-    if (publicidadesFound && publicidadesFound.length > 0)
-      return res.status(200).json(publicidadesFound);
-
-    return res.status(400).json({ error: "No se encontraron coincidencias." });
-  } catch (error) {
-    return res.status(400).json({ error: "Hubo un error al agregar la publicidad." });
-  }
+  const publicidadesFound = await Publicidad.find();
+  return res.status(200).json(publicidadesFound);
 };
 
 export const updatePublicidad = async (req: Request, res: Response) => {
@@ -74,7 +71,10 @@ export const updatePublicidad = async (req: Request, res: Response) => {
     });
 
     if (publicidadFound) {
-      const publicidadUpdated = await Publicidad.update({ id: parseInt(id) }, req.body);
+      const publicidadUpdated = await Publicidad.update(
+        { id: parseInt(id) },
+        req.body
+      );
 
       if (publicidadUpdated.affected == 0)
         return res.status(400).json({ error: "Hubo un error al actualizar." });
@@ -87,7 +87,9 @@ export const updatePublicidad = async (req: Request, res: Response) => {
 
     return res.status(400).json({ error: "Publicidad no existe" });
   } catch (error) {
-    return res.status(400).json({ error: "Hubo un error al actualizar la publicidad." });
+    return res
+      .status(400)
+      .json({ error: "Hubo un error al actualizar la publicidad." });
   }
 };
 
@@ -118,7 +120,9 @@ export const deletePublicidad = async (req: Request, res: Response) => {
 
     return res.status(400).json({ error: "Publicidad no existe" });
   } catch (error) {
-    return res.status(400).json({ error: "Hubo un error al agregar la publicidad." });
+    return res
+      .status(400)
+      .json({ error: "Hubo un error al agregar la publicidad." });
   }
 };
 
@@ -131,7 +135,9 @@ export const deleteManyPublicidad = async (req: Request, res: Response) => {
       if (publicidadesDeleted.affected == 0)
         return res.status(400).json({ error: "Hubo un error al eliminar." });
 
-      return res.status(200).json({ ids: ids, message: "Publicidades eliminadas correctamente." });
+      return res
+        .status(200)
+        .json({ ids: ids, message: "Publicidades eliminadas correctamente." });
     }
     return res.status(400).json({ error: "No se encontraron coincidencias." });
   } catch (error) {
