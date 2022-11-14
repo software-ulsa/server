@@ -7,15 +7,18 @@ import {
   getUserByRol,
   login,
   updateUser,
+  verifyEmail,
 } from "../controllers/UsuarioController";
 const VerifyToken = require("../middleware/VerifyToken");
 
 const router = Router();
 const prefix = "/users";
 
-router.post(prefix, VerifyToken, createUser);
+router.post(prefix, createUser);
 
 router.post(prefix + "/login", login);
+
+router.post(prefix + "/verify", verifyEmail);
 
 router.get(prefix + "/getById/:id", VerifyToken, getUserById);
 

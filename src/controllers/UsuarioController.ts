@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { Usuario } from "../entities/Usuario";
 
 import * as argon2 from "argon2";
@@ -13,22 +13,27 @@ const jwt = require("jsonwebtoken");
 const repo = dataSource.getRepository(Usuario);
 require("dotenv").config();
 
-export const createUser = async (req: Request, res: Response, next: any) => {
-  const {
-    nombre,
-    ape_paterno,
-    ape_materno,
-    fecha_nac,
-    sexo,
-    correo,
-    telefono,
-    username,
-    password,
-    imagen,
-    rol_id,
-    activo,
-  } = req.body;
+export const createUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
+    const {
+      nombre,
+      ape_paterno,
+      ape_materno,
+      fecha_nac,
+      sexo,
+      correo,
+      telefono,
+      username,
+      password,
+      imagen,
+      rol_id,
+      activo,
+    } = req.body;
+
     const personaInsert = await Persona.save({
       nombre: nombre,
       ape_paterno: ape_paterno,
@@ -38,7 +43,7 @@ export const createUser = async (req: Request, res: Response, next: any) => {
       telefono: telefono,
       correo: correo,
     });
-
+    console.log(personaInsert);
     const hashedPassword = await argon2.hash(password);
 
     const usuarioInsert = await Usuario.save({
@@ -49,7 +54,7 @@ export const createUser = async (req: Request, res: Response, next: any) => {
       rol_id: rol_id,
       persona_id: personaInsert.id,
     });
-
+    console.log(usuarioInsert);
     if (usuarioInsert) {
       let payload = {
         id: usuarioInsert.id,
@@ -59,21 +64,21 @@ export const createUser = async (req: Request, res: Response, next: any) => {
       if (!usuarioInsert.activo) {
         const val = Math.floor(1000 + Math.random() * 9000);
 
-        const nuevoCodigo = await Codigo.save({
+        await Codigo.save({
           codigo: val,
           usuario_id: usuarioInsert.id,
         });
 
         // Aqui despues le tenemos que enviar el codigo para que se envie en el correo
-        await enviarCorreo(req, res, next, val, usuarioInsert.persona.correo);
+        await enviarCorreo(req, res, next, val, correo);
       }
 
       const token = jwt.sign(payload, _token);
-      const userSaved = await Usuario.findOne({
-        where: { id: Number(usuarioInsert.id) },
-      });
+      // const userSaved = await Usuario.findOne({
+      //   where: { id: Number(usuarioInsert.id) },
+      // });
 
-      return res.status(200).send({ userSaved, token });
+      return res.status(200).json({ usuarioInsert, token });
     }
   } catch (error) {
     console.log(error);
@@ -238,4 +243,25 @@ export const deleteUser = async (req: Request, res: Response) => {
   }
 
   return res.send({ error: "No existe el usuario." });
+};
+
+export const verifyEmail = async (req: Request, res: Response) => {
+  try {
+    const { email, userName } = req.body;
+    if (!email || !userName)
+      return res
+        .status(400)
+        .send({ mensaje: "Debes de colocar un correo y un nombre de usuario" });
+
+    const userFound = await Usuario.findOneBy({ username: userName });
+    const personFound = await Persona.findOneBy({ correo: email });
+
+    return res.status(200).send({ userFound, personFound });
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Ha ocurrido un error, por favor inténtelo de nuevo más tarde.";
+    return res.status(500).send({ mensaje: message });
+  }
 };
