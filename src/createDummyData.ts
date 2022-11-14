@@ -17,6 +17,8 @@ import { Especialidad } from "./entities/lookup/Especialidad";
 import { Paciente } from "./entities/Paciente";
 import { Carrera } from "./entities/lookup/Carrera";
 import { Categoria } from "./entities/lookup/Categoria";
+import { Historial } from "./entities/relation/Historial";
+import { Suscripcion } from "./entities/relation/Suscripcion";
 
 const jwt = require("jsonwebtoken");
 
@@ -452,6 +454,15 @@ export const createCursos = async () => {
           });
           if (actividadDos)
             console.log(`Actividad 2 del curso ${i} de prueba creado`);
+
+          const actividadTres = await Actividad.save({
+            titulo: "No se que poner aiuda",
+            descripcion: "No Nut November",
+            url_media: "https://www.youtube.com/watch?v=8SbUC-UaAxE",
+            curso_id: cursoInsert.id,
+          });
+          if (actividadTres)
+            console.log(`Actividad 3 del curso ${i} de prueba creado`);
         }
       }
     } catch (error) {
@@ -512,6 +523,44 @@ export const createNotas = async () => {
         usuario_id: 1,
       });
       if (notaCuatroInsert) console.log("Nota 4 de prueba creada");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+
+export const createActividadesCompletadas = async () => {
+  const pacienteUno = await Paciente.findOne({
+    where: { usuario: { persona: { correo: "pacientOne@gmail.com" } } },
+  });
+
+  const actividadCompleted = await Historial.find({
+    where: { paciente_id: pacienteUno!.id, curso_id: 1 },
+  });
+
+  if (actividadCompleted.length === 0) {
+    try {
+      const suscripcion = await Suscripcion.save({
+        fecha_inicio: new Date(),
+        valoracion: 0,
+        paciente_id: pacienteUno!.id,
+        curso_id: 1,
+        progreso: Number((2 / 3) * 100),
+      });
+
+      const actOneCompleted = await Historial.save({
+        curso_id: 1,
+        paciente_id: pacienteUno!.id,
+        actividad_id: 1,
+        fecha_completado: new Date(),
+      });
+
+      const actThreeCompleted = await Historial.save({
+        curso_id: 1,
+        paciente_id: pacienteUno!.id,
+        actividad_id: 3,
+        fecha_completado: new Date(),
+      });
     } catch (error) {
       console.log(error);
     }

@@ -39,12 +39,7 @@ export const createCurso = async (req: Request, res: Response) => {
 
 export const getCursoById = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const cursoFound = await repo
-    .createQueryBuilder("curso")
-    .where("curso.id = :id", { id: Number(id) })
-    .leftJoinAndSelect("curso.actividades", "actividad")
-    .addSelect(["*"])
-    .getOne();
+  const cursoFound = await Curso.findOne({ where: { id: Number(id) } });
 
   if (cursoFound) return res.status(200).json(cursoFound);
 

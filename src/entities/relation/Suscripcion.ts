@@ -17,10 +17,10 @@ export class Suscripcion extends BaseEntity {
   @Column({ type: "date" })
   fecha_inicio!: Date;
 
-  @Column({ type: "date" })
+  @Column({ type: "date", nullable: true })
   fecha_fin!: Date;
 
-  @Column({ type: "integer" })
+  @Column({ type: "decimal" })
   progreso!: number;
 
   @Column({ type: "integer" })
@@ -36,7 +36,7 @@ export class Suscripcion extends BaseEntity {
   @Column({ name: "curso_id" })
   curso_id!: number;
 
-  @ManyToOne(() => Curso)
+  @ManyToOne(() => Curso, { eager: true })
   @JoinColumn({ name: "curso_id" })
   curso!: Curso;
 }
