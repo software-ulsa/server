@@ -7,12 +7,11 @@ const repo = dataSource.getRepository(Categoria);
 
 export const createCategoria = async (req: Request, res: Response) => {
   try {
-    const { nombre, descripcion, tipo } = req.body;
+    const { nombre, descripcion } = req.body;
 
     const categoriaInsert = await Categoria.save({
       nombre: nombre,
       descripcion: descripcion,
-      tipo: tipo,
     });
 
     if (categoriaInsert)
@@ -43,7 +42,7 @@ export const getAllCategorias = async (req: Request, res: Response) => {
 
 export const updateCategoria = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { nombre, descripcion, tipo } = req.body;
+  const { nombre, descripcion } = req.body;
 
   const categoriasFound = await Categoria.findOneBy({
     id: Number(id),
@@ -59,7 +58,6 @@ export const updateCategoria = async (req: Request, res: Response) => {
     .update({
       nombre: nombre,
       descripcion: descripcion,
-      tipo: tipo,
     })
     .where({
       id: categoriasFound.id,

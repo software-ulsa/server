@@ -18,9 +18,6 @@ export class Categoria extends BaseEntity {
   @Column({ type: "varchar", length: 150 })
   descripcion!: string;
 
-  @Column({ type: "varchar", length: 30 })
-  tipo!: string;
-
   @OneToMany(() => Curso, (curso) => curso.categoria, {
     cascade: true,
     onDelete: "CASCADE",
