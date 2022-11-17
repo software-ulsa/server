@@ -6,6 +6,7 @@ import {
   getPacienteById,
   updatePaciente,
   deletePaciente,
+  registerPaciente,
 } from "../controllers/PacienteController";
 
 const router = Router();
@@ -13,6 +14,8 @@ const prefix = "/pacientes";
 const VerifyToken = require("../middleware/VerifyToken");
 
 router.post(prefix, VerifyToken, createPaciente);
+
+router.post(prefix + "/mobile", registerPaciente);
 
 router.get(prefix + "/:id", VerifyToken, getPacienteById);
 

@@ -43,7 +43,7 @@ export const createUser = async (
       telefono: telefono,
       correo: correo,
     });
-    console.log(personaInsert);
+
     const hashedPassword = await argon2.hash(password);
 
     const usuarioInsert = await Usuario.save({
@@ -54,7 +54,7 @@ export const createUser = async (
       rol_id: rol_id,
       persona_id: personaInsert.id,
     });
-    console.log(usuarioInsert);
+
     if (usuarioInsert) {
       let payload = {
         id: usuarioInsert.id,
@@ -74,11 +74,11 @@ export const createUser = async (
       }
 
       const token = jwt.sign(payload, _token);
-      // const userSaved = await Usuario.findOne({
-      //   where: { id: Number(usuarioInsert.id) },
-      // });
+      const userSaved = await Usuario.findOne({
+        where: { id: Number(usuarioInsert.id) },
+      });
 
-      return res.status(200).json({ usuarioInsert, token });
+      return res.status(200).json({ userSaved, token });
     }
   } catch (error) {
     console.log(error);

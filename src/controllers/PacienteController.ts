@@ -7,8 +7,82 @@ import { Persona } from "../entities/Persona";
 import { Usuario } from "../entities/Usuario";
 import { Paciente } from "../entities/Paciente";
 import { Rol } from "../entities/Rol";
+import { Codigo } from "../entities/lookup/Codigo";
 
 const repo = dataSource.getRepository(Paciente);
+
+export const registerPaciente = async (req: Request, res: Response) => {
+  const {
+    nombre,
+    ape_paterno,
+    ape_materno,
+    fecha_nac,
+    sexo,
+    correo,
+    telefono,
+    username,
+    password,
+    imagen,
+    matricula,
+    carrera_id,
+  } = req.body;
+
+  try {
+    const rol = await Rol.findOne({ where: { nombre: "PACIENTE" } });
+
+    const personaInsert = await Persona.save({
+      nombre: nombre,
+      ape_paterno: ape_paterno,
+      ape_materno: ape_materno,
+      fecha_nac: new Date(fecha_nac),
+      sexo: sexo,
+      telefono: telefono,
+      correo: correo,
+    });
+
+    const hashedPassword = await argon2.hash(password);
+
+    const usuarioInsert = await Usuario.save({
+      username: username,
+      password: hashedPassword,
+      imagen: imagen,
+      activo: false,
+      rol_id: rol!.id,
+      persona_id: personaInsert.id,
+    });
+
+    if (usuarioInsert) {
+      const val = Math.floor(1000 + Math.random() * 9000);
+
+      await Codigo.save({
+        codigo: val,
+        usuario_id: usuarioInsert.id,
+      });
+
+      const pacienteInsert = await Paciente.save({
+        usuario_id: usuarioInsert.id,
+        carrera_id: carrera_id,
+        matricula: matricula,
+      });
+
+      if (pacienteInsert) {
+        const pacienteSaved = await Paciente.findOne({
+          where: { id: Number(pacienteInsert.id) },
+        });
+
+        return res.status(200).json({ paciente: pacienteSaved });
+      }
+    }
+
+    return res
+      .status(400)
+      .json({ error: "Hubo un error al registrar al paciente." });
+  } catch (error) {
+    return res
+      .status(400)
+      .json({ error: "Hubo un error al registrar al paciente." });
+  }
+};
 
 export const createPaciente = async (req: Request, res: Response) => {
   const {
