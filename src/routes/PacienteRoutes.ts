@@ -13,7 +13,7 @@ const router = Router();
 const prefix = "/pacientes";
 const VerifyToken = require("../middleware/VerifyToken");
 
-router.post(prefix, VerifyToken, createPaciente);
+router.post(prefix,  createPaciente);
 
 router.post(prefix + "/mobile", registerPaciente);
 

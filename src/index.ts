@@ -27,6 +27,8 @@ import suscripcionRoutes from "./routes/relation/SuscripcionRoutes";
 import { connectDB } from "./db.config";
 import { _apiPort, _clientURL, _isProd } from "./constants";
 
+const io = require("socket.io")();
+
 const main = async () => {
   await connectDB();
 
@@ -73,6 +75,17 @@ const main = async () => {
 
   app.listen(_apiPort);
   console.log("Listening on port: ", _apiPort);
+
+  io.on("connection", (socket: any) => {
+    console.log("A user connecterd");
+
+    socket.on("message", (objeto: any) => {
+      // console.log(objeto);
+      io.emit("message", objeto);
+    });
+  });
+
+  io.listen(3001);
 };
 
 main();

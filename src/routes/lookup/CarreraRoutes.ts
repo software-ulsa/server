@@ -16,7 +16,7 @@ router.post(prefix, VerifyToken, createCarrera);
 
 router.get(prefix + "/:id", VerifyToken, getCarreraById);
 
-router.get(prefix, VerifyToken, getAllCarreras);
+router.get(prefix, getAllCarreras); //Lo necesito para crear un nuevo user xd
 
 router.put(prefix + "/:id", VerifyToken, updateCarrera);
 
