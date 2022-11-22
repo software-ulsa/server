@@ -28,6 +28,7 @@ import { connectDB } from "./db.config";
 import { _apiPort, _clientURL, _isProd } from "./constants";
 
 const io = require("socket.io")();
+const httpsRedirect = require("express-https-redirect");
 
 const main = async () => {
   await connectDB();
@@ -44,7 +45,7 @@ const main = async () => {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.enable("trust proxy");
+
   app.use(morgan("dev"));
 
   // Para las imagenes
@@ -73,13 +74,8 @@ const main = async () => {
   app.use(historialRoutes);
   app.use(suscripcionRoutes);
 
-  app.use(function (request, response, next) {
-    if (_isProd && !request.secure) {
-      return response.redirect("https://" + request.headers.host + request.url);
-    }
-
-    next();
-  });
+  console.log(_isProd);
+  app.use("/", httpsRedirect(_isProd));
 
   app.listen(_apiPort);
   console.log("Listening on port: ", _apiPort);
