@@ -54,6 +54,7 @@ const main = async () => {
       origin: "*",
     })
   );
+  app.enable("trust proxy");
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
@@ -61,6 +62,10 @@ const main = async () => {
   app.use(bodyParser.urlencoded({ extended: true }));
 
   app.use(morgan("dev"));
+
+  app.use((req, res, next) => {
+    req.secure ? next() : res.redirect("https://" + req.headers.host + req.url);
+  });
 
   // Para las imagenes
   app.use(imagesRoutes);
