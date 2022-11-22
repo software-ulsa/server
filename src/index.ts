@@ -63,8 +63,10 @@ const main = async () => {
 
   app.use(morgan("dev"));
 
-  app.use((req, res, next) => {
-    req.secure ? next() : res.redirect("https://" + req.headers.host + req.url);
+  app.all("*", (req, res, next) => {
+    req.secure
+      ? next()
+      : res.redirect(`https://${req.hostname}:${_apiHttpsPort}${req.url}`);
   });
 
   // Para las imagenes
