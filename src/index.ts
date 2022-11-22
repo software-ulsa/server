@@ -25,13 +25,27 @@ import historialRoutes from "./routes/relation/HistorialRoutes";
 import suscripcionRoutes from "./routes/relation/SuscripcionRoutes";
 
 import { connectDB } from "./db.config";
-import { _apiHttpPort, _clientURL, _isProd } from "./constants";
+import { _apiHttpPort, _apiHttpsPort, _clientURL, _isProd } from "./constants";
 
 const io = require("socket.io")();
-const httpsRedirect = require("express-https-redirect");
 
 const main = async () => {
   await connectDB();
+
+  const fs = require("fs");
+  const http = require("http");
+  const https = require("https");
+
+  const privateKey = fs.readFileSync(
+    `${__dirname}/certificate/server.key`,
+    "utf8"
+  );
+  const certificate = fs.readFileSync(
+    `${__dirname}/certificate/server.crt`,
+    "utf8"
+  );
+
+  const credentials = { key: privateKey, cert: certificate };
 
   const app = express();
   app.use(
@@ -74,10 +88,13 @@ const main = async () => {
   app.use(historialRoutes);
   app.use(suscripcionRoutes);
 
-  app.use("/", httpsRedirect(_isProd));
+  http.createServer(app).listen(_apiHttpPort, () => {
+    console.log("HTTP listening on port: ", _apiHttpPort);
+  });
 
-  app.listen(_apiHttpPort);
-  console.log("Listening on port: ", _apiHttpPort);
+  https.createServer(credentials, app).listen(_apiHttpsPort, () => {
+    console.log("HTTPS listening on port: ", _apiHttpsPort);
+  });
 
   io.on("connection", (socket: any) => {
     console.log("A user connecterd");
