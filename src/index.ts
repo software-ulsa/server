@@ -37,11 +37,11 @@ const main = async () => {
   const https = require("https");
 
   const privateKey = fs.readFileSync(
-    `${__dirname}/certificates/server.key`,
+    `${__dirname}/certificate/server.key`,
     "utf8"
   );
   const certificate = fs.readFileSync(
-    `${__dirname}/certificates/server.crt`,
+    `${__dirname}/certificate/server.crt`,
     "utf8"
   );
 
