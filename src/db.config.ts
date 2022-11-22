@@ -18,6 +18,16 @@ import { Curso } from "./entities/Curso";
 import { Nota } from "./entities/Nota";
 import { Publicidad } from "./entities/Publicidad";
 import { Codigo } from "./entities/lookup/Codigo";
+import { Paciente } from "./entities/Paciente";
+import { Chat } from "./entities/relation/Chat";
+import { Historial } from "./entities/relation/Historial";
+import { Suscripcion } from "./entities/relation/Suscripcion";
+import { Carrera } from "./entities/lookup/Carrera";
+import { Categoria } from "./entities/lookup/Categoria";
+import { Domicilio } from "./entities/lookup/Domicilio";
+import { Especialidad } from "./entities/lookup/Especialidad";
+import { Persona } from "./entities/Persona";
+
 import {
   createActividadesCompletadas,
   createAdmin,
@@ -31,15 +41,6 @@ import {
   createRoles,
   createUsuarios,
 } from "./createDummyData";
-import { Paciente } from "./entities/Paciente";
-import { Chat } from "./entities/relation/Chat";
-import { Historial } from "./entities/relation/Historial";
-import { Suscripcion } from "./entities/relation/Suscripcion";
-import { Carrera } from "./entities/lookup/Carrera";
-import { Categoria } from "./entities/lookup/Categoria";
-import { Domicilio } from "./entities/lookup/Domicilio";
-import { Especialidad } from "./entities/lookup/Especialidad";
-import { Persona } from "./entities/Persona";
 
 export const dataSource = new DataSource({
   type: "postgres",
