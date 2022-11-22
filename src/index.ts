@@ -36,8 +36,14 @@ const main = async () => {
   const http = require("http");
   const https = require("https");
 
-  const privateKey = fs.readFileSync("sslcert/server.key", "utf8");
-  const certificate = fs.readFileSync("sslcert/server.crt", "utf8");
+  const privateKey = fs.readFileSync(
+    `${__dirname}/certificates/server.key`,
+    "utf8"
+  );
+  const certificate = fs.readFileSync(
+    `${__dirname}/certificates/server.crt`,
+    "utf8"
+  );
 
   const credentials = { key: privateKey, cert: certificate };
   const app = express();
