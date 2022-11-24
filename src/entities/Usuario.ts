@@ -7,6 +7,8 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Codigo } from "./lookup/Codigo";
 import { Nota } from "./Nota";
@@ -64,4 +66,10 @@ export class Usuario extends BaseEntity {
   })
   @JoinColumn({ name: "rol_id" })
   rol!: Rol;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }

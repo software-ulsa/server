@@ -7,6 +7,8 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Carrera } from "./lookup/Carrera";
 import { Chat } from "./relation/Chat";
@@ -61,4 +63,10 @@ export class Paciente extends BaseEntity {
     onDelete: "CASCADE",
   })
   historial!: Historial[];
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }

@@ -4,7 +4,9 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn, 
+  CreateDateColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Usuario } from "./Usuario";
 
@@ -41,4 +43,10 @@ export class Nota extends BaseEntity {
   })
   @JoinColumn({ name: "usuario_id" })
   usuario!: Usuario;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }

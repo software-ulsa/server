@@ -7,6 +7,8 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Domicilio } from "./lookup/Domicilio";
 import { Especialidad } from "./lookup/Especialidad";
@@ -58,4 +60,10 @@ export class Especialista extends BaseEntity {
     onDelete: "CASCADE",
   })
   chat!: Chat[];
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }
