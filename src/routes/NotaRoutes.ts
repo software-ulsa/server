@@ -4,6 +4,7 @@ import {
   createNota,
   deleteManyNota,
   deleteNota,
+  getActiveNotas,
   getAllByUsuarioId,
   getAllNotas,
   getNotaById,
@@ -35,5 +36,7 @@ router.put(prefix + "/rechazar/:id", VerifyToken, rejectNota);
 router.delete(prefix + "/:id", VerifyToken, deleteNota);
 
 router.post(prefix + "/batch", VerifyToken, deleteManyNota);
+
+router.get(prefix + "/getNotes/Active", VerifyToken, getActiveNotas);
 
 export default router;
