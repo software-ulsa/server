@@ -221,6 +221,7 @@ export const updatePaciente = async (req: Request, res: Response) => {
     .addSelect("usuario.password")
     .getOne();
 
+    console.log(pacienteFound)
   if (!pacienteFound)
     return res.status(400).json({
       error: "Paciente no existe.",
@@ -236,7 +237,7 @@ export const updatePaciente = async (req: Request, res: Response) => {
         fecha_nac: new Date(fecha_nac),
         sexo: sexo,
         telefono: telefono,
-        correo: correo,
+        // correo: correo,
       }
     );
 
@@ -253,7 +254,6 @@ export const updatePaciente = async (req: Request, res: Response) => {
         activo: activo,
       }
     );
-
     const pacienteUpdate = await Paciente.update(
       { id: Number(pacienteFound.id) },
       {
@@ -265,9 +265,10 @@ export const updatePaciente = async (req: Request, res: Response) => {
     const pacienteUpdated = await Paciente.findOne({
       where: { id: Number(id) },
     });
-
+console.log(pacienteUpdated)
     return res.status(201).json({ paciente: pacienteUpdated });
   } catch (error) {
+    console.log(error)
     return res.status(400).json({ error: "Hubo un error al actualizar." });
   }
 };

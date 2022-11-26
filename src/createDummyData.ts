@@ -157,7 +157,7 @@ export const createAdmin = async () => {
       const usuarioAdminInsert = await Usuario.save({
         username: "admin",
         password: hashedPassword,
-        imagen: "0c964b47b4c845fb697de37375ad51aa",
+        imagen: "157-1575410_react-js-logo-png-transparent-png.png",
         activo: true,
         rol_id: 1,
         persona_id: personaAdminInsert.id,
