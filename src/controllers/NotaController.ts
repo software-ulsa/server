@@ -192,8 +192,11 @@ export const getNotesByFilter = async (req: Request, res: Response) => {
 
     let data = undefined;
     /^\s*$/.test(String(word))
-      ? (data = await Nota.find())
-      : (data = await Nota.findBy({ titulo: Like(`%${word}%`) }));
+      ? (data = await Nota.findBy({ estado: "Aceptado" }))
+      : (data = await Nota.findBy({
+          titulo: Like(`%${word}%`),
+          estado: "Aceptado",
+        }));
 
     return res.status(200).json(data);
   } catch (error) {
