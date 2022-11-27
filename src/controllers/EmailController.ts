@@ -24,7 +24,7 @@ export const enviarCorreo = async (
   // send mail with defined transport object
   let info = await transporter.sendMail({
     from: "jairo.martinez@karimnot.com", // sender address
-    to: "014419999@ulsaoaxaca.edu.mx", // list of receivers
+    to: "raanloga@gmail.com", // list of receivers
     subject: "Código | Verificación cuenta", // Subject line
     text: "Verificación cuenta", // plain text body
     html: `
