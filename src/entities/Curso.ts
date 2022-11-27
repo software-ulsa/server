@@ -1,11 +1,13 @@
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Actividad } from "./Actividad";
 import { Categoria } from "./lookup/Categoria";
@@ -66,4 +68,10 @@ export class Curso extends BaseEntity {
     onDelete: "CASCADE",
   })
   suscripcion!: Suscripcion[];
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }
