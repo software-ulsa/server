@@ -9,6 +9,7 @@ import {
   getAllNotas,
   getNotaById,
   getNotaByKeyword,
+  getNotesByFilter,
   rejectNota,
   updateNota,
 } from "../controllers/NotaController";
@@ -38,5 +39,7 @@ router.delete(prefix + "/:id", VerifyToken, deleteNota);
 router.post(prefix + "/batch", VerifyToken, deleteManyNota);
 
 router.get(prefix + "/getNotes/Active", VerifyToken, getActiveNotas);
+
+router.get(prefix + "/getNotes/filter",  getNotesByFilter);
 
 export default router;
