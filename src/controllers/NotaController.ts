@@ -182,20 +182,21 @@ export const getActiveNotas = async (req: Request, res: Response) => {
     const data = await Nota.findBy({ estado: "Aceptado" });
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(400).json({ error: "Hubo un error al eliminar." });
+    return res.status(400).json({ error: "Hubo un error." });
   }
 };
 
 export const getNotesByFilter = async (req: Request, res: Response) => {
   try {
-    const { filtro } = req.body;
+    let word = req.query.word;
+
     let data = undefined;
-    /^\s*$/.test(filtro)
+    /^\s*$/.test(String(word))
       ? (data = await Nota.find())
-      : (data = await Nota.findBy({ titulo: Like(`%${filtro}%`) }));
+      : (data = await Nota.findBy({ titulo: Like(`%${word}%`) }));
 
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(400).json({ error: "Hubo un error al eliminar." });
+    return res.status(400).json({ error: "Hubo un error." });
   }
 };

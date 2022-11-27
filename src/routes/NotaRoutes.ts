@@ -40,6 +40,6 @@ router.post(prefix + "/batch", VerifyToken, deleteManyNota);
 
 router.get(prefix + "/getNotes/Active", VerifyToken, getActiveNotas);
 
-router.get(prefix + "/getNotes/filter", VerifyToken, getNotesByFilter);
+router.get(prefix + "/getNotes/filter",  getNotesByFilter);
 
 export default router;
