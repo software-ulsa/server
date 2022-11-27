@@ -158,8 +158,8 @@ export const createPaciente = async (
     // const userSaved = await Usuario.findOne({
     //   where: { id: Number(usuarioInsert.id) },
     // });
-
-    return res.status(200).json({ usuarioInsert, token });
+    const data = { ...usuarioInsert, persona: personaInsert };
+    return res.status(200).json({ usuarioInsert: data, token });
   } catch (error) {
     console.log(error);
     return res
@@ -221,7 +221,7 @@ export const updatePaciente = async (req: Request, res: Response) => {
     .addSelect("usuario.password")
     .getOne();
 
-    console.log(pacienteFound)
+  console.log(pacienteFound);
   if (!pacienteFound)
     return res.status(400).json({
       error: "Paciente no existe.",
@@ -265,10 +265,10 @@ export const updatePaciente = async (req: Request, res: Response) => {
     const pacienteUpdated = await Paciente.findOne({
       where: { id: Number(id) },
     });
-console.log(pacienteUpdated)
+    console.log(pacienteUpdated);
     return res.status(201).json({ paciente: pacienteUpdated });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(400).json({ error: "Hubo un error al actualizar." });
   }
 };
