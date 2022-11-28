@@ -25,15 +25,12 @@ import historialRoutes from "./routes/relation/HistorialRoutes";
 import suscripcionRoutes from "./routes/relation/SuscripcionRoutes";
 
 import { connectDB } from "./db.config";
-import { _apiHttpPort, _apiHttpsPort, _clientURL, _isProd } from "./constants";
+import { _apiPort, _clientURL, _isProd } from "./constants";
 
 const io = require("socket.io")();
 
 const main = async () => {
   await connectDB();
-
-  const fs = require("fs");
-  const http = require("http");
 
   const app = express();
   app.use(
@@ -42,7 +39,6 @@ const main = async () => {
       origin: "*",
     })
   );
-  app.enable("trust proxy");
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
@@ -50,6 +46,8 @@ const main = async () => {
   app.use(bodyParser.urlencoded({ extended: true }));
 
   app.use(morgan("dev"));
+
+  // Para las imagenes
   app.use(imagesRoutes);
 
   // Para los usuarios y entidades relacionadas
@@ -75,9 +73,8 @@ const main = async () => {
   app.use(historialRoutes);
   app.use(suscripcionRoutes);
 
-  http.createServer(app).listen(_apiHttpPort, () => {
-    console.log("HTTP listening on port: ", _apiHttpPort);
-  });
+  app.listen(_apiPort);
+  console.log("Listening on port: ", _apiPort);
 
   io.on("connection", (socket: any) => {
     console.log("A user connecterd");
