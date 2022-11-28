@@ -77,7 +77,39 @@ export const createCarreras = async () => {
         nombre: "Ingenieria Electronica y de Telecomunicaciones",
         abreviatura: "Ing. Electronica",
       });
+      const carreraTres = await Carrera.save({
+        nombre: "Bachillerato",
+        abreviatura: "Bachi",
+      });
+      const carreraCuatro = await Carrera.save({
+        nombre: "Licenciatura en comunicación",
+        abreviatura: "LC",
+      });
+      const carreraCinco = await Carrera.save({
+        nombre: "Licenciatura en derecho",
+        abreviatura: "LD",
+      });
+      const carreraSeis = await Carrera.save({
+        nombre: "Licenciatura en Adminstración de Empresas",
+        abreviatura: "LAE",
+      });
+      const carreraSiete = await Carrera.save({
+        nombre: "Licenciatura en Gastronomía",
+        abreviatura: "LG",
+      });
+      const carreraOcho = await Carrera.save({
+        nombre: "Licenciatura en Psicología",
+        abreviatura: "LP",
+      });
+      const carreraNueve = await Carrera.save({
+        nombre: "Licenciatura en ",
+        abreviatura: "LP",
+      });
       if (carreraDos) console.log("Carrera 2 de prueba creada");
+      if (carreraTres) console.log("Carrera 3 de prueba creada");
+      if (carreraCuatro) console.log("Carrera 4 de prueba creada");
+      if (carreraCinco) console.log("Carrera 5 de prueba creada");
+      if (carreraSeis) console.log("Carrera 6 de prueba creada");
     } catch (error) {
       console.log(error);
     }
@@ -93,7 +125,7 @@ export const createCategorias = async () => {
     try {
       const categoriaUno = await Categoria.save({
         nombre: "Salud y belleza",
-        descripcion: "Todo lo relacionado a la salud fisica y cuidado personal",
+        descripcion: "Todo lo relacionado a la salud física y cuidado personal",
       });
       if (categoriaUno) console.log("Categoria 1 de prueba creada");
 
@@ -104,7 +136,7 @@ export const createCategorias = async () => {
       if (categoriaDos) console.log("Categoria 2 de prueba creada");
 
       const categoriaTres = await Categoria.save({
-        nombre: "Tecnologia",
+        nombre: "Tecnología",
         descripcion: "Todo lo relacionado al desarrollo web",
       });
       if (categoriaTres) console.log("Categoria 3 de prueba creada");
@@ -116,20 +148,20 @@ export const createCategorias = async () => {
 
 export const createEspecialidades = async () => {
   const especialidadFound = await Especialidad.findOne({
-    where: { nombre: "Traumatologia" },
+    where: { nombre: "Traumatología" },
   });
 
   if (!especialidadFound) {
     try {
       const especialidadUno = await Especialidad.save({
-        nombre: "Traumatologia",
-        tipo: "Medica",
+        nombre: "Traumatología",
+        tipo: "Médica",
       });
       if (especialidadUno) console.log("Especialidad 1 de prueba creada");
 
       const especialidadDos = await Especialidad.save({
         nombre: "Obstetricia",
-        tipo: "Medica",
+        tipo: "Médica",
       });
       if (especialidadDos) console.log("Especialidad 2 de prueba creada");
     } catch (error) {
@@ -145,11 +177,11 @@ export const createAdmin = async () => {
   if (!adminFound) {
     try {
       const personaAdminInsert = await Persona.save({
-        nombre: "Octavio Agustin",
-        ape_paterno: "Celaya",
-        ape_materno: "Ojeda",
+        nombre: "Administrador",
+        ape_paterno: "Administrador",
+        ape_materno: "Administrador",
         fecha_nac: new Date("2002-01-28"),
-        sexo: "Masculino",
+        sexo: "Femenino",
         telefono: "9514562431",
         correo: "admin@gmail.com",
       });
@@ -380,7 +412,7 @@ export const createEspecialistas = async () => {
       const usuarioDosInsert = await Usuario.save({
         username: "specTwo",
         password: hashedPassword,
-        imagen: "023c6c21d8db61412ba261c7fb8719c1",
+        imagen: "31a7c52e26086b1f6f23aaac4a12aef1",
         activo: true,
         rol_id: 4,
         persona_id: personaDosInsert.id,
@@ -414,6 +446,32 @@ export const createCursos = async () => {
 
   if (!cursoFound) {
     try {
+
+      const cursoWelcome = await Curso.save({
+        titulo: `Bienvenid@ a ASAP`,
+        descripcion:
+          "En este curso te damos la bienvenida a ASAP, la mejor red para cuidar de la salud mental",
+        objetivo:
+          "Aprenderás a cómo usar un curso",
+        fecha_inicio: new Date("02-07-2001"),
+        fecha_fin: new Date("02-11-2022"),
+        duracion: 8,
+        activo: true,
+        imagen: "25f8298506fc7ceeaed210db62bd83b8",
+        categoria_id: 3,
+        palabras_clave: ["ASAP", "Bienvenida", "Curso", "Introducción"],
+      });
+
+      if (cursoWelcome) {
+        const actividadUno = await Actividad.save({
+          titulo: "ASAP, tu lugar seguro",
+          descripcion:
+            "Puedes ver y observar el contenido que los especialistas publican, agendar citas con ellos, etc.",
+          url_media: "https://www.youtube.com/watch?v=8SbUC-UaAxE",
+          curso_id: cursoWelcome.id,
+        });
+      }
+
       for (let i = 1; i <= 10; i++) {
         const cursoInsert = await Curso.save({
           titulo: `Aprende React ${i}`,
@@ -453,8 +511,8 @@ export const createCursos = async () => {
             console.log(`Actividad 2 del curso ${i} de prueba creado`);
 
           const actividadTres = await Actividad.save({
-            titulo: "No se que poner aiuda",
-            descripcion: "No Nut November",
+            titulo: "Enrutamiento en React",
+            descripcion: "¿Cómo agregar dinamismo a tu sistema?",
             url_media: "https://www.youtube.com/watch?v=8SbUC-UaAxE",
             curso_id: cursoInsert.id,
           });
@@ -474,49 +532,49 @@ export const createNotas = async () => {
   if (!notaFound) {
     try {
       const notaUnoInsert = await Nota.save({
-        titulo: "Y se marcho",
+        titulo: "El día de hoy me encuentro bien",
         contenido:
-          "<div><b>hola pa</b></div><div><b><i>saludos</i></b></div><div><b><i><br></i></b></div><div><b><i>atte. la vida</i></b></div>",
-        imagen: "0df310c93690f31fd35f81754e704bed",
+          "<div><b>El día de hoy he sentido que la brisa tocó mi rostró, permitiéndo tomar un tiempo y disfrutal la vida</b></div><div><b><i>Les dejo esta postal</i></b></div><div><b><i><br></i></b></div><div><b><i>Saludos</i></b></div>",
+        imagen: "90e2ae89a744a85e4a7d8d814d2685d5",
         estado: "Aceptado",
-        tema: "Tema2",
-        palabras_clave: ["TURIP", "IP", "IP"],
+        tema: "Vida",
+        palabras_clave: ["Felicidad", "Plenitud", "Paisaje"],
         usuario_id: 1,
       });
       if (notaUnoInsert) console.log("Nota 1 de prueba creada");
 
       const notaDosInsert = await Nota.save({
-        titulo: "Y a su viaje le llamo libertad",
+        titulo: "Lago asombroso",
         contenido:
-          "<div><b>hola pa</b></div><div><b><i>saludos</i></b></div><div><b><i><br></i></b></div><div><b><i>atte. la vida</i></b></div>",
-        imagen: "0c9798a3188afc13612058fb056da180",
+          "<div><b>El día de ayer me encontraba de paseo y pude observar este lindo lago, se los comparto.</b></div><div><b><i>Bendecido lunes</i></b></div><div><b><i><br></i></b></div>",
+        imagen: "7557129ef4364c89b28490263c4b83f7",
         estado: "Rechazado",
-        tema: "Tema1",
-        palabras_clave: ["El", "Me", "Mintio"],
+        tema: "Lago",
+        palabras_clave: ["Lago", "Paisaje", "Agua"],
         usuario_id: 1,
       });
       if (notaDosInsert) console.log("Nota 2 de prueba creada");
 
       const notaTresInsert = await Nota.save({
-        titulo: "En el cielo dibujo, gaviotas",
+        titulo: "Pájaros en el alambre",
         contenido:
-          "<div><b>hola pa</b></div><div><b><i>saludos</i></b></div><div><b><i><br></i></b></div><div><b><i>atte. la vida</i></b></div>",
-        imagen: "0c9798a3188afc13612058fb056da180",
+          "<div><b>Como el famoso dicho, esta mañana observe pájaros en el alambre. </b></div><div><b><i><br></i></b></div><div><b><i>Bendecido Jueves</i></b></div>",
+        imagen: "e576b89c435c56b7d616b9c59a5deb91",
         estado: "Aceptado",
-        tema: "Tema1",
-        palabras_clave: ["Ella", "No", "Me", "Quiere"],
+        tema: "Pájaros",
+        palabras_clave: ["Pájaros", "Alambre", "Paisaje", "Plumas"],
         usuario_id: 1,
       });
       if (notaTresInsert) console.log("Nota 3 de prueba creada");
 
       const notaCuatroInsert = await Nota.save({
-        titulo: "Apoco si pa",
+        titulo: "Bienvenid@ a ASAP",
         contenido:
-          "<div><b>hola pa</b></div><div><b><i>saludos</i></b></div><div><b><i><br></i></b></div><div><b><i>atte. la vida</i></b></div>",
-        imagen: "0df310c93690f31fd35f81754e704bed",
+          "<div><b>En este espacio podrás compartir tus pensamientos, todas las notas pasan por un proceso de revisión por lo que no se publicarán directamente</b></div><div><b><i>Esperamos que lo disfrutes</i></b></div><div><b><i><br></i></b></div><div><b><i>Atte. El equipo de desarrollo ASAP</i></b></div>",
+        imagen: "25f8298506fc7ceeaed210db62bd83b8",
         estado: "Pendiente",
-        tema: "Tema2",
-        palabras_clave: ["TURIP", "IP", "IP"],
+        tema: "Instrucciones básicas",
+        palabras_clave: ["Bienvenida", "Bienvenido", "ASAP"],
         usuario_id: 1,
       });
       if (notaCuatroInsert) console.log("Nota 4 de prueba creada");
