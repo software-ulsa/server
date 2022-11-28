@@ -149,8 +149,8 @@ export const createPaciente = async (req: Request, res: Response) => {
     });
 
     if (pacienteInsert) {
-      const userSaved = await Usuario.findOne({
-        where: { id: Number(usuarioInsert.id) },
+      const userSaved = await Paciente.findOne({
+        where: { id: Number(pacienteInsert.id) },
       });
 
       return res.status(200).json({ paciente: userSaved });
