@@ -123,7 +123,6 @@ export const updateEspecialista = async (req: Request, res: Response) => {
     username,
     password,
     imagen,
-    cedula_prof,
     especialidad_id,
   } = req.body;
 
@@ -136,7 +135,8 @@ export const updateEspecialista = async (req: Request, res: Response) => {
     .addSelect(["*"])
     .leftJoinAndSelect("especialista.usuario", "usuario")
     .addSelect(["*"])
-    .addSelect("usuario.password")
+    .leftJoinAndSelect("usuario.persona", "persona")
+    .addSelect(["*"])
     .getOne();
 
   if (!especialistaFound)
@@ -151,14 +151,16 @@ export const updateEspecialista = async (req: Request, res: Response) => {
         nombre: nombre,
         ape_paterno: ape_paterno,
         ape_materno: ape_materno,
-        fecha_nac: new Date(fecha_nac),
+        fecha_nac: fecha_nac
+          ? new Date(fecha_nac)
+          : new Date(especialistaFound.usuario.persona.fecha_nac),
         sexo: sexo,
         telefono: telefono,
       }
     );
 
     const hashedPassword =
-      password !== ""
+      password && password !== ""
         ? await argon2.hash(password)
         : especialistaFound.usuario.password;
 
@@ -184,7 +186,6 @@ export const updateEspecialista = async (req: Request, res: Response) => {
     const especialistaUpdate = await Especialista.update(
       { id: Number(especialistaFound.id) },
       {
-        cedula_prof: cedula_prof,
         especialidad_id: especialidad_id,
       }
     );
@@ -233,7 +234,6 @@ export const deleteEspecialista = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    console.log(error);
     return res.status(400).json({ error: "Hubo un error al eliminar." });
   }
 };
