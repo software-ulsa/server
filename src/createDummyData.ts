@@ -371,7 +371,7 @@ export const createEspecialistas = async () => {
       const usuarioUnoInsert = await Usuario.save({
         username: "specOne",
         password: hashedPassword,
-        imagen: "0c964b47b4c845fb697de37375ad51aa",
+        imagen: "7dd5cb88c04e68880c7d9485e53fc47f",
         activo: true,
         rol_id: 4,
         persona_id: personaUnoInsert.id,
@@ -446,13 +446,11 @@ export const createCursos = async () => {
 
   if (!cursoFound) {
     try {
-
       const cursoWelcome = await Curso.save({
         titulo: `Bienvenid@ a ASAP`,
         descripcion:
           "En este curso te damos la bienvenida a ASAP, la mejor red para cuidar de la salud mental",
-        objetivo:
-          "Aprenderás a cómo usar un curso",
+        objetivo: "Aprenderás a cómo usar un curso",
         fecha_inicio: new Date("02-07-2001"),
         fecha_fin: new Date("02-11-2022"),
         duracion: 8,
@@ -497,18 +495,15 @@ export const createCursos = async () => {
             url_media: "https://www.youtube.com/watch?v=8SbUC-UaAxE",
             curso_id: cursoInsert.id,
           });
-          if (actividadUno)
-            console.log(`Actividad 1 del curso ${i} de prueba creado`);
+          if (actividadUno) console.log(`Actividad 1 del curso ${i} de prueba creado`);
 
           const actividadDos = await Actividad.save({
             titulo: "Estructura de una Aplicación de React",
-            descripcion:
-              "Cómo crear una aplicación de React con el comando npx create-react-app.",
+            descripcion: "Cómo crear una aplicación de React con el comando npx create-react-app.",
             url_media: "https://www.youtube.com/watch?v=8SbUC-UaAxE",
             curso_id: cursoInsert.id,
           });
-          if (actividadDos)
-            console.log(`Actividad 2 del curso ${i} de prueba creado`);
+          if (actividadDos) console.log(`Actividad 2 del curso ${i} de prueba creado`);
 
           const actividadTres = await Actividad.save({
             titulo: "Enrutamiento en React",
@@ -516,8 +511,7 @@ export const createCursos = async () => {
             url_media: "https://www.youtube.com/watch?v=8SbUC-UaAxE",
             curso_id: cursoInsert.id,
           });
-          if (actividadTres)
-            console.log(`Actividad 3 del curso ${i} de prueba creado`);
+          if (actividadTres) console.log(`Actividad 3 del curso ${i} de prueba creado`);
         }
       }
     } catch (error) {
@@ -531,11 +525,22 @@ export const createNotas = async () => {
 
   if (!notaFound) {
     try {
+      const notaCuatroInsert = await Nota.save({
+        titulo: "Bienvenid@ a ASAP",
+        contenido:
+          "<div><b>En este espacio podrás compartir tus pensamientos, todas las notas pasan por un proceso de revisión por lo que no se publicarán directamente</b></div><div><b><i>Esperamos que lo disfrutes</i></b></div><div><b><i><br></i></b></div><div><b><i>Atte. El equipo de desarrollo ASAP</i></b></div>",
+        imagen: "25f8298506fc7ceeaed210db62bd83b8",
+        estado: "Pendiente",
+        tema: "Instrucciones básicas",
+        palabras_clave: ["Bienvenida", "Bienvenido", "ASAP"],
+        usuario_id: 1,
+      });
+
       const notaUnoInsert = await Nota.save({
         titulo: "El día de hoy me encuentro bien",
         contenido:
           "<div><b>El día de hoy he sentido que la brisa tocó mi rostró, permitiéndo tomar un tiempo y disfrutal la vida</b></div><div><b><i>Les dejo esta postal</i></b></div><div><b><i><br></i></b></div><div><b><i>Saludos</i></b></div>",
-        imagen: "90e2ae89a744a85e4a7d8d814d2685d5",
+        imagen: "67b6ab820df13e5d67441f0bc88d388c",
         estado: "Aceptado",
         tema: "Vida",
         palabras_clave: ["Felicidad", "Plenitud", "Paisaje"],
@@ -567,16 +572,6 @@ export const createNotas = async () => {
       });
       if (notaTresInsert) console.log("Nota 3 de prueba creada");
 
-      const notaCuatroInsert = await Nota.save({
-        titulo: "Bienvenid@ a ASAP",
-        contenido:
-          "<div><b>En este espacio podrás compartir tus pensamientos, todas las notas pasan por un proceso de revisión por lo que no se publicarán directamente</b></div><div><b><i>Esperamos que lo disfrutes</i></b></div><div><b><i><br></i></b></div><div><b><i>Atte. El equipo de desarrollo ASAP</i></b></div>",
-        imagen: "25f8298506fc7ceeaed210db62bd83b8",
-        estado: "Pendiente",
-        tema: "Instrucciones básicas",
-        palabras_clave: ["Bienvenida", "Bienvenido", "ASAP"],
-        usuario_id: 1,
-      });
       if (notaCuatroInsert) console.log("Nota 4 de prueba creada");
     } catch (error) {
       console.log(error);
