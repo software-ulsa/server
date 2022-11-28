@@ -34,18 +34,6 @@ const main = async () => {
 
   const fs = require("fs");
   const http = require("http");
-  const https = require("https");
-
-  const privateKey = fs.readFileSync(
-    `${__dirname}/certificate/server.key`,
-    "utf8"
-  );
-  const certificate = fs.readFileSync(
-    `${__dirname}/certificate/server.crt`,
-    "utf8"
-  );
-
-  const credentials = { key: privateKey, cert: certificate };
 
   const app = express();
   app.use(
@@ -62,14 +50,6 @@ const main = async () => {
   app.use(bodyParser.urlencoded({ extended: true }));
 
   app.use(morgan("dev"));
-
-  // app.all("*", (req, res, next) => {
-  //   req.secure
-  //     ? next()
-  //     : res.redirect(`https://${req.hostname}:${_apiHttpsPort}${req.url}`);
-  // });
-
-  // Para las imagenes
   app.use(imagesRoutes);
 
   // Para los usuarios y entidades relacionadas
@@ -97,10 +77,6 @@ const main = async () => {
 
   http.createServer(app).listen(_apiHttpPort, () => {
     console.log("HTTP listening on port: ", _apiHttpPort);
-  });
-
-  https.createServer(credentials, app).listen(_apiHttpsPort, () => {
-    console.log("HTTPS listening on port: ", _apiHttpsPort);
   });
 
   io.on("connection", (socket: any) => {
