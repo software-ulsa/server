@@ -1,4 +1,4 @@
-import { In } from "typeorm";
+import { In, Like } from "typeorm";
 import { Request, Response } from "express";
 import { dataSource } from "../db.config";
 import { Curso } from "../entities/Curso";
@@ -155,5 +155,22 @@ export const deleteManyCurso = async (req: Request, res: Response) => {
     return res.status(400).json({ error: "No se encontraron coincidencias." });
   } catch (error) {
     return res.status(400).json({ error: "Hubo un error al eliminar." });
+  }
+};
+
+export const getCursoByKeyword = async (req: Request, res: Response) => {
+  try {
+    let word = req.query.word;
+
+    let data = undefined;
+    /^\s*$/.test(String(word))
+      ? (data = await Curso.find())
+      : (data = await Curso.findBy({
+          titulo: Like(`%${word}%`),
+        }));
+
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(400).json({ error: "Hubo un error." });
   }
 };

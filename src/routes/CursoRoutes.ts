@@ -5,6 +5,7 @@ import {
   deleteManyCurso,
   getAllCurso,
   getCursoById,
+  getCursoByKeyword,
   updateCurso,
 } from "../controllers/CursoController";
 
@@ -23,5 +24,7 @@ router.put(prefix + "/:id", VerifyToken, updateCurso);
 router.delete(prefix + "/:id", VerifyToken, deleteCurso);
 
 router.post(prefix + "/batch", VerifyToken, deleteManyCurso);
+
+router.get(prefix + "/getCurso/filter",  getCursoByKeyword);
 
 export default router;
