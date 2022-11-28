@@ -6,7 +6,7 @@ import { dataSource } from "../db.config";
 import { _token } from "../constants";
 import { Codigo } from "../entities/lookup/Codigo";
 import { enviarCorreo } from "./EmailController";
-import { In } from "typeorm";
+import { In, Not } from "typeorm";
 import { Persona } from "../entities/Persona";
 
 const jwt = require("jsonwebtoken");
@@ -149,7 +149,11 @@ export const getUserByRol = async (req: Request, res: Response) => {
 };
 
 export const getAllUsers = async (req: Request, res: Response) => {
-  const usersFound = await Usuario.find();
+  const usersFound = await Usuario.find({
+    where: {
+      rol: { nombre: Not(In(["PACIENTE", "ADMINISTRADOR", "ESPECIALISTA"])) },
+    },
+  });
   return res.status(200).json(usersFound);
 };
 

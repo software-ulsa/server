@@ -1,4 +1,4 @@
-import { In } from "typeorm";
+import { In, Not } from "typeorm";
 import { dataSource } from "../db.config";
 import { Request, Response } from "express";
 import { Rol } from "../entities/Rol";
@@ -27,7 +27,9 @@ export const getRolById = async (req: Request, res: Response) => {
 };
 
 export const getAllRoles = async (req: Request, res: Response) => {
-  const rolesFound = await Rol.find();
+  const rolesFound = await Rol.find({
+    where: { nombre: Not(In(["PACIENTE", "ADMINISTRADOR", "ESPECIALISTA"])) },
+  });
   return res.status(200).json(rolesFound);
 };
 

@@ -13,7 +13,11 @@ const jwt = require("jsonwebtoken");
 
 const repo = dataSource.getRepository(Paciente);
 
-export const registerPaciente = async (req: Request, res: Response) => {
+export const registerPaciente = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const {
     nombre,
     ape_paterno,
@@ -75,10 +79,22 @@ export const registerPaciente = async (req: Request, res: Response) => {
         return res.status(200).json({ paciente: pacienteSaved });
       }
     }
+    const val = Math.floor(1000 + Math.random() * 9000);
 
-    return res
-      .status(400)
-      .json({ error: "Hubo un error al registrar al paciente." });
+    await Codigo.save({
+      codigo: val,
+      usuario_id: usuarioInsert.id,
+    });
+
+    await enviarCorreo(req, res, next, val, correo);
+
+    let payload = {
+      id: usuarioInsert.id,
+      correo: correo,
+    };
+    const token = jwt.sign(payload, _token);
+    const data = { ...usuarioInsert, persona: personaInsert };
+    return res.status(200).json({ usuarioInsert: data, token });
   } catch (error) {
     return res
       .status(400)
@@ -86,11 +102,7 @@ export const registerPaciente = async (req: Request, res: Response) => {
   }
 };
 
-export const createPaciente = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const createPaciente = async (req: Request, res: Response) => {
   const {
     nombre,
     ape_paterno,
@@ -125,7 +137,7 @@ export const createPaciente = async (
       username: username,
       password: hashedPassword,
       imagen: imagen,
-      activo: false,
+      activo: true,
       rol_id: rol!.id,
       persona_id: personaInsert.id,
     });
@@ -136,30 +148,16 @@ export const createPaciente = async (
       matricula: matricula,
     });
 
-    // if (pacienteInsert) {
-    //   const pacienteSaved = await Paciente.findOne({
-    //     where: { id: Number(pacienteInsert.id) },
-    //   });
+    if (pacienteInsert) {
+      const userSaved = await Usuario.findOne({
+        where: { id: Number(usuarioInsert.id) },
+      });
 
-    const val = Math.floor(1000 + Math.random() * 9000);
-
-    await Codigo.save({
-      codigo: val,
-      usuario_id: usuarioInsert.id,
-    });
-
-    await enviarCorreo(req, res, next, val, correo);
-
-    let payload = {
-      id: usuarioInsert.id,
-      correo: correo,
-    };
-    const token = jwt.sign(payload, _token);
-    // const userSaved = await Usuario.findOne({
-    //   where: { id: Number(usuarioInsert.id) },
-    // });
-    const data = { ...usuarioInsert, persona: personaInsert };
-    return res.status(200).json({ usuarioInsert: data, token });
+      return res.status(200).json({ paciente: userSaved });
+    }
+    return res
+      .status(400)
+      .json({ error: "Hubo un error al registrar al paciente." });
   } catch (error) {
     console.log(error);
     return res
