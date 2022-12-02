@@ -660,7 +660,7 @@ export const createCursos = async () => {
         duracion: 8,
         activo: true,
         imagen: "",
-        categoria_id: categoria.id,
+        categoria_id: categoria?.id || 1,
         palabras_clave: ["ASAP", "Bienvenida", "Curso", "Introducción"],
       });
 
