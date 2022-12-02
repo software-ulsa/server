@@ -674,6 +674,7 @@ export const createCursos = async () => {
         });
       }
     } catch (error) {
+      console.log(error);
       console.log("Error al crear el curso de bienvenida");
     }
   }
