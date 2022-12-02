@@ -644,6 +644,7 @@ export const createCursos = async () => {
   const categoria = await Categoria.findOne({
     where: { nombre: "Tecnología" },
   });
+
   const cursoFound = await Curso.findOne({
     where: { titulo: "Bienvenid@ a ASAP" },
   });
