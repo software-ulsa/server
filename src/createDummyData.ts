@@ -32,30 +32,26 @@ export const createRoles = async () => {
         descripcion: "Superusuario con todos los permisos",
         permisos: ["*"],
       });
-      if (adminRol) console.log("Admin Rol de prueba creado");
-
-      const usuarioRol = await Rol.save({
-        nombre: "USUARIO",
-        descripcion: "Miembro de ASAP - A safe place",
-        permisos: ["PUBLICIDADES", "NOTAS", "CURSOS", "ROLES"],
-      });
-      if (usuarioRol) console.log("Usuario Rol de prueba creado");
 
       const pacienteRol = await Rol.save({
         nombre: "PACIENTE",
         descripcion: "Estudiante de la Universidad La Salle Oaxaca",
         permisos: [],
       });
-      if (pacienteRol) console.log("Paciente Rol de prueba creado");
 
       const especialistaRol = await Rol.save({
         nombre: "ESPECIALISTA",
         descripcion: "Profesional de salud",
-        permisos: ["CURSOS"],
+        permisos: ["CURSOS", "NOTAS"],
       });
-      if (especialistaRol) console.log("Especialista Rol de prueba creado");
+
+      const usuarioRol = await Rol.save({
+        nombre: "USUARIO",
+        descripcion: "Miembro de ASAP - A safe place",
+        permisos: ["NOTAS"],
+      });
     } catch (error) {
-      console.log(error);
+      console.log("Error al crear los roles");
     }
   }
 };
@@ -67,81 +63,104 @@ export const createCarreras = async () => {
 
   if (!carreraFound) {
     try {
-      const carreraUno = await Carrera.save({
-        nombre: "Ingenieria de Software y Sistemas Computacionales",
-        abreviatura: "Ing. de Software",
-      });
-      if (carreraUno) console.log("Carrera 1 de prueba creada");
+      const carreras = [
+        {
+          nombre: "Ingenieria de Software y Sistemas Computacionales",
+          abreviatura: "Ing. de Software",
+        },
+        {
+          nombre: "Ingenieria Electrónica y de Telecomunicaciones",
+          abreviatura: "Ing. Electrónica",
+        },
+        {
+          nombre: "Licenciatura en Negocios Internacionales",
+          abreviatura: "Negocios Internacionales",
+        },
+        { nombre: "Licenciatura en Nutrición", abreviatura: "Nutrición" },
+        { nombre: "Licenciatura en Fisioterapia", abreviatura: "Fisioterapia" },
+        { nombre: "Licenciatura en Enfermería", abreviatura: "Enfermería" },
+        { nombre: "Ingeniería Civil", abreviatura: "Ing. Civil" },
+        { nombre: "Ingeniería Industrial", abreviatura: "Ing. Industrial" },
+        {
+          nombre: "Licenciatura en Administración Turística",
+          abreviatura: "Administración Turística",
+        },
+        { nombre: "Licenciatura en Gastronomía", abreviatura: "Gastronomía" },
+        {
+          nombre: "Licenciatura en Contaduría Pública y Finanzas",
+          abreviatura: "Contaduría Pública y Finanzas",
+        },
+        {
+          nombre: "Licenciatura en Ciencias del Deporte",
+          abreviatura: "Ciencias del Deporte",
+        },
+        ,
+        {
+          nombre: "Licenciatura en Derecho",
+          abreviatura: "Derecho",
+        },
+        { nombre: "Bachillerato", abreviatura: "Bachillerato" },
+      ];
 
-      const carreraDos = await Carrera.save({
-        nombre: "Ingenieria Electronica y de Telecomunicaciones",
-        abreviatura: "Ing. Electronica",
+      carreras.forEach(async (carrera) => {
+        await Carrera.save({
+          nombre: carrera.nombre,
+          abreviatura: carrera.abreviatura,
+        });
       });
-      const carreraTres = await Carrera.save({
-        nombre: "Bachillerato",
-        abreviatura: "Bachi",
-      });
-      const carreraCuatro = await Carrera.save({
-        nombre: "Licenciatura en comunicación",
-        abreviatura: "LC",
-      });
-      const carreraCinco = await Carrera.save({
-        nombre: "Licenciatura en derecho",
-        abreviatura: "LD",
-      });
-      const carreraSeis = await Carrera.save({
-        nombre: "Licenciatura en Adminstración de Empresas",
-        abreviatura: "LAE",
-      });
-      const carreraSiete = await Carrera.save({
-        nombre: "Licenciatura en Gastronomía",
-        abreviatura: "LG",
-      });
-      const carreraOcho = await Carrera.save({
-        nombre: "Licenciatura en Psicología",
-        abreviatura: "LP",
-      });
-      const carreraNueve = await Carrera.save({
-        nombre: "Licenciatura en ",
-        abreviatura: "LP",
-      });
-      if (carreraDos) console.log("Carrera 2 de prueba creada");
-      if (carreraTres) console.log("Carrera 3 de prueba creada");
-      if (carreraCuatro) console.log("Carrera 4 de prueba creada");
-      if (carreraCinco) console.log("Carrera 5 de prueba creada");
-      if (carreraSeis) console.log("Carrera 6 de prueba creada");
     } catch (error) {
-      console.log(error);
+      console.log("Error al crear las carreras.");
     }
   }
 };
 
 export const createCategorias = async () => {
   const categoriaFound = await Categoria.findOne({
-    where: { nombre: "Salud y belleza" },
+    where: { nombre: "Tecnología" },
   });
 
   if (!categoriaFound) {
-    try {
-      const categoriaUno = await Categoria.save({
-        nombre: "Salud y belleza",
-        descripcion: "Todo lo relacionado a la salud física y cuidado personal",
-      });
-      if (categoriaUno) console.log("Categoria 1 de prueba creada");
-
-      const categoriaDos = await Categoria.save({
-        nombre: "Social",
-        descripcion: "Todo lo relacionado a las relaciones interpersonales",
-      });
-      if (categoriaDos) console.log("Categoria 2 de prueba creada");
-
-      const categoriaTres = await Categoria.save({
+    const categorias = [
+      {
+        nombre: "Desarrollo Personal",
+        descripcion:
+          "Desarrollar el potencial humano de acuerdo con el comportamiento de cada persona.",
+      },
+      {
         nombre: "Tecnología",
-        descripcion: "Todo lo relacionado al desarrollo web",
+        descripcion:
+          "Todo lo relacionado a la tecnología moderna y sus avances",
+      },
+      {
+        nombre: "Espiritualidad",
+        descripcion:
+          "Pueden estar conectados a temas como religión, meditación, terapias naturales y otros asuntos relacionados.",
+      },
+      {
+        nombre: "Arte",
+        descripcion:
+          "Mejorar la imaginación y creatividad humana para la expresión de emociones.",
+      },
+      {
+        nombre: "Finanzas",
+        descripcion:
+          "Tener una idea más amplia de como de tener una relación sana con el dinero.",
+      },
+      {
+        nombre: "Música",
+        descripcion:
+          "Usar la música como lenguaje universal y apreciarla de una manera incentivada",
+      },
+    ];
+    try {
+      categorias.forEach(async (categoria) => {
+        await Categoria.save({
+          nombre: categoria.nombre,
+          descripcion: categoria.descripcion,
+        });
       });
-      if (categoriaTres) console.log("Categoria 3 de prueba creada");
     } catch (error) {
-      console.log(error);
+      console.log("Error al crear las categorias");
     }
   }
 };
@@ -153,301 +172,486 @@ export const createEspecialidades = async () => {
 
   if (!especialidadFound) {
     try {
-      const especialidadUno = await Especialidad.save({
-        nombre: "Traumatología",
+      await Especialidad.save({
+        nombre: "Psicología",
+        tipo: "Educativa",
+      });
+      await Especialidad.save({
+        nombre: "Pediatría",
         tipo: "Médica",
       });
-      if (especialidadUno) console.log("Especialidad 1 de prueba creada");
-
-      const especialidadDos = await Especialidad.save({
-        nombre: "Obstetricia",
-        tipo: "Médica",
-      });
-      if (especialidadDos) console.log("Especialidad 2 de prueba creada");
     } catch (error) {
-      console.log(error);
+      console.log("Error al crear las especialidades");
     }
   }
 };
 
 export const createAdmin = async () => {
-  const adminFound = await Usuario.findOne({ where: { username: "admin" } });
-  const hashedPassword = await argon2.hash("123");
+  const adminRol = await Rol.findOne({ where: { nombre: "ADMINISTRADOR" } });
+  const adminFound = await Usuario.findOne({ where: { username: "S4A" } });
+  const adminPassword = await argon2.hash("123");
+
+  const asapPwdOne = await argon2.hash("alex");
+  const asapPwdTwo = await argon2.hash("jafet");
+  const asapPwdThree = await argon2.hash("daniel");
 
   if (!adminFound) {
     try {
-      const personaAdminInsert = await Persona.save({
-        nombre: "Administrador",
-        ape_paterno: "Administrador",
-        ape_materno: "Administrador",
-        fecha_nac: new Date("2002-01-28"),
-        sexo: "Femenino",
+      const S4APersona = await Persona.save({
+        nombre: "Software4All",
+        ape_paterno: "-",
+        ape_materno: "-",
+        fecha_nac: new Date(),
+        sexo: "Masculino",
         telefono: "9514562431",
-        correo: "admin@gmail.com",
+        correo: "software4all@gmail.com",
       });
 
-      const usuarioAdminInsert = await Usuario.save({
-        username: "admin",
-        password: hashedPassword,
-        imagen: "157-1575410_react-js-logo-png-transparent-png.png",
+      const S4AAdmin = await Usuario.save({
+        username: "S4A",
+        password: adminPassword,
+        imagen: "s4aLogoBlack.jpeg",
         activo: true,
-        rol_id: 1,
-        persona_id: personaAdminInsert.id,
+        rol_id: adminRol.id,
+        persona_id: S4APersona.id,
       });
 
-      if (usuarioAdminInsert) console.log("Administrador creado");
+      const TPPersona = await Persona.save({
+        nombre: "TriangleProgramming",
+        ape_paterno: "-",
+        ape_materno: "-",
+        fecha_nac: new Date(),
+        sexo: "Masculino",
+        telefono: "9518523417",
+        correo: "triangleprogramming@gmail.com",
+      });
+
+      const TPAdmin = await Usuario.save({
+        username: "TP",
+        password: adminPassword,
+        imagen: "tpLogo.jpeg",
+        activo: true,
+        rol_id: adminRol.id,
+        persona_id: TPPersona.id,
+      });
+
+      const asapPersonal = [
+        {
+          nombre: "Alex",
+          ape_paterno: "Santiago",
+          ape_materno: "Barrios",
+          fecha_nac: "11-07-2001",
+          sexo: "Masculino",
+          telefono: "9511940435",
+          correo: "alex@gmail.com",
+          username: "alex07",
+          password: asapPwdOne,
+          imagen: "AlexImage.png",
+        },
+        {
+          nombre: "Jafet Fernando",
+          ape_paterno: "Ramos",
+          ape_materno: "Ruiz",
+          fecha_nac: "12-10-2001",
+          sexo: "Masculino",
+          telefono: "9510334175",
+          correo: "jafet@gmail.com",
+          username: "jafet10",
+          password: asapPwdTwo,
+          imagen: "JafetImage.png",
+        },
+        {
+          nombre: "Daniel Antonio",
+          ape_paterno: "Diaz",
+          ape_materno: "Rojas",
+          fecha_nac: "02-18-2001",
+          sexo: "Masculino",
+          telefono: "9515048667",
+          correo: "daniel@gmail.com",
+          username: "daniel18",
+          password: asapPwdThree,
+          imagen: "DanielImage.png",
+        },
+      ];
+
+      asapPersonal.forEach(async (personal) => {
+        const asapPersona = await Persona.save({
+          nombre: personal.nombre,
+          ape_paterno: personal.ape_paterno,
+          ape_materno: personal.ape_materno,
+          fecha_nac: new Date(personal.fecha_nac),
+          sexo: personal.sexo,
+          telefono: personal.telefono,
+          correo: personal.correo,
+        });
+
+        const asapUsuario = await Usuario.save({
+          username: personal.username,
+          password: personal.password,
+          imagen: personal.imagen,
+          activo: true,
+          rol_id: adminRol.id,
+          persona_id: asapPersona.id,
+        });
+      });
     } catch (error) {
       console.log(error);
+      console.log("Error al crear los administradores");
     }
   }
 };
 
 export const createUsuarios = async () => {
+  const usuarioRol = await Rol.findOne({ where: { nombre: "USUARIO" } });
   const usuarioUno = await Usuario.findOne({
-    where: { persona: { correo: "userOne@gmail.com" } },
+    where: { username: "felipe23" },
   });
 
-  const usuarioDos = await Usuario.findOne({
-    where: { persona: { correo: "userTwo@gmail.com" } },
-  });
-
-  const hashedPassword = await argon2.hash("123");
+  const usuarioPwdOne = await argon2.hash("felipe");
+  const usuarioPwdTwo = await argon2.hash("octavio");
+  const usuarioPwdThree = await argon2.hash("ricardo");
+  const usuarioPwdFour = await argon2.hash("alejandra");
 
   if (!usuarioUno) {
     try {
-      const personaUnoInsert = await Persona.save({
-        nombre: "Carlos Daniel",
-        ape_paterno: "Valdez",
-        ape_materno: "Martinez",
-        fecha_nac: new Date("2002-01-28"),
-        sexo: "Masculino",
-        telefono: "9514562431",
-        correo: "userOne@gmail.com",
-      });
+      const usuarios = [
+        {
+          nombre: "Felipe de Jesús",
+          ape_paterno: "Soriano",
+          ape_materno: "Silva",
+          fecha_nac: "05-23-1999",
+          sexo: "Masculino",
+          telefono: "9512340942",
+          correo: "felipe_sorsilv@gmail.com",
+          username: "felipe23",
+          password: usuarioPwdOne,
+          imagen: "Usuario1.png",
+        },
+        {
+          nombre: "Octavio Agustin",
+          ape_paterno: "Celaya",
+          ape_materno: "Ojeda",
+          fecha_nac: "10-07-2001",
+          sexo: "Masculino",
+          telefono: "9512423410",
+          correo: "octagod@gmail.com",
+          username: "octavio10",
+          password: usuarioPwdTwo,
+          imagen: "Usuario2.png",
+        },
+        {
+          nombre: "Ángel Ricardo",
+          ape_paterno: "Chávez",
+          ape_materno: "Velasco",
+          fecha_nac: "05-25-2001",
+          sexo: "Masculino",
+          telefono: "9512200369",
+          correo: "richard_parker@gmail.com",
+          username: "ricardo25",
+          password: usuarioPwdThree,
+          imagen: "Usuario3.png",
+        },
+        {
+          nombre: "Alejandra",
+          ape_paterno: "Vadillo",
+          ape_materno: "Ramírez",
+          fecha_nac: "09-29-2000",
+          sexo: "Femenino",
+          telefono: "9515006082",
+          correo: "alejandra_vadillo@gmail.com",
+          username: "alejandra29",
+          password: usuarioPwdFour,
+          imagen: "Usuario4.png",
+        },
+      ];
 
-      const usuarioUnoInsert = await Usuario.save({
-        username: "daniboy",
-        password: hashedPassword,
-        imagen: "0c964b47b4c845fb697de37375ad51aa",
-        activo: true,
-        rol_id: 2,
-        persona_id: personaUnoInsert.id,
+      usuarios.forEach(async (usuario) => {
+        const usuarioPersona = await Persona.save({
+          nombre: usuario.nombre,
+          ape_paterno: usuario.ape_paterno,
+          ape_materno: usuario.ape_materno,
+          fecha_nac: new Date(usuario.fecha_nac),
+          sexo: usuario.sexo,
+          telefono: usuario.telefono,
+          correo: usuario.correo,
+        });
+
+        const usuarioInsert = await Usuario.save({
+          username: usuario.username,
+          password: usuario.password,
+          imagen: usuario.imagen,
+          activo: true,
+          rol_id: usuarioRol.id,
+          persona_id: usuarioPersona.id,
+        });
       });
-      if (usuarioUnoInsert) console.log("Usuario 1 de prueba creado");
     } catch (error) {
-      console.error(error);
-    }
-  }
-
-  if (!usuarioDos) {
-    try {
-      const personaDosInsert = await Persona.save({
-        nombre: "Jairo Esteban",
-        ape_paterno: "Martinez",
-        ape_materno: "Portillo",
-        fecha_nac: new Date("2002-01-28"),
-        sexo: "Masculino",
-        telefono: "9514562431",
-        correo: "userTwo@gmail.com",
-      });
-
-      const usuarioDosInsert = await Usuario.save({
-        username: "jairoBoss",
-        password: hashedPassword,
-        imagen: "023c6c21d8db61412ba261c7fb8719c1",
-        activo: true,
-        rol_id: 2,
-        persona_id: personaDosInsert.id,
-      });
-
-      if (usuarioDosInsert) console.log("Usuario 2 de prueba creado");
-    } catch (error) {
-      console.error(error);
+      console.error("Error al crear los usuarios");
     }
   }
 };
 
 export const createPacientes = async () => {
-  const pacienteUno = await Paciente.findOne({
-    where: { usuario: { persona: { correo: "pacientOne@gmail.com" } } },
+  const carreras = await Carrera.find();
+  const pacienteRol = await Rol.findOne({ where: { nombre: "PACIENTE" } });
+  const pacienteUno = await Usuario.findOne({
+    where: { username: "Juanito10" },
   });
 
-  const pacienteDos = await Paciente.findOne({
-    where: { usuario: { persona: { correo: "pacientTwo@gmail.com" } } },
-  });
-
-  const hashedPassword = await argon2.hash("123");
+  const usuarioPwdOne = await argon2.hash("juan");
+  const usuarioPwdTwo = await argon2.hash("jorge");
+  const usuarioPwdThree = await argon2.hash("ricardo");
+  const usuarioPwdFour = await argon2.hash("alejandra");
+  const usuarioPwdFive = await argon2.hash("alejandra");
+  const usuarioPwdSix = await argon2.hash("alejandra");
 
   if (!pacienteUno) {
     try {
-      const personaUnoInsert = await Persona.save({
-        nombre: "Azucena",
-        ape_paterno: "Reyes",
-        ape_materno: "Santiago",
-        fecha_nac: new Date("2002-01-28"),
-        sexo: "Femenino",
-        telefono: "9514562431",
-        correo: "pacientOne@gmail.com",
-      });
+      const usuarios = [
+        {
+          nombre: "Juan Manuel",
+          ape_paterno: "Robles",
+          ape_materno: "Estrada",
+          fecha_nac: "09-15-2001",
+          sexo: "Masculino",
+          telefono: "9511306990",
+          correo: "juan_estrada@gmail.com",
+          username: "Juanito10",
+          password: usuarioPwdOne,
+          imagen: "Paciente1.png",
+          matricula: "014403915",
+          carrera_id: carreras.find(
+            (carrera) => carrera.nombre === "Licenciatura en Derecho"
+          ).id,
+        },
+        {
+          nombre: "Carlos Alberto",
+          ape_paterno: "Cruz",
+          ape_materno: "Cruz",
+          fecha_nac: "12-07-1999",
+          sexo: "Masculino",
+          telefono: "9511699088",
+          correo: "carlobeto@gmail.com",
+          username: "Carlos159",
+          password: usuarioPwdTwo,
+          imagen: "Paciente2.png",
+          matricula: "014400392",
+          carrera_id: carreras.find(
+            (carrera) =>
+              carrera.nombre === "Licenciatura en Negocios Internacionales"
+          ).id,
+        },
+        {
+          nombre: "Jorge Alfredo",
+          ape_paterno: "Chávez",
+          ape_materno: "Ortiz",
+          fecha_nac: "04-12-2000",
+          sexo: "Masculino",
+          telefono: "9511489000",
+          correo: "jorgeAlfredo@gmail.com",
+          username: "JorgeVO",
+          password: usuarioPwdThree,
+          imagen: "Paciente3.png",
+          matricula: "014421799",
+          carrera_id: carreras.find(
+            (carrera) =>
+              carrera.nombre === "Licenciatura en Ciencias del Deporte"
+          ).id,
+        },
+        {
+          nombre: "Alondra",
+          ape_paterno: "Ruiz",
+          ape_materno: "Pérez",
+          fecha_nac: "06-21-1998",
+          sexo: "Femenino",
+          telefono: "9515302586",
+          correo: "alondra@gmail.com",
+          username: "Alondra29",
+          password: usuarioPwdFour,
+          imagen: "Paciente4.png",
+          matricula: "014403915",
+          carrera_id: carreras.find(
+            (carrera) => carrera.nombre === "Licenciatura en Gastronomía"
+          ).id,
+        },
 
-      const usuarioUnoInsert = await Usuario.save({
-        username: "azucena",
-        password: hashedPassword,
-        imagen: "0c964b47b4c845fb697de37375ad51aa",
-        activo: true,
-        rol_id: 3,
-        persona_id: personaUnoInsert.id,
-      });
+        {
+          nombre: "Zaira Yamile",
+          ape_paterno: "López",
+          ape_materno: "Hernández",
+          fecha_nac: "12-01-2000",
+          sexo: "Femenino",
+          telefono: "9512560931",
+          correo: "zaira@gmail.com",
+          username: "Zaira26",
+          password: usuarioPwdFive,
+          imagen: "Paciente5.png",
+          matricula: "014421620",
+          carrera_id: carreras.find(
+            (carrera) =>
+              carrera.nombre === "Licenciatura en Negocios Internacionales"
+          ).id,
+        },
+        {
+          nombre: "Armando",
+          ape_paterno: "Alaya",
+          ape_materno: "López",
+          fecha_nac: "02-25-2000",
+          sexo: "Masculino",
+          telefono: "9513506893",
+          correo: "armando@gmail.com",
+          username: "Armando80",
+          password: usuarioPwdSix,
+          imagen: "Paciente6.png",
+          matricula: "014421736",
+          carrera_id: carreras.find(
+            (carrera) =>
+              carrera.nombre === "Licenciatura en Contaduría Pública y Finanzas"
+          ).id,
+        },
+      ];
 
-      const pacienteUnoInsert = await Paciente.save({
-        usuario_id: usuarioUnoInsert.id,
-        carrera_id: 1,
-        matricula: "014419799",
-      });
+      usuarios.forEach(async (usuario) => {
+        const usuarioPersona = await Persona.save({
+          nombre: usuario.nombre,
+          ape_paterno: usuario.ape_paterno,
+          ape_materno: usuario.ape_materno,
+          fecha_nac: new Date(usuario.fecha_nac),
+          sexo: usuario.sexo,
+          telefono: usuario.telefono,
+          correo: usuario.correo,
+        });
 
-      if (pacienteUnoInsert) console.log("Paciente 1 de prueba creado");
+        const usuarioInsert = await Usuario.save({
+          username: usuario.username,
+          password: usuario.password,
+          imagen: usuario.imagen,
+          activo: true,
+          rol_id: pacienteRol.id,
+          persona_id: usuarioPersona.id,
+        });
+
+        const pacienteInsert = await Paciente.save({
+          carrera_id: usuario.carrera_id,
+          matricula: usuario.matricula,
+          usuario_id: usuarioInsert.id,
+        });
+      });
     } catch (error) {
-      console.error(error);
-    }
-  }
-
-  if (!pacienteDos) {
-    try {
-      const personaDosInsert = await Persona.save({
-        nombre: "Gerardo",
-        ape_paterno: "Crisanto",
-        ape_materno: "Ulloa",
-        fecha_nac: new Date("2002-01-28"),
-        sexo: "Masculino",
-        telefono: "9514562431",
-        correo: "pacientTwo@gmail.com",
-      });
-
-      const usuarioDosInsert = await Usuario.save({
-        username: "geraGOD",
-        password: hashedPassword,
-        imagen: "023c6c21d8db61412ba261c7fb8719c1",
-        activo: true,
-        rol_id: 3,
-        persona_id: personaDosInsert.id,
-      });
-
-      const pacienteDosInsert = await Paciente.save({
-        usuario_id: usuarioDosInsert.id,
-        carrera_id: 2,
-        matricula: "014419799",
-      });
-
-      if (pacienteDosInsert) console.log("Paciente 2 de prueba creado");
-    } catch (error) {
-      console.error(error);
+      console.error("Error al crear los usuarios");
     }
   }
 };
 
 export const createEspecialistas = async () => {
+  const especialidad = await Especialidad.findOne({
+    where: { nombre: "Psicología" },
+  });
+  const especialistaRol = await Rol.findOne({
+    where: { nombre: "ESPECIALISTA" },
+  });
   const especialistaUno = await Especialista.findOne({
-    where: { usuario: { persona: { correo: "specOne@gmail.com" } } },
+    where: { usuario: { username: "Diego05" } },
   });
 
   const especialistaDos = await Especialista.findOne({
-    where: { usuario: { persona: { correo: "specTwo@gmail.com" } } },
+    where: { usuario: { username: "" } },
   });
 
-  const hashedPassword = await argon2.hash("123");
+  const hashedPassword = await argon2.hash("diego");
+  const hashedPasswordTwo = await argon2.hash("salma");
 
   if (!especialistaUno) {
     try {
       const personaUnoInsert = await Persona.save({
-        nombre: "Juan Antonio",
-        ape_paterno: "Perez",
-        ape_materno: "Rodriguez",
-        fecha_nac: new Date("2002-01-28"),
+        nombre: "Diego",
+        ape_paterno: "Escudero",
+        ape_materno: "Sánchez",
+        fecha_nac: new Date("07-13-2001"),
         sexo: "Masculino",
-        telefono: "9514562431",
-        correo: "specOne@gmail.com",
+        telefono: "9511693228",
+        correo: "diego05@gmail.com",
       });
 
       const usuarioUnoInsert = await Usuario.save({
-        username: "specOne",
+        username: "Diego05",
         password: hashedPassword,
-        imagen: "7dd5cb88c04e68880c7d9485e53fc47f",
+        imagen: "Especialista1.png",
         activo: true,
-        rol_id: 4,
+        rol_id: especialistaRol.id,
         persona_id: personaUnoInsert.id,
       });
 
       const domicilioUnoInsert = await Domicilio.save({
-        calle: "Av. de las Huertas",
-        colonia: "Colonia Reforma",
+        calle: "BLVD Médico Militar",
+        colonia: "Mi Ranchito",
         estado: "Oaxaca",
-        codigo_postal: "68050",
+        codigo_postal: "68200",
       });
 
       const especialistaUnoInsert = await Especialista.save({
         cedula_prof: "123456789",
         domicilio_id: domicilioUnoInsert.id,
-        especialidad_id: 1,
+        especialidad_id: especialidad.id,
         usuario_id: usuarioUnoInsert.id,
       });
-
-      if (especialistaUnoInsert) console.log("Especialista 1 de prueba creado");
     } catch (error) {
-      console.error(error);
+      console.error("Error al insertar especialista 1");
     }
   }
 
   if (!especialistaDos) {
     try {
       const personaDosInsert = await Persona.save({
-        nombre: "Wanda Kimberly",
-        ape_paterno: "Bolaños",
-        ape_materno: "Hernandez",
-        fecha_nac: new Date("2002-01-28"),
+        nombre: "Salma Daniela",
+        ape_paterno: "Sánchez",
+        ape_materno: "Flores",
+        fecha_nac: new Date("03-01-2001"),
         sexo: "Femenino",
-        telefono: "9514562431",
-        correo: "specTwo@gmail.com",
+        telefono: "9515702802",
+        correo: "salmaDaniela@gmail.com",
       });
 
       const usuarioDosInsert = await Usuario.save({
-        username: "specTwo",
-        password: hashedPassword,
-        imagen: "31a7c52e26086b1f6f23aaac4a12aef1",
+        username: "Salma07",
+        password: hashedPasswordTwo,
+        imagen: "Especialista2.png",
         activo: true,
-        rol_id: 4,
+        rol_id: especialistaRol.id,
         persona_id: personaDosInsert.id,
       });
 
       const domicilioDosInsert = await Domicilio.save({
-        calle: "Av. de las Huertas",
-        colonia: "Colonia Reforma",
+        calle: "Av. Independencia",
+        colonia: "Centro",
         estado: "Oaxaca",
-        codigo_postal: "68050",
+        codigo_postal: "68000",
       });
 
       const especialistaDosInsert = await Especialista.save({
         cedula_prof: "123456789",
         domicilio_id: domicilioDosInsert.id,
-        especialidad_id: 2,
+        especialidad_id: especialidad.id,
         usuario_id: usuarioDosInsert.id,
       });
-
-      if (especialistaDosInsert) console.log("Especialista 2 de prueba creado");
     } catch (error) {
-      console.error(error);
+      console.error("Error al insertar especialista 2");
     }
   }
 };
 
 export const createCursos = async () => {
+  const categoria = await Categoria.findOne({
+    where: { nombre: "Tecnología" },
+  });
   const cursoFound = await Curso.findOne({
-    where: { titulo: "Aprende React 1" },
+    where: { titulo: "Bienvenid@ a ASAP" },
   });
 
   if (!cursoFound) {
     try {
       const cursoWelcome = await Curso.save({
-        titulo: `Bienvenid@ a ASAP`,
+        titulo: "Bienvenid@ a ASAP",
         descripcion:
           "En este curso te damos la bienvenida a ASAP, la mejor red para cuidar de la salud mental",
         objetivo: "Aprenderás a cómo usar un curso",
@@ -455,8 +659,8 @@ export const createCursos = async () => {
         fecha_fin: new Date("02-11-2022"),
         duracion: 8,
         activo: true,
-        imagen: "25f8298506fc7ceeaed210db62bd83b8",
-        categoria_id: 3,
+        imagen: "",
+        categoria_id: categoria.id,
         palabras_clave: ["ASAP", "Bienvenida", "Curso", "Introducción"],
       });
 
@@ -469,150 +673,41 @@ export const createCursos = async () => {
           curso_id: cursoWelcome.id,
         });
       }
-
-      for (let i = 1; i <= 10; i++) {
-        const cursoInsert = await Curso.save({
-          titulo: `Aprende React ${i}`,
-          descripcion:
-            "En este curso gratuito de React (8 horas) aprenderás paso a paso todo lo que necesitas saber para comenzar a crear proyectos interactivos.",
-          objetivo:
-            "Aprenderás por qué es tan importante para el desarrollo web y por qué deberías aprenderlo.",
-          fecha_inicio: new Date("02-07-2001"),
-          fecha_fin: new Date("02-11-2022"),
-          duracion: 8,
-          activo: true,
-          imagen: "",
-          categoria_id: 3,
-          palabras_clave: ["React", "Tecnologia", "Desarrollo Web"],
-        });
-
-        if (cursoInsert) {
-          console.log(`Curso ${i} de prueba creado`);
-          const actividadUno = await Actividad.save({
-            titulo: "Conceptos Básicos de React",
-            descripcion:
-              "Veamos algunos conceptos esenciales que necesitarás para comenzar a trabajar con React",
-            url_media: "https://www.youtube.com/watch?v=8SbUC-UaAxE",
-            curso_id: cursoInsert.id,
-          });
-          if (actividadUno) console.log(`Actividad 1 del curso ${i} de prueba creado`);
-
-          const actividadDos = await Actividad.save({
-            titulo: "Estructura de una Aplicación de React",
-            descripcion: "Cómo crear una aplicación de React con el comando npx create-react-app.",
-            url_media: "https://www.youtube.com/watch?v=8SbUC-UaAxE",
-            curso_id: cursoInsert.id,
-          });
-          if (actividadDos) console.log(`Actividad 2 del curso ${i} de prueba creado`);
-
-          const actividadTres = await Actividad.save({
-            titulo: "Enrutamiento en React",
-            descripcion: "¿Cómo agregar dinamismo a tu sistema?",
-            url_media: "https://www.youtube.com/watch?v=8SbUC-UaAxE",
-            curso_id: cursoInsert.id,
-          });
-          if (actividadTres) console.log(`Actividad 3 del curso ${i} de prueba creado`);
-        }
-      }
     } catch (error) {
-      console.log(error);
+      console.log("Error al crear el curso de bienvenida");
     }
   }
 };
 
 export const createNotas = async () => {
   const notaFound = await Nota.findOne({ where: { titulo: "Apoco si pa" } });
-
+  const autorUno = await Usuario.findOne({ where: { username: "S4A" } });
+  const autorDos = await Usuario.findOne({ where: { username: "TP" } });
   if (!notaFound) {
     try {
-      const notaCuatroInsert = await Nota.save({
+      const notaUnoInsert = await Nota.save({
         titulo: "Bienvenid@ a ASAP",
         contenido:
-          "<div><b>En este espacio podrás compartir tus pensamientos, todas las notas pasan por un proceso de revisión por lo que no se publicarán directamente</b></div><div><b><i>Esperamos que lo disfrutes</i></b></div><div><b><i><br></i></b></div><div><b><i>Atte. El equipo de desarrollo ASAP</i></b></div>",
-        imagen: "25f8298506fc7ceeaed210db62bd83b8",
-        estado: "Pendiente",
+          "<p><strong>En este espacio podrás compartir tus pensamientos, todas las notas pasan por un proceso de revisión por lo que no se publicarán directamente</strong></p><p><em><strong>Esperamos que lo disfrutes</strong></em></p><p><em><strong>Atte. El equipo de desarrollo ASAP</strong></em></p>",
+        imagen: "",
+        estado: "Aceptado",
         tema: "Instrucciones básicas",
         palabras_clave: ["Bienvenida", "Bienvenido", "ASAP"],
-        usuario_id: 1,
+        usuario_id: autorUno.id,
       });
-
-      const notaUnoInsert = await Nota.save({
-        titulo: "El día de hoy me encuentro bien",
-        contenido:
-          "<div><b>El día de hoy he sentido que la brisa tocó mi rostró, permitiéndo tomar un tiempo y disfrutal la vida</b></div><div><b><i>Les dejo esta postal</i></b></div><div><b><i><br></i></b></div><div><b><i>Saludos</i></b></div>",
-        imagen: "67b6ab820df13e5d67441f0bc88d388c",
-        estado: "Aceptado",
-        tema: "Vida",
-        palabras_clave: ["Felicidad", "Plenitud", "Paisaje"],
-        usuario_id: 1,
-      });
-      if (notaUnoInsert) console.log("Nota 1 de prueba creada");
 
       const notaDosInsert = await Nota.save({
-        titulo: "Lago asombroso",
+        titulo: "Bienvenid@ a todos",
         contenido:
-          "<div><b>El día de ayer me encontraba de paseo y pude observar este lindo lago, se los comparto.</b></div><div><b><i>Bendecido lunes</i></b></div><div><b><i><br></i></b></div>",
-        imagen: "7557129ef4364c89b28490263c4b83f7",
-        estado: "Rechazado",
-        tema: "Lago",
-        palabras_clave: ["Lago", "Paisaje", "Agua"],
-        usuario_id: 1,
-      });
-      if (notaDosInsert) console.log("Nota 2 de prueba creada");
-
-      const notaTresInsert = await Nota.save({
-        titulo: "Pájaros en el alambre",
-        contenido:
-          "<div><b>Como el famoso dicho, esta mañana observe pájaros en el alambre. </b></div><div><b><i><br></i></b></div><div><b><i>Bendecido Jueves</i></b></div>",
-        imagen: "e576b89c435c56b7d616b9c59a5deb91",
+          "<p><strong>Hola, ¿Cómo están?</strong></p><p><em>Sean bienvenidos a la plataforma ASAP. En donde pueden visualizar variedad de cursos y cuidar la salud mental para todas esas personas que lo requieran.</em></p>",
+        imagen: "",
         estado: "Aceptado",
-        tema: "Pájaros",
-        palabras_clave: ["Pájaros", "Alambre", "Paisaje", "Plumas"],
-        usuario_id: 1,
-      });
-      if (notaTresInsert) console.log("Nota 3 de prueba creada");
-
-      if (notaCuatroInsert) console.log("Nota 4 de prueba creada");
-    } catch (error) {
-      console.log(error);
-    }
-  }
-};
-
-export const createActividadesCompletadas = async () => {
-  const pacienteUno = await Paciente.findOne({
-    where: { usuario: { persona: { correo: "pacientOne@gmail.com" } } },
-  });
-
-  const actividadCompleted = await Historial.find({
-    where: { paciente_id: pacienteUno!.id, curso_id: 1 },
-  });
-
-  if (actividadCompleted.length === 0) {
-    try {
-      const suscripcion = await Suscripcion.save({
-        fecha_inicio: new Date(),
-        valoracion: 0,
-        paciente_id: pacienteUno!.id,
-        curso_id: 1,
-        progreso: Number((2 / 3) * 100),
-      });
-
-      const actOneCompleted = await Historial.save({
-        curso_id: 1,
-        paciente_id: pacienteUno!.id,
-        actividad_id: 1,
-        fecha_completado: new Date(),
-      });
-
-      const actThreeCompleted = await Historial.save({
-        curso_id: 1,
-        paciente_id: pacienteUno!.id,
-        actividad_id: 3,
-        fecha_completado: new Date(),
+        tema: "Nota de bienvenida",
+        palabras_clave: ["Bienvenidos", "ASAFEPLACE", "ASAP", "Aplicacion"],
+        usuario_id: autorDos.id,
       });
     } catch (error) {
-      console.log(error);
+      console.log("Error al crear las notas");
     }
   }
 };

@@ -29,7 +29,6 @@ import { Especialidad } from "./entities/lookup/Especialidad";
 import { Persona } from "./entities/Persona";
 
 import {
-  createActividadesCompletadas,
   createAdmin,
   createCarreras,
   createCategorias,
@@ -80,23 +79,26 @@ export const connectDB = async () => {
     .then(() => {
       console.log("Conectado a la base de datos");
       try {
-        createCarreras();
-        createEspecialidades();
-
-        createRoles().then(() => {
-          createUsuarios();
-          createPacientes().then(() => {
-            createCategorias().then(() => {
-              createCursos().then(() => {
-                createActividadesCompletadas();
+        createCarreras().then(() => {
+          createRoles().then(() => {
+            createAdmin().then(() => {
+              createUsuarios().then(() => {
+                createPacientes().then(() => {
+                  createEspecialidades().then(() => {
+                    createEspecialistas().then(() => {
+                      createNotas().then(() => {
+                        createCategorias().then(() => {
+                          createCursos().then(() => {
+                            console.log("Contenido inicial creado");
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
               });
             });
           });
-          createEspecialistas();
-        });
-
-        createAdmin().then(() => {
-          createNotas();
         });
       } catch (error) {
         console.log(error);

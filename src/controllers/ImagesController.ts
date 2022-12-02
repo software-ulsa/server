@@ -27,12 +27,12 @@ const getImagen = async (key: any) => {
 const deleteImagen = async (key: any) => {
   try {
     const bucketParams = { Bucket: _s3Bucket, Key: key };
-    const data = await s3
+    await s3
       .deleteObject(bucketParams)
       .promise()
       .then(() => {})
       .catch((err: any) => {
-        console.log("error" + err);
+        console.log("error: " + err);
       });
   } catch (err) {
     console.log("Error", err);
@@ -85,6 +85,6 @@ export const deleteImage = async (req: Request, res: Response) => {
     const data = await deleteImagen(key);
     res.send(data);
   } catch (err: any) {
-    console.log(err.message);
+    console.log(err);
   }
 };
